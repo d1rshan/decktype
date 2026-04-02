@@ -12,75 +12,55 @@ function TypingSession(props: TypingSessionProps) {
   const session = useTypingSession(props.game)
 
   return (
-    <div class="relative h-screen w-screen overflow-hidden bg-black text-white selection:bg-white selection:text-black">
-      <div class="absolute inset-0 z-0">
+    <div class="flex flex-col gap-8">
+      <div class="flex flex-col items-center gap-6">
+        <DifficultySelector
+          activeDifficulty={session.difficulty()}
+          onChange={session.handleDifficultyChange}
+        />
+
+        <div class="flex items-center gap-6 text-[var(--sub)]">
+          <div class="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">{props.game.defaultLanguage}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><path d="M6 12h.01M9 9h.01M15 9h.01M18 12h.01M12 15h.01"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">{props.game.name.toLowerCase()}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-[var(--sub-alt)]/10 transition-all hover:bg-[var(--sub-alt)]/20">
         <FallingWordsField
+          ref={session.setFieldRef}
           words={session.activeWords()}
           currentInput={session.currentInput()}
           phase={session.phase()}
           score={session.score()}
           onFieldClick={session.focusInput}
         />
-      </div>
 
-      <div class="pointer-events-none relative z-10 flex h-full flex-col p-8 sm:p-12">
-        <header class="flex items-start justify-between">
-          <div class="flex flex-col gap-1">
-            <h1 class="text-xs font-bold tracking-[0.5em] text-white opacity-40 uppercase">
-              Void Protocol v1.0
-            </h1>
-          </div>
-          <div class="pointer-events-auto">
-            <DifficultySelector
-              activeDifficulty={session.difficulty()}
-              onChange={session.handleDifficultyChange}
-            />
-          </div>
-        </header>
-
-        <div class="mt-auto flex items-end justify-between">
-          <GameHud
-            score={session.score()}
-            phaseLabel={session.phaseLabel()}
-            typedValue={session.currentInput()}
-          />
-
-          <div class="pointer-events-auto flex flex-col items-end gap-4">
-            <button
-              type="button"
-              class="border border-white/10 bg-black/40 px-6 py-2 text-[10px] font-bold tracking-[0.3em] text-white/60 backdrop-blur-sm uppercase transition-all hover:border-white/40 hover:text-white"
-              onClick={() => {
-                if (session.phase() === 'running') {
-                  session.resetGame()
-                } else {
-                  session.startGame()
-                }
-              }}
-            >
-              {session.phase() === 'running'
-                ? '[ Reset ]'
-                : session.phase() === 'game-over'
-                  ? '[ Reconnect ]'
-                  : '[ Initialize ]'}
-            </button>
-            <p class="text-[9px] tracking-widest text-white/20 uppercase">
-              ESC to abort
-            </p>
-          </div>
+        <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-between px-10 pt-10 pb-6">
+           <div />
+           <GameHud
+             score={session.score()}
+             typedValue={session.currentInput()}
+           />
         </div>
-      </div>
 
-      <input
-        ref={session.setInputRef}
-        value={session.currentInput()}
-        class="absolute -left-[9999px] top-0 opacity-0"
-        autocapitalize="off"
-        autocomplete="off"
-        autocorrect="off"
-        spellcheck={false}
-        onInput={session.handleInput}
-        onKeyDown={session.handleKeyDown}
-      />
+        <input
+          ref={session.setInputRef}
+          value={session.currentInput()}
+          class="absolute -left-[9999px] top-0 opacity-0"
+          autocapitalize="off"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck={false}
+          onInput={session.handleInput}
+          onKeyDown={session.handleKeyDown}
+        />
+      </div>
     </div>
   )
 }

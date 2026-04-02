@@ -1,4 +1,4 @@
-export type GameId = 'falling-words'
+export type GameId = 'falling-words' | 'quote-race' | 'time-attack'
 
 export type GameDefinition = {
   id: GameId
@@ -6,4 +6,5 @@ export type GameDefinition = {
   name: string
   description: string
   defaultLanguage: string
+  status: 'live' | 'coming-soon'
 }

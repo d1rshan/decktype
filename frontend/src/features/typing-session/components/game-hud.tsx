@@ -1,39 +1,26 @@
 type GameHudProps = {
   score: number
-  phaseLabel: string
   typedValue: string
 }
 
 function GameHud(props: GameHudProps) {
   return (
-    <div class="flex items-center gap-10">
-      <div class="flex flex-col">
-        <span class="text-[10px] font-medium tracking-[0.3em] text-white/30 uppercase">
-          Score
+    <div class="flex items-center gap-12 font-mono">
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--sub)] opacity-50">
+          score
         </span>
-        <div class="flex items-baseline gap-1">
-          <span class="text-2xl font-light tracking-tight text-white/90">
-            {props.score.toString().padStart(3, '0')}
-          </span>
-          <span class="text-[10px] text-white/20">PTS</span>
-        </div>
-      </div>
-
-      <div class="flex flex-col">
-        <span class="text-[10px] font-medium tracking-[0.3em] text-white/30 uppercase">
-          Input
-        </span>
-        <span class="font-mono text-2xl tracking-tight text-white">
-          {props.typedValue || '---'}
+        <span class="text-2xl font-bold text-[var(--main)]">
+          {props.score}
         </span>
       </div>
 
-      <div class="flex flex-col">
-        <span class="text-[10px] font-medium tracking-[0.3em] text-white/30 uppercase">
-          Status
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--sub)] opacity-50">
+          input
         </span>
-        <span class="text-sm font-medium tracking-widest text-white/50 uppercase">
-          {props.phaseLabel}
+        <span class="text-2xl font-bold text-[var(--text)]">
+          {props.typedValue || '...'}
         </span>
       </div>
     </div>

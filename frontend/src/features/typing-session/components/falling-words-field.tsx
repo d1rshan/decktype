@@ -4,6 +4,7 @@ import type {
 } from '../games/falling-words/types'
 
 type FallingWordsFieldProps = {
+  ref?: (el: HTMLDivElement) => void
   words: FallingWord[]
   currentInput: string
   phase: GamePhase
@@ -26,40 +27,37 @@ function FallingWordsField(props: FallingWordsFieldProps) {
 
   return (
     <div
-      class="fixed inset-0 z-0 h-screen w-screen cursor-crosshair overflow-hidden bg-black"
+      ref={props.ref}
+      class="absolute inset-0 z-0 h-full w-full cursor-text overflow-hidden bg-[var(--bg)]"
       onClick={props.onFieldClick}
     >
-      {/* Background depth effects */}
-      <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#111_0%,#000_100%)] opacity-50" />
-      
-      {/* Scanline effect for modern monochrome look */}
-      <div class="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.01),rgba(0,255,0,0.01),rgba(0,0,255,0.01))] bg-[length:100%_2px,3px_100%] opacity-20" />
-
       {props.phase === 'idle' && (
         <div class="absolute inset-0 flex items-center justify-center p-6 text-center">
-          <div class="max-w-xl">
-            <h2 class="text-6xl font-extralight tracking-tighter text-white sm:text-8xl">
-              VOID<span class="opacity-20">TYPE</span>
-            </h2>
-            <p class="mt-8 text-[11px] font-medium tracking-[0.4em] text-white/40 uppercase">
-              Press Enter to start the descent
-            </p>
+          <div class="flex items-center gap-2 text-sm text-[var(--sub)]">
+            <span class="rounded bg-[var(--sub-alt)] px-2 py-1 text-xs">enter</span>
+            <span>to start</span>
           </div>
         </div>
       )}
 
       {props.phase === 'game-over' && (
-        <div class="absolute inset-0 z-20 flex items-center justify-center bg-black/90 backdrop-blur-md">
+        <div class="absolute inset-0 z-20 flex items-center justify-center bg-[var(--bg)]/90 backdrop-blur-sm">
           <div class="text-center">
-            <p class="text-[11px] font-medium tracking-[0.5em] text-white/30 uppercase">
-              Connection Lost
+            <p class="text-[10px] font-bold tracking-[0.5em] text-[var(--sub)] uppercase">
+              final score
             </p>
-            <p class="mt-4 text-9xl font-extralight tracking-tighter text-white">
-              {props.score.toString().padStart(3, '0')}
+            <p class="mt-4 text-8xl font-bold tracking-tighter text-[var(--main)] sm:text-9xl">
+              {props.score}
             </p>
-            <p class="mt-8 text-[11px] font-medium tracking-[0.2em] text-white/40 uppercase">
-              Press Enter to reconnect
-            </p>
+            <div class="mt-12 flex flex-col items-center gap-4">
+              <div class="flex items-center gap-2 text-sm text-[var(--sub)]">
+                <span class="rounded bg-[var(--sub-alt)] px-2 py-1 text-xs">enter</span>
+                <span>to restart</span>
+              </div>
+              <p class="text-[10px] tracking-widest text-[var(--sub)] uppercase opacity-50">
+                esc to go back
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -75,18 +73,17 @@ function FallingWordsField(props: FallingWordsFieldProps) {
 
         return (
           <div
-            class={`absolute font-mono text-2xl tracking-tighter transition-all duration-150 ${
+            class={`absolute font-mono text-2xl tracking-tight transition-all duration-150 ${
               isExactMatch
-                ? 'text-white brightness-150'
+                ? 'text-[var(--main)]'
                 : isFocused
-                  ? 'text-white'
+                  ? 'text-[var(--text)]'
                   : isPrefixMatch
-                  ? 'text-white/60'
-                  : 'text-white/20'
+                    ? 'text-[var(--text)] opacity-60'
+                    : 'text-[var(--sub)] opacity-40'
             }`}
             style={{
               transform: `translate(${word.x}px, ${word.y}px) rotate(${word.rotation}deg)`,
-              filter: isFocused ? 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' : 'none'
             }}
           >
             <span class="relative inline-flex items-center">
@@ -98,14 +95,14 @@ function FallingWordsField(props: FallingWordsFieldProps) {
                   <span
                     class={`relative transition-colors duration-200 ${
                       isTyped
-                        ? 'text-white font-bold'
+                        ? 'text-[var(--main)]'
                         : isCaretSlot
-                          ? 'text-white/40'
+                          ? 'text-[var(--text)]'
                           : 'text-inherit'
                     }`}
                   >
                     {isCaretSlot && (
-                      <span class="absolute bottom-[-2px] left-0 h-[1px] w-full bg-white opacity-50" />
+                      <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-[var(--main)] animate-pulse" />
                     )}
                     {character}
                   </span>
@@ -113,7 +110,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
               })}
 
               {isFocused && typedLength === characters.length && (
-                <span class="ml-[1px] h-[1em] w-[1px] bg-white opacity-80" />
+                <span class="ml-[1px] h-[1em] w-[2px] bg-[var(--main)] animate-pulse" />
               )}
             </span>
           </div>
