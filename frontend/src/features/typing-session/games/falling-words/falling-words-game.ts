@@ -3,7 +3,7 @@ import type { DifficultyConfig, DifficultyKey, FallingWord } from './types'
 export const difficultyOptions: DifficultyConfig[] = [
   {
     key: 'easy',
-    label: 'Easy',
+    label: 'EASY',
     spawnIntervalMs: 1800,
     baseSpeed: 68,
     speedJitter: 20,
@@ -11,7 +11,7 @@ export const difficultyOptions: DifficultyConfig[] = [
   },
   {
     key: 'medium',
-    label: 'Medium',
+    label: 'MEDIUM',
     spawnIntervalMs: 1250,
     baseSpeed: 94,
     speedJitter: 28,
@@ -19,7 +19,7 @@ export const difficultyOptions: DifficultyConfig[] = [
   },
   {
     key: 'hard',
-    label: 'Hard',
+    label: 'HARD',
     spawnIntervalMs: 900,
     baseSpeed: 124,
     speedJitter: 36,

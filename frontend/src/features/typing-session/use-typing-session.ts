@@ -25,6 +25,7 @@ export function useTypingSession(game: GameDefinition) {
   const wordBank = getWordBank(game.defaultLanguage)
 
   let inputRef: HTMLInputElement | undefined
+  let fieldRef: HTMLDivElement | undefined
   let animationFrame = 0
   let nextWordId = 1
   let lastFrameTime = 0
@@ -33,23 +34,15 @@ export function useTypingSession(game: GameDefinition) {
 
   const [phase, setPhase] = createSignal<GamePhase>('idle')
   const [difficulty, setDifficulty] = createSignal<DifficultyKey>('easy')
-  const [fieldWidth, setFieldWidth] = createSignal(window.innerWidth)
-  const [fieldHeight, setFieldHeight] = createSignal(window.innerHeight)
+  const [fieldWidth, setFieldWidth] = createSignal(0)
+  const [fieldHeight, setFieldHeight] = createSignal(0)
   const [activeWords, setActiveWords] = createSignal<FallingWord[]>([])
   const [currentInput, setCurrentInput] = createSignal('')
   const [elapsedMs, setElapsedMs] = createSignal(0)
+  const [isTabPressed, setIsTabPressed] = createSignal(false)
 
   const selectedDifficulty = createMemo(() => getDifficulty(difficulty()))
   const score = createMemo(() => formatScore(elapsedMs()))
-  const phaseLabel = createMemo(() => {
-    if (phase() === 'running') {
-      return selectedDifficulty().label
-    }
-    if (phase() === 'game-over') {
-      return 'TERMINATED'
-    }
-    return 'STANDBY'
-  })
 
   const stopLoop = () => {
     if (animationFrame) {
@@ -59,8 +52,11 @@ export function useTypingSession(game: GameDefinition) {
   }
 
   const updateFieldSize = () => {
-    setFieldWidth(window.innerWidth)
-    setFieldHeight(window.innerHeight)
+    if (fieldRef) {
+      const rect = fieldRef.getBoundingClientRect()
+      setFieldWidth(rect.width)
+      setFieldHeight(rect.height)
+    }
   }
 
   const focusInput = () => {
@@ -96,9 +92,11 @@ export function useTypingSession(game: GameDefinition) {
     lastFrameTime = 0
     lastSpawnTime = 0
     runStartTime = 0
+    setIsTabPressed(false)
   }
 
   const startGame = () => {
+    updateFieldSize()
     resetGame(difficulty())
     setPhase('running')
     runStartTime = performance.now()
@@ -137,6 +135,14 @@ export function useTypingSession(game: GameDefinition) {
 
   const handleInput = (event: InputEvent & { currentTarget: HTMLInputElement }) => {
     const sanitized = event.currentTarget.value.replace(/\s+/g, '')
+    
+    if (phase() === 'idle' && sanitized.length > 0) {
+      startGame()
+      setCurrentInput(sanitized)
+      submitExactMatch(sanitized)
+      return
+    }
+
     if (phase() !== 'running') {
       event.currentTarget.value = ''
       return
@@ -149,24 +155,44 @@ export function useTypingSession(game: GameDefinition) {
   const handleKeyDown = (
     event: KeyboardEvent & { currentTarget: HTMLInputElement },
   ) => {
+    if (event.key === 'Tab') {
+      event.preventDefault()
+      setIsTabPressed(true)
+      return
+    }
+
+    if (event.key === 'Enter') {
+      if (isTabPressed()) {
+        event.preventDefault()
+        resetGame()
+        return
+      }
+      
+      if (phase() === 'idle' || phase() === 'game-over') {
+        event.preventDefault()
+        startGame()
+        return
+      }
+
+      event.preventDefault()
+      submitExactMatch(currentInput())
+    }
+
     if (event.key === 'Escape') {
       event.preventDefault()
       resetGame()
       return
     }
 
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      if (phase() !== 'running') {
-        startGame()
-      } else {
-        submitExactMatch(currentInput())
-      }
-    }
-
     if (event.key === ' ') {
       event.preventDefault()
       submitExactMatch(currentInput())
+    }
+  }
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    if (event.key === 'Tab') {
+      setIsTabPressed(false)
     }
   }
 
@@ -201,7 +227,7 @@ export function useTypingSession(game: GameDefinition) {
           const nextY = word.y + nextVelocityY * deltaSeconds
           const nextRotation = word.rotation + word.angularVelocity * deltaSeconds
 
-          if (nextY >= fieldHeight() - 40) {
+          if (fieldHeight() > 0 && nextY >= fieldHeight() - 40 && word.y < fieldHeight()) {
             hitBottom = true
           }
 
@@ -234,13 +260,27 @@ export function useTypingSession(game: GameDefinition) {
 
   onMount(() => {
     updateFieldSize()
+    setTimeout(updateFieldSize, 100)
     focusInput()
-    window.addEventListener('resize', updateFieldSize)
+
+    const observer = new ResizeObserver(() => {
+      updateFieldSize()
+    })
+
+    if (fieldRef) {
+      observer.observe(fieldRef)
+    }
+
+    window.addEventListener('keyup', handleKeyUp)
+
+    onCleanup(() => {
+      observer.disconnect()
+      window.removeEventListener('keyup', handleKeyUp)
+    })
   })
 
   onCleanup(() => {
     stopLoop()
-    window.removeEventListener('resize', updateFieldSize)
   })
 
   return {
@@ -251,11 +291,13 @@ export function useTypingSession(game: GameDefinition) {
     handleInput,
     handleKeyDown,
     phase,
-    phaseLabel,
     resetGame,
     score,
     setInputRef: (element: HTMLInputElement) => {
       inputRef = element
+    },
+    setFieldRef: (element: HTMLDivElement) => {
+      fieldRef = element
     },
     startGame,
     focusInput,

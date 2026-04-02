@@ -6,6 +6,7 @@ const fallingWordsGame: GameDefinition = {
   name: 'Falling Words',
   description: 'Catch words before they hit the bottom of the screen.',
   defaultLanguage: 'en',
+  status: 'live',
 }
 
 export default fallingWordsGame
