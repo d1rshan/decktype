@@ -15,6 +15,11 @@ import {
   normalizePath,
   primaryRoutes,
 } from './routes'
+import { themes } from '../themes/registry'
+import { applyTheme } from '../themes/manager'
+import type { ThemeName } from '../themes/types'
+
+const THEME_STORAGE_KEY = 'decktype-theme'
 
 function App() {
   const getCurrentLocation = () => ({
@@ -22,8 +27,23 @@ function App() {
     search: window.location.search,
   })
 
+  const getInitialTheme = (): ThemeName => {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY) as ThemeName
+    if (saved && themes[saved]) {
+      return saved
+    }
+    return 'carbon'
+  }
+
   const [currentLocation, setCurrentLocation] = createSignal(getCurrentLocation())
   const [isCommandCenterOpen, setIsCommandCenterOpen] = createSignal(false)
+  const [currentThemeName, setCurrentThemeName] = createSignal<ThemeName>(getInitialTheme())
+
+  const selectTheme = (name: ThemeName) => {
+    setCurrentThemeName(name)
+    applyTheme(themes[name])
+    localStorage.setItem(THEME_STORAGE_KEY, name)
+  }
 
   const navigate = (target: string) => {
     const nextUrl = new URL(target, window.location.origin)
@@ -108,6 +128,8 @@ function App() {
   }
 
   onMount(() => {
+    applyTheme(themes[currentThemeName()])
+
     const handleCommandCenterShortcut = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'k') {
         return
@@ -136,10 +158,12 @@ function App() {
         currentPath={currentLocation().path}
         selectedGameId={selectedGameId()}
         selectedWordBankId={selectedWordBankId()}
+        currentThemeName={currentThemeName()}
         onClose={() => setIsCommandCenterOpen(false)}
         onNavigate={navigate}
         onSelectGame={selectGameFromCommandCenter}
         onSelectWordBank={selectWordBankFromCommandCenter}
+        onSelectTheme={selectTheme}
       />
       <div class="mx-auto flex min-h-screen w-full flex-col px-24 py-8">
         <header class="mb-8 flex items-center justify-between">
