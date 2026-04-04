@@ -41,11 +41,6 @@ button {
   font: inherit;
   background: none;
   border: none;
-  color: var(--sub);
-}
-
-button:hover {
-  color: var(--text);
 }
 
 #root {
