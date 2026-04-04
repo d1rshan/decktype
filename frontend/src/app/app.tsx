@@ -171,15 +171,6 @@ function App() {
           </div>
 
           <div class="flex items-center text-[var(--sub)]">
-            <button
-              type="button"
-              class="flex items-center gap-4 hover:text-[var(--text)] transition"
-              onClick={() => setIsCommandCenterOpen(true)}
-            >
-              <span class="rounded-lg border border-white/8 bg-[var(--sub-alt)] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--sub)]">
-                ctrl+k
-              </span>
-            </button>
             <button type="button" class="flex items-center gap-2 hover:text-[var(--text)] transition" onClick={() => navigate('/profile')}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
               <span class="text-xs font-bold uppercase tracking-widest">guest</span>

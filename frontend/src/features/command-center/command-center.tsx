@@ -382,12 +382,6 @@ function CommandCenter(props: CommandCenterProps) {
               </Show>
             </div>
           </div>
-          <div class="mt-4 flex justify-center text-[var(--sub)]">
-            <div class="flex items-center gap-2 text-sm">
-              <span class="rounded bg-[var(--sub-alt)] px-1.5 py-0.5 text-xs text-[var(--sub)]">esc</span>
-              <span>- command line</span>
-            </div>
-          </div>
         </div>
       </div>
     </Show>

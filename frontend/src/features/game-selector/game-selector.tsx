@@ -17,18 +17,6 @@ function GameCardIcon(props: { gameId: GameId }) {
     )
   }
 
-  if (props.gameId === 'quote-race') {
-    return (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 21h18" />
-        <path d="M3 7V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2" />
-        <path d="M9 17h6" />
-        <path d="M10 13h4" />
-        <path d="M11 9h2" />
-      </svg>
-    )
-  }
-
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10" />
