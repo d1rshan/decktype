@@ -1,4 +1,6 @@
-function TimeAttackView() {
+import type { GameViewProps } from '../types'
+
+function TimeAttackView(_: GameViewProps) {
   return (
     <div class="rounded-[2rem] border border-white/10 bg-white/6 p-8 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
       <p class="text-[0.72rem] font-semibold tracking-[0.34em] text-[var(--accent-strong)] uppercase">

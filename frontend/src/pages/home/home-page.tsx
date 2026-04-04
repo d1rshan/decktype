@@ -3,19 +3,12 @@ import { Dynamic } from 'solid-js/web'
 import GameSelector from '../../features/game-selector/game-selector'
 import { getGameById } from '../../games/get-game-by-id'
 import type { GameId } from '../../games/types'
+import type { WordBankId } from '../../word-banks/types'
 
 type HomePageProps = {
   selectedGameId: GameId | null
+  selectedWordBankId: WordBankId | null
   onSelectGame: (gameId: GameId) => void
-  onClearSelection: () => void
-}
-
-function UnknownGameState() {
-  return (
-    <div class="rounded-[2rem] border border-white/10 bg-white/6 p-8 text-white/70 backdrop-blur-xl">
-      Unknown game.
-    </div>
-  )
 }
 
 function HomePage(props: HomePageProps) {
@@ -31,9 +24,9 @@ function HomePage(props: HomePageProps) {
         />
       )}
 
-      {props.selectedGameId && (selectedGameView()
-        ? <Dynamic component={selectedGameView()!} />
-        : <UnknownGameState />)}
+      {props.selectedGameId && selectedGameView() && (
+        <Dynamic component={selectedGameView()!} wordBankId={props.selectedWordBankId} />
+      )}
     </div>
   )
 }

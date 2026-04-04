@@ -5,6 +5,7 @@ export const primaryRoutes = [
 ] as const
 
 export const gameSearchParam = 'game'
+export const wordBankSearchParam = 'wordBank'
 
 export function normalizePath(pathname: string) {
   if (!pathname || pathname === '') {
@@ -23,12 +24,22 @@ export function getSelectedGameId(search: string) {
   return params.get(gameSearchParam)
 }
 
-export function buildHomePath(gameId?: string | null) {
-  if (!gameId) {
-    return '/'
+export function getSelectedWordBankId(search: string) {
+  const params = new URLSearchParams(search)
+  return params.get(wordBankSearchParam)
+}
+
+export function buildHomePath(gameId?: string | null, wordBankId?: string | null) {
+  const params = new URLSearchParams()
+
+  if (gameId) {
+    params.set(gameSearchParam, gameId)
   }
 
-  const params = new URLSearchParams()
-  params.set(gameSearchParam, gameId)
-  return `/?${params.toString()}`
+  if (wordBankId) {
+    params.set(wordBankSearchParam, wordBankId)
+  }
+
+  const query = params.toString()
+  return query ? `/?${query}` : '/'
 }

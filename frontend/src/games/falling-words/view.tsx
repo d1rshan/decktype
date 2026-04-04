@@ -1,11 +1,12 @@
+import type { GameViewProps } from '../types'
 import DifficultySelector from './components/difficulty-selector'
 import FallingWordsField from './components/falling-words-field'
 import GameHud from './components/game-hud'
 import { useFallingWordsGame } from './use-falling-words-game'
 import { fallingWordsGameMeta } from './meta'
 
-function FallingWordsView() {
-  const session = useFallingWordsGame(fallingWordsGameMeta.defaultWordBankId)
+function FallingWordsView(props: GameViewProps) {
+  const session = useFallingWordsGame(props.wordBankId ?? fallingWordsGameMeta.defaultWordBankId)
 
   if (!session.wordBank) {
     return (

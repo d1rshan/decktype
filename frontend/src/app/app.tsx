@@ -1,11 +1,20 @@
-import { createMemo, createSignal, onCleanup, onMount } from 'solid-js'
+import { createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
+import CommandCenter from '../features/command-center/command-center'
+import { getGameById } from '../games/get-game-by-id'
 import AboutPage from '../pages/about/about-page'
 import HomePage from '../pages/home/home-page'
 import LeaderboardPage from '../pages/leaderboard/leaderboard-page'
 import ProfilePage from '../pages/profile/profile-page'
 import SettingsPage from '../pages/settings/settings-page'
 import type { GameId } from '../games/types'
-import { buildHomePath, getSelectedGameId, normalizePath, primaryRoutes } from './routes'
+import type { WordBankId } from '../word-banks/types'
+import {
+  buildHomePath,
+  getSelectedGameId,
+  getSelectedWordBankId,
+  normalizePath,
+  primaryRoutes,
+} from './routes'
 
 function App() {
   const getCurrentLocation = () => ({
@@ -14,6 +23,7 @@ function App() {
   })
 
   const [currentLocation, setCurrentLocation] = createSignal(getCurrentLocation())
+  const [isCommandCenterOpen, setIsCommandCenterOpen] = createSignal(false)
 
   const navigate = (target: string) => {
     const nextUrl = new URL(target, window.location.origin)
@@ -31,19 +41,43 @@ function App() {
   }
 
   const goHome = () => navigate('/')
-  const openGame = (gameId: GameId) => navigate(buildHomePath(gameId))
-  const clearSelectedGame = () => navigate('/')
+  const selectedGameId = createMemo(
+    () => getSelectedGameId(currentLocation().search) as GameId | null,
+  )
+  const selectedWordBankId = createMemo(
+    () => (getSelectedWordBankId(currentLocation().search) || 'english/core-1k') as WordBankId,
+  )
+  const openGame = (gameId: GameId) => navigate(buildHomePath(gameId, selectedWordBankId()))
+  const selectGameFromCommandCenter = (gameId: GameId | null) =>
+    navigate(buildHomePath(gameId, selectedWordBankId()))
+  const selectWordBankFromCommandCenter = (wordBankId: WordBankId) =>
+    navigate(buildHomePath(selectedGameId(), wordBankId))
+
+  createEffect(() => {
+    const { path } = currentLocation()
+    const gameId = selectedGameId()
+
+    if (path !== '/' || !gameId) {
+      return
+    }
+
+    if (getGameById(gameId)) {
+      return
+    }
+
+    window.history.replaceState({}, '', '/')
+    setCurrentLocation({ path: '/', search: '' })
+  })
 
   const currentPage = createMemo(() => {
     const { path, search } = currentLocation()
 
     if (path === '/') {
-      const selectedGameId = getSelectedGameId(search) as GameId | null
       return (
         <HomePage
-          selectedGameId={selectedGameId}
+          selectedGameId={getSelectedGameId(search) as GameId | null}
+          selectedWordBankId={getSelectedWordBankId(search) as WordBankId | null}
           onSelectGame={openGame}
-          onClearSelection={clearSelectedGame}
         />
       )
     }
@@ -63,8 +97,8 @@ function App() {
     return (
       <HomePage
         selectedGameId={null}
+        selectedWordBankId={selectedWordBankId()}
         onSelectGame={openGame}
-        onClearSelection={clearSelectedGame}
       />
     )
   })
@@ -74,7 +108,21 @@ function App() {
   }
 
   onMount(() => {
+    const handleCommandCenterShortcut = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'k') {
+        return
+      }
+
+      event.preventDefault()
+      setIsCommandCenterOpen((current) => !current)
+    }
+
     window.addEventListener('popstate', handlePopState)
+    window.addEventListener('keydown', handleCommandCenterShortcut)
+
+    onCleanup(() => {
+      window.removeEventListener('keydown', handleCommandCenterShortcut)
+    })
   })
 
   onCleanup(() => {
@@ -83,6 +131,16 @@ function App() {
 
   return (
     <div class="relative min-h-screen bg-[var(--bg)] font-mono text-[var(--text)]">
+      <CommandCenter
+        isOpen={isCommandCenterOpen()}
+        currentPath={currentLocation().path}
+        selectedGameId={selectedGameId()}
+        selectedWordBankId={selectedWordBankId()}
+        onClose={() => setIsCommandCenterOpen(false)}
+        onNavigate={navigate}
+        onSelectGame={selectGameFromCommandCenter}
+        onSelectWordBank={selectWordBankFromCommandCenter}
+      />
       <div class="mx-auto flex min-h-screen w-full flex-col px-24 py-8">
         <header class="mb-8 flex items-center justify-between">
           <div class="flex items-baseline gap-10">
@@ -113,6 +171,15 @@ function App() {
           </div>
 
           <div class="flex items-center text-[var(--sub)]">
+            <button
+              type="button"
+              class="flex items-center gap-4 hover:text-[var(--text)] transition"
+              onClick={() => setIsCommandCenterOpen(true)}
+            >
+              <span class="rounded-lg border border-white/8 bg-[var(--sub-alt)] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--sub)]">
+                ctrl+k
+              </span>
+            </button>
             <button type="button" class="flex items-center gap-2 hover:text-[var(--text)] transition" onClick={() => navigate('/profile')}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
               <span class="text-xs font-bold uppercase tracking-widest">guest</span>
