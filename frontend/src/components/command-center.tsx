@@ -1,7 +1,7 @@
 import { createEffect, createMemo, createSignal, For, onCleanup, Show } from 'solid-js'
 import { gameRegistry } from '../games/registry'
 import type { GameId } from '../games/types'
-import { cn } from '../shared/lib/cn'
+import { cn } from '../lib/cn'
 import { wordBanks } from '../word-banks/registry'
 import type { WordBankId } from '../word-banks/types'
 import { themes } from '../themes/registry'

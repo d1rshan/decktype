@@ -18,6 +18,7 @@ import {
 import { themes } from '../themes/registry'
 import { applyTheme } from '../themes/manager'
 import type { ThemeName } from '../themes/types'
+import { authClient } from '../lib/auth-client'
 
 const THEME_STORAGE_KEY = 'decktype-theme'
 
@@ -38,6 +39,8 @@ function App() {
   const [currentLocation, setCurrentLocation] = createSignal(getCurrentLocation())
   const [isCommandCenterOpen, setIsCommandCenterOpen] = createSignal(false)
   const [currentThemeName, setCurrentThemeName] = createSignal<ThemeName>(getInitialTheme())
+  const session = authClient.useSession()
+  const currentUserLabel = createMemo(() => session().data?.user.name ?? 'guest')
 
   const selectTheme = (name: ThemeName) => {
     setCurrentThemeName(name)
@@ -116,7 +119,7 @@ function App() {
       return <LeaderboardPage />
     }
     if (path === '/profile') {
-      return <ProfilePage />
+      return <ProfilePage onNavigate={navigate} />
     }
     if (path === '/about') {
       return <AboutPage />
@@ -209,7 +212,7 @@ function App() {
           <div class="flex items-center text-[var(--sub)]">
             <button type="button" class="flex items-center gap-2 hover:text-[var(--text)] transition" onClick={() => navigate('/profile')}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-              <span class="text-xs font-bold uppercase tracking-widest">guest</span>
+              <span class="max-w-32 truncate text-xs font-bold uppercase tracking-widest">{currentUserLabel()}</span>
             </button>
           </div>
         </header>

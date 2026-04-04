@@ -1,5 +1,5 @@
 import { difficultyOptions } from '../difficulty'
-import { cn } from '../../../shared/lib/cn'
+import { cn } from '../../../lib/cn'
 import type { DifficultyKey } from '../types'
 
 type DifficultySelectorProps = {
