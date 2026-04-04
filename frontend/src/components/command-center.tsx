@@ -1,11 +1,11 @@
 import { createEffect, createMemo, createSignal, For, onCleanup, Show } from 'solid-js'
-import { gameRegistry } from '../../games/registry'
-import type { GameId } from '../../games/types'
-import { cn } from '../../shared/lib/cn'
-import { wordBankRegistry } from '../../word-banks/registry'
-import type { WordBankId } from '../../word-banks/types'
-import { themes } from '../../themes/registry'
-import type { ThemeName } from '../../themes/types'
+import { gameRegistry } from '../games/registry'
+import type { GameId } from '../games/types'
+import { cn } from '../shared/lib/cn'
+import { wordBankRegistry } from '../word-banks/registry'
+import type { WordBankId } from '../word-banks/types'
+import { themes } from '../themes/registry'
+import type { ThemeName } from '../themes/types'
 
 type CommandScope = 'root' | 'navigate' | 'games' | 'word-banks' | 'themes'
 
@@ -77,6 +77,20 @@ function SearchIcon() {
         clip-rule="evenodd"
       />
     </svg>
+  )
+}
+
+function ThemePreview(props: { themeName: ThemeName }) {
+  const theme = () => themes[props.themeName]
+  return (
+    <div
+      class="flex items-center gap-1.5 rounded-full px-2 py-1.5 shadow-sm"
+      style={{ 'background-color': theme().bg }}
+    >
+      <div class="h-2.5 w-2.5 rounded-full" style={{ 'background-color': theme().main }} />
+      <div class="h-2.5 w-2.5 rounded-full" style={{ 'background-color': theme().sub }} />
+      <div class="h-2.5 w-2.5 rounded-full" style={{ 'background-color': theme().text }} />
+    </div>
   )
 }
 
@@ -402,6 +416,11 @@ function CommandCenter(props: CommandCenterProps) {
                               {item.label}
                             </div>
                           </div>
+                          <Show when={scope() === 'themes'}>
+                            <ThemePreview
+                              themeName={item.id.replace('theme-', '') as ThemeName}
+                            />
+                          </Show>
                         </button>
                       )
                     }}

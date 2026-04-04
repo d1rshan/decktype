@@ -1,5 +1,5 @@
 import { createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-import CommandCenter from '../features/command-center/command-center'
+import CommandCenter from '../components/command-center'
 import { getGameById } from '../games/get-game-by-id'
 import AboutPage from '../pages/about/about-page'
 import HomePage from '../pages/home/home-page'
