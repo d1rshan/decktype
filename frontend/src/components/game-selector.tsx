@@ -1,5 +1,5 @@
 import { gameRegistry } from '../games/registry'
-import { getWordBank } from '../word-banks/get-word-bank'
+import { getWordBank } from '../word-banks/manager'
 import type { GameId } from '../games/types'
 
 type GameSelectorProps = {

@@ -2,7 +2,7 @@ import { createEffect, createMemo, createSignal, For, onCleanup, Show } from 'so
 import { gameRegistry } from '../games/registry'
 import type { GameId } from '../games/types'
 import { cn } from '../shared/lib/cn'
-import { wordBankRegistry } from '../word-banks/registry'
+import { wordBanks } from '../word-banks/registry'
 import type { WordBankId } from '../word-banks/types'
 import { themes } from '../themes/registry'
 import type { ThemeName } from '../themes/types'
@@ -177,12 +177,12 @@ function CommandCenter(props: CommandCenterProps) {
   )
 
   const wordBankItems = createMemo<CommandItem[]>(() =>
-    wordBankRegistry.map((wordBank) => ({
-      id: `word-bank-${wordBank.id}`,
+    (Object.entries(wordBanks) as [WordBankId, any][]).map(([id, wordBank]) => ({
+      id: `word-bank-${id}`,
       label: wordBank.label,
-      keywords: [wordBank.label, wordBank.language, wordBank.variant, wordBank.id],
-      active: props.selectedWordBankId === wordBank.id,
-      onSelect: () => props.onSelectWordBank(wordBank.id),
+      keywords: [wordBank.label, wordBank.language, wordBank.variant, id],
+      active: props.selectedWordBankId === id,
+      onSelect: () => props.onSelectWordBank(id),
     })),
   )
 
