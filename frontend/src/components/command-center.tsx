@@ -28,6 +28,7 @@ type CommandCenterProps = {
   onSelectGame: (gameId: GameId | null) => void
   onSelectWordBank: (wordBankId: WordBankId) => void
   onSelectTheme: (themeName: ThemeName) => void
+  onPreviewTheme: (themeName: ThemeName) => void
 }
 
 function scopeLabel(scope: Exclude<CommandScope, 'root'>) {
@@ -250,6 +251,19 @@ function CommandCenter(props: CommandCenterProps) {
 
     props.onClose()
   }
+
+  createEffect(() => {
+    if (scope() === 'themes' && props.isOpen) {
+      const item = visibleItems()[selectedIndex()]
+      if (item && item.id.startsWith('theme-')) {
+        const themeName = item.id.replace('theme-', '') as ThemeName
+        props.onPreviewTheme(themeName)
+      }
+    } else if (props.isOpen) {
+      // Revert to confirmed theme when moving to other scopes
+      props.onPreviewTheme(props.currentThemeName)
+    }
+  })
 
   createEffect(() => {
     if (!props.isOpen) {

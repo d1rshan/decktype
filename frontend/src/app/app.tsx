@@ -45,6 +45,17 @@ function App() {
     localStorage.setItem(THEME_STORAGE_KEY, name)
   }
 
+  const previewTheme = (name: ThemeName) => {
+    applyTheme(themes[name])
+  }
+
+  createEffect(() => {
+    if (!isCommandCenterOpen()) {
+      // Re-apply the confirmed theme when the modal closes
+      applyTheme(themes[currentThemeName()])
+    }
+  })
+
   const navigate = (target: string) => {
     const nextUrl = new URL(target, window.location.origin)
     const nextPath = normalizePath(nextUrl.pathname)
@@ -164,6 +175,7 @@ function App() {
         onSelectGame={selectGameFromCommandCenter}
         onSelectWordBank={selectWordBankFromCommandCenter}
         onSelectTheme={selectTheme}
+        onPreviewTheme={previewTheme}
       />
       <div class="mx-auto flex min-h-screen w-full flex-col px-24 py-8">
         <header class="mb-8 flex items-center justify-between">
