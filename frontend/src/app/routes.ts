@@ -1,7 +1,10 @@
 export const primaryRoutes = [
+  { label: 'Leaderboard', path: '/leaderboard' },
   { label: 'About', path: '/about' },
   { label: 'Settings', path: '/settings' },
 ] as const
+
+export const gameSearchParam = 'game'
 
 export function normalizePath(pathname: string) {
   if (!pathname || pathname === '') {
@@ -15,14 +18,17 @@ export function normalizePath(pathname: string) {
   return normalized === '' ? '/' : normalized
 }
 
-export function isGameRoute(pathname: string) {
-  return normalizePath(pathname).startsWith('/games/')
+export function getSelectedGameId(search: string) {
+  const params = new URLSearchParams(search)
+  return params.get(gameSearchParam)
 }
 
-export function getGameSlugFromPath(pathname: string) {
-  if (!isGameRoute(pathname)) {
-    return null
+export function buildHomePath(gameId?: string | null) {
+  if (!gameId) {
+    return '/'
   }
 
-  return normalizePath(pathname).replace('/games/', '') || null
+  const params = new URLSearchParams()
+  params.set(gameSearchParam, gameId)
+  return `/?${params.toString()}`
 }

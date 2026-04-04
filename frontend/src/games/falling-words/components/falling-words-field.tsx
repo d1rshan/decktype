@@ -1,7 +1,4 @@
-import type {
-  FallingWord,
-  GamePhase,
-} from '../games/falling-words/types'
+import type { FallingWord, GamePhase } from '../types'
 
 type FallingWordsFieldProps = {
   ref?: (el: HTMLDivElement) => void
@@ -55,7 +52,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
                 <span>to restart</span>
               </div>
               <p class="text-[10px] tracking-widest text-[var(--sub)] uppercase opacity-50">
-                esc to go back
+                esc to reset
               </p>
             </div>
           </div>

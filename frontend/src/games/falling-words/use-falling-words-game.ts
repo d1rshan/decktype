@@ -1,15 +1,9 @@
 import { createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-import type { GameDefinition } from '../../entities/game/types'
-import { getWordBank } from '../../entities/word-bank/get-word-bank'
-import {
-  createFallingWord,
-  getDifficulty,
-} from './games/falling-words/falling-words-game'
-import type {
-  DifficultyKey,
-  FallingWord,
-  GamePhase,
-} from './games/falling-words/types'
+import { getWordBank } from '../../word-banks/get-word-bank'
+import type { WordBankId } from '../../word-banks/types'
+import { getDifficulty } from './difficulty'
+import { createFallingWord } from './engine'
+import type { DifficultyKey, FallingWord, GamePhase } from './types'
 
 function formatScore(elapsedMs: number) {
   return Math.floor(elapsedMs / 1000)
@@ -21,8 +15,8 @@ function findExactMatch(words: FallingWord[], value: string) {
     .sort((left, right) => right.y - left.y)[0]
 }
 
-export function useTypingSession(game: GameDefinition) {
-  const wordBank = getWordBank(game.defaultLanguage)
+export function useFallingWordsGame(wordBankId: WordBankId) {
+  const wordBank = getWordBank(wordBankId)
 
   let inputRef: HTMLInputElement | undefined
   let fieldRef: HTMLDivElement | undefined
@@ -135,7 +129,7 @@ export function useTypingSession(game: GameDefinition) {
 
   const handleInput = (event: InputEvent & { currentTarget: HTMLInputElement }) => {
     const sanitized = event.currentTarget.value.replace(/\s+/g, '')
-    
+
     if (phase() === 'idle' && sanitized.length > 0) {
       startGame()
       setCurrentInput(sanitized)
@@ -167,7 +161,7 @@ export function useTypingSession(game: GameDefinition) {
         resetGame()
         return
       }
-      
+
       if (phase() === 'idle' || phase() === 'game-over') {
         event.preventDefault()
         startGame()
@@ -291,7 +285,6 @@ export function useTypingSession(game: GameDefinition) {
     handleInput,
     handleKeyDown,
     phase,
-    resetGame,
     score,
     setInputRef: (element: HTMLInputElement) => {
       inputRef = element
@@ -299,7 +292,7 @@ export function useTypingSession(game: GameDefinition) {
     setFieldRef: (element: HTMLDivElement) => {
       fieldRef = element
     },
-    startGame,
     focusInput,
+    wordBank,
   }
 }
