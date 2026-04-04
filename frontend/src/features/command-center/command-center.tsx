@@ -4,8 +4,10 @@ import type { GameId } from '../../games/types'
 import { cn } from '../../shared/lib/cn'
 import { wordBankRegistry } from '../../word-banks/registry'
 import type { WordBankId } from '../../word-banks/types'
+import { themes } from '../../themes/registry'
+import type { ThemeName } from '../../themes/types'
 
-type CommandScope = 'root' | 'navigate' | 'games' | 'word-banks'
+type CommandScope = 'root' | 'navigate' | 'games' | 'word-banks' | 'themes'
 
 type CommandItem = {
   id: string
@@ -20,10 +22,12 @@ type CommandCenterProps = {
   currentPath: string
   selectedGameId: GameId | null
   selectedWordBankId: WordBankId | null
+  currentThemeName: ThemeName
   onClose: () => void
   onNavigate: (path: string) => void
   onSelectGame: (gameId: GameId | null) => void
   onSelectWordBank: (wordBankId: WordBankId) => void
+  onSelectTheme: (themeName: ThemeName) => void
 }
 
 function scopeLabel(scope: Exclude<CommandScope, 'root'>) {
@@ -33,6 +37,10 @@ function scopeLabel(scope: Exclude<CommandScope, 'root'>) {
 
   if (scope === 'games') {
     return 'Games'
+  }
+
+  if (scope === 'themes') {
+    return 'Themes'
   }
 
   return 'Word Banks'
@@ -97,6 +105,12 @@ function CommandCenter(props: CommandCenterProps) {
       keywords: ['word banks', 'language', 'words', 'dictionary'],
       onSelect: () => setScope('word-banks'),
     },
+    {
+      id: 'group-themes',
+      label: 'Themes',
+      keywords: ['themes', 'colors', 'appearance', 'style'],
+      onSelect: () => setScope('themes'),
+    },
   ])
 
   const navigateItems = createMemo<CommandItem[]>(() => [
@@ -157,6 +171,16 @@ function CommandCenter(props: CommandCenterProps) {
     })),
   )
 
+  const themeItems = createMemo<CommandItem[]>(() =>
+    (Object.keys(themes) as ThemeName[]).map((themeName) => ({
+      id: `theme-${themeName}`,
+      label: themeName.replace(/_/g, ' '),
+      keywords: [themeName, 'theme', 'color'],
+      active: props.currentThemeName === themeName,
+      onSelect: () => props.onSelectTheme(themeName),
+    })),
+  )
+
   const itemsForScope = createMemo<CommandItem[]>(() => {
     if (scope() === 'root') {
       return rootItems()
@@ -168,6 +192,10 @@ function CommandCenter(props: CommandCenterProps) {
 
     if (scope() === 'games') {
       return gameItems()
+    }
+
+    if (scope() === 'themes') {
+      return themeItems()
     }
 
     return wordBankItems()

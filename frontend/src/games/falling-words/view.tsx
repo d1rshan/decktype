@@ -10,7 +10,7 @@ function FallingWordsView(props: GameViewProps) {
 
   if (!session.wordBank) {
     return (
-      <div class="rounded-[2rem] border border-white/10 bg-white/6 p-8 text-white/70 backdrop-blur-xl">
+      <div class="rounded-[2rem] border border-[var(--sub-alt)] bg-[var(--sub-alt)]/40 p-8 text-[var(--sub)] backdrop-blur-xl">
         Missing word bank for this game.
       </div>
     )
