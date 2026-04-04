@@ -1,56 +1,76 @@
 import { createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 import AboutPage from '../pages/about/about-page'
-import GamePage from '../pages/game/game-page'
 import HomePage from '../pages/home/home-page'
 import LeaderboardPage from '../pages/leaderboard/leaderboard-page'
 import ProfilePage from '../pages/profile/profile-page'
-import { getGameSlugFromPath, isGameRoute, normalizePath, primaryRoutes } from './routes'
+import SettingsPage from '../pages/settings/settings-page'
+import type { GameId } from '../games/types'
+import { buildHomePath, getSelectedGameId, normalizePath, primaryRoutes } from './routes'
 
 function App() {
-  const [currentPath, setCurrentPath] = createSignal(normalizePath(window.location.pathname))
+  const getCurrentLocation = () => ({
+    path: normalizePath(window.location.pathname),
+    search: window.location.search,
+  })
 
-  const navigate = (path: string) => {
-    const nextPath = normalizePath(path)
-    if (nextPath === currentPath()) {
+  const [currentLocation, setCurrentLocation] = createSignal(getCurrentLocation())
+
+  const navigate = (target: string) => {
+    const nextUrl = new URL(target, window.location.origin)
+    const nextPath = normalizePath(nextUrl.pathname)
+    const nextSearch = nextUrl.search
+    const location = currentLocation()
+
+    if (nextPath === location.path && nextSearch === location.search) {
       return
     }
 
-    window.history.pushState({}, '', nextPath)
-    setCurrentPath(nextPath)
+    window.history.pushState({}, '', `${nextPath}${nextSearch}`)
+    setCurrentLocation({ path: nextPath, search: nextSearch })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const goHome = () => navigate('/')
-  const openGame = (slug: string) => navigate(`/games/${slug}`)
+  const openGame = (gameId: GameId) => navigate(buildHomePath(gameId))
+  const clearSelectedGame = () => navigate('/')
 
   const currentPage = createMemo(() => {
-    const path = currentPath()
+    const { path, search } = currentLocation()
 
     if (path === '/') {
-      return <HomePage onNavigate={navigate} onSelectGame={openGame} />
+      const selectedGameId = getSelectedGameId(search) as GameId | null
+      return (
+        <HomePage
+          selectedGameId={selectedGameId}
+          onSelectGame={openGame}
+          onClearSelection={clearSelectedGame}
+        />
+      )
     }
     if (path === '/leaderboard') {
-      return <div class="flex-1 flex items-center justify-center  italic">UNDER CONSTRUCTION...</div>
+      return <LeaderboardPage />
     }
     if (path === '/profile') {
-      return <div class="flex-1 flex items-center justify-center  italic">UNDER CONSTRUCTION...</div>
+      return <ProfilePage />
     }
     if (path === '/about') {
-      return <div class="flex-1 flex items-center justify-center  italic">UNDER CONSTRUCTION...</div>
+      return <AboutPage />
     }
     if (path === '/settings') {
-      return <div class="flex-1 flex items-center justify-center  italic">UNDER CONSTRUCTION...</div>
-    }
-    if (isGameRoute(path)) {
-      const slug = getGameSlugFromPath(path)
-      return slug ? <GamePage slug={slug} /> : <HomePage onNavigate={navigate} onSelectGame={openGame} />
+      return <SettingsPage />
     }
 
-    return <HomePage onNavigate={navigate} onSelectGame={openGame} />
+    return (
+      <HomePage
+        selectedGameId={null}
+        onSelectGame={openGame}
+        onClearSelection={clearSelectedGame}
+      />
+    )
   })
 
   const handlePopState = () => {
-    setCurrentPath(normalizePath(window.location.pathname))
+    setCurrentLocation(getCurrentLocation())
   }
 
   onMount(() => {
@@ -76,7 +96,7 @@ function App() {
 
             <nav class="flex items-center gap-8 text-sm">
               {primaryRoutes.map((route) => {
-                const isActive = currentPath() === route.path
+                const isActive = currentLocation().path === route.path
 
                 return (
                   <button
@@ -113,13 +133,7 @@ function App() {
             <a href="#" class="hover:text-[var(--text)]">github</a>
             <a href="#" class="hover:text-[var(--text)]">discord</a>
           </div>
-          <div class="flex items-center gap-4">
-            <button type="button" class="flex items-center gap-1 hover:text-[var(--text)]">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 2v20" /><path d="M2 12h20" /></svg>
-              alduin
-            </button>
-            <span>v1.0.0</span>
-          </div>
+          <span>v1.0.0</span>
         </footer>
       </div>
     </div>
