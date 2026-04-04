@@ -5,7 +5,7 @@ export type GameViewProps = {
   wordBankId?: WordBankId | null
 }
 
-export type GameId = 'falling-words' | 'quote-race' | 'time-attack'
+export type GameId = 'falling-words'
 
 export type GameStatus = 'live' | 'coming-soon'
 
