@@ -1,7 +1,7 @@
 import { For, Match, Switch } from 'solid-js'
 
-import { authClient } from '../../../lib/auth-client'
-import { useMyResultsQuery } from '../api/results'
+import { authClient } from '@/lib/auth-client'
+import { useMyResultsQuery } from '@/features/results/api/results'
 
 function formatPlayedAt(value: string) {
   return new Intl.DateTimeFormat(undefined, {

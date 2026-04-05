@@ -1,7 +1,7 @@
 import { Show, createMemo, createSignal } from 'solid-js'
 
-import ResultHistory from '../../features/results/components/result-history'
-import { authClient } from '../../lib/auth-client'
+import ResultHistory from '@/features/results/components/result-history'
+import { authClient } from '@/lib/auth-client'
 
 type ProfilePageProps = {
   onNavigate: (target: string) => void

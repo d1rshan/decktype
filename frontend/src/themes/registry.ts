@@ -1,4 +1,4 @@
-import type { Theme, ThemeName } from './types'
+import type { Theme, ThemeName } from '@/themes/types'
 
 export const themes: Record<ThemeName, Theme> = {
   carbon: {

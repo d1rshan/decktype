@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/solid-query'
 import type { Accessor } from 'solid-js'
 
-import { api, unwrapEdenResponse } from '../../../lib/api/client'
+import { api, unwrapEdenResponse } from '@/lib/api/client'
 
 export type CreateResultInput = {
   gameId: string
