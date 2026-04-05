@@ -2,7 +2,7 @@ import { createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 import GameSelector from '@/features/games/components/game-selector'
-import { getGameById } from '@/features/games/get-game-by-id'
+import { games } from '@/features/games/registry'
 import type { GameId } from '@/features/games/types'
 import type { WordBankId } from '@/features/content/word-banks/types'
 
@@ -13,7 +13,9 @@ type HomePageProps = {
 }
 
 function HomePage(props: HomePageProps) {
-  const selectedGame = createMemo(() => getGameById(props.selectedGameId))
+  const selectedGame = createMemo(() => (
+    props.selectedGameId ? games[props.selectedGameId] ?? null : null
+  ))
   const selectedGameView = createMemo(() => selectedGame()?.View ?? null)
 
   return (
