@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-import CommandCenter from '@/app/components/command-center'
-import { getGameById } from '@/features/games/get-game-by-id'
+import Commandline from '@/features/commandline/components/commandline'
+import { games } from '@/features/games/registry'
 import AboutPage from '@/pages/about-page'
 import HomePage from '@/pages/home-page'
 import LeaderboardPage from '@/pages/leaderboard-page'
@@ -37,7 +37,7 @@ function App() {
   }
 
   const [currentLocation, setCurrentLocation] = createSignal(getCurrentLocation())
-  const [isCommandCenterOpen, setIsCommandCenterOpen] = createSignal(false)
+  const [isCommandlineOpen, setIsCommandlineOpen] = createSignal(false)
   const [currentThemeName, setCurrentThemeName] = createSignal<ThemeName>(getInitialTheme())
   const session = authClient.useSession()
   const currentUserLabel = createMemo(() => session().data?.user.name ?? 'guest')
@@ -53,7 +53,7 @@ function App() {
   }
 
   createEffect(() => {
-    if (!isCommandCenterOpen()) {
+    if (!isCommandlineOpen()) {
       // Re-apply the confirmed theme when the modal closes
       applyTheme(themes[currentThemeName()])
     }
@@ -82,9 +82,9 @@ function App() {
     () => (getSelectedWordBankId(currentLocation().search) || 'english/core-1k') as WordBankId,
   )
   const openGame = (gameId: GameId) => navigate(buildHomePath(gameId, selectedWordBankId()))
-  const selectGameFromCommandCenter = (gameId: GameId | null) =>
+  const selectGameFromCommandline = (gameId: GameId | null) =>
     navigate(buildHomePath(gameId, selectedWordBankId()))
-  const selectWordBankFromCommandCenter = (wordBankId: WordBankId) =>
+  const selectWordBankFromCommandline = (wordBankId: WordBankId) =>
     navigate(buildHomePath(selectedGameId(), wordBankId))
 
   createEffect(() => {
@@ -95,7 +95,7 @@ function App() {
       return
     }
 
-    if (getGameById(gameId)) {
+    if (games[gameId]) {
       return
     }
 
@@ -144,20 +144,20 @@ function App() {
   onMount(() => {
     applyTheme(themes[currentThemeName()])
 
-    const handleCommandCenterShortcut = (event: KeyboardEvent) => {
+    const handleCommandlineShortcut = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'k') {
         return
       }
 
       event.preventDefault()
-      setIsCommandCenterOpen((current) => !current)
+      setIsCommandlineOpen((current) => !current)
     }
 
     window.addEventListener('popstate', handlePopState)
-    window.addEventListener('keydown', handleCommandCenterShortcut)
+    window.addEventListener('keydown', handleCommandlineShortcut)
 
     onCleanup(() => {
-      window.removeEventListener('keydown', handleCommandCenterShortcut)
+      window.removeEventListener('keydown', handleCommandlineShortcut)
     })
   })
 
@@ -167,16 +167,16 @@ function App() {
 
   return (
     <div class="relative min-h-screen bg-[var(--bg)] font-mono text-[var(--text)]">
-      <CommandCenter
-        isOpen={isCommandCenterOpen()}
+      <Commandline
+        isOpen={isCommandlineOpen()}
         currentPath={currentLocation().path}
         selectedGameId={selectedGameId()}
         selectedWordBankId={selectedWordBankId()}
         currentThemeName={currentThemeName()}
-        onClose={() => setIsCommandCenterOpen(false)}
+        onClose={() => setIsCommandlineOpen(false)}
         onNavigate={navigate}
-        onSelectGame={selectGameFromCommandCenter}
-        onSelectWordBank={selectWordBankFromCommandCenter}
+        onSelectGame={selectGameFromCommandline}
+        onSelectWordBank={selectWordBankFromCommandline}
         onSelectTheme={selectTheme}
         onPreviewTheme={previewTheme}
       />
