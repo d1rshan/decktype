@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-import { getWordBank } from '@/word-banks/manager'
-import type { WordBankId } from '@/word-banks/types'
+import { getWordBank } from '@/features/content/word-banks/manager'
+import type { WordBankId } from '@/features/content/word-banks/types'
 import { getDifficulty } from './difficulty'
 import { createFallingWord } from './engine'
 import type { DifficultyKey, FallingWord, GamePhase } from './types'

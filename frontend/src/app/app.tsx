@@ -1,13 +1,13 @@
 import { createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-import CommandCenter from '@/components/command-center'
-import { getGameById } from '@/games/get-game-by-id'
-import AboutPage from '@/pages/about/about-page'
-import HomePage from '@/pages/home/home-page'
-import LeaderboardPage from '@/pages/leaderboard/leaderboard-page'
-import ProfilePage from '@/pages/profile/profile-page'
-import SettingsPage from '@/pages/settings/settings-page'
-import type { GameId } from '@/games/types'
-import type { WordBankId } from '@/word-banks/types'
+import CommandCenter from '@/app/components/command-center'
+import { getGameById } from '@/features/games/get-game-by-id'
+import AboutPage from '@/pages/about-page'
+import HomePage from '@/pages/home-page'
+import LeaderboardPage from '@/pages/leaderboard-page'
+import ProfilePage from '@/pages/profile-page'
+import SettingsPage from '@/pages/settings-page'
+import type { GameId } from '@/features/games/types'
+import type { WordBankId } from '@/features/content/word-banks/types'
 import {
   buildHomePath,
   getSelectedGameId,
@@ -15,9 +15,9 @@ import {
   normalizePath,
   primaryRoutes,
 } from './routes'
-import { themes } from '@/themes/registry'
-import { applyTheme } from '@/themes/manager'
-import type { ThemeName } from '@/themes/types'
+import { themes } from '@/features/content/themes/registry'
+import { applyTheme } from '@/features/content/themes/manager'
+import type { ThemeName } from '@/features/content/themes/types'
 import { authClient } from '@/lib/auth-client'
 
 const THEME_STORAGE_KEY = 'decktype-theme'

@@ -1,11 +1,11 @@
 import { createEffect, createMemo, createSignal, For, onCleanup, Show } from 'solid-js'
-import { gameRegistry } from '@/games/registry'
-import type { GameId } from '@/games/types'
+import { gameRegistry } from '@/features/games/registry'
+import type { GameId } from '@/features/games/types'
 import { cn } from '@/lib/cn'
-import { wordBanks } from '@/word-banks/registry'
-import type { WordBankId } from '@/word-banks/types'
-import { themes } from '@/themes/registry'
-import type { ThemeName } from '@/themes/types'
+import { wordBanks } from '@/features/content/word-banks/registry'
+import type { WordBankId } from '@/features/content/word-banks/types'
+import { themes } from '@/features/content/themes/registry'
+import type { ThemeName } from '@/features/content/themes/types'
 
 type CommandScope = 'root' | 'navigate' | 'games' | 'word-banks' | 'themes'
 

@@ -1,4 +1,4 @@
-import type { GameViewProps } from '@/games/types'
+import type { GameViewProps } from '@/features/games/types'
 import { authClient } from '@/lib/auth-client'
 import { useCreateResultMutation } from '@/features/results/api/results'
 import DifficultySelector from './components/difficulty-selector'
