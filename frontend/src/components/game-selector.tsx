@@ -1,6 +1,6 @@
-import { gameRegistry } from '../games/registry'
-import { getWordBank } from '../word-banks/manager'
-import type { GameId } from '../games/types'
+import { gameRegistry } from '@/games/registry'
+import { getWordBank } from '@/word-banks/manager'
+import type { GameId } from '@/games/types'
 
 type GameSelectorProps = {
   activeGameId?: GameId | null

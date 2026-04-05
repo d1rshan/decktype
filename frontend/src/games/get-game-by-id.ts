@@ -1,4 +1,4 @@
-import { gameRegistry } from './registry'
+import { gameRegistry } from '@/games/registry'
 
 export function getGameById(gameId: string | null | undefined) {
   if (!gameId) {
