@@ -5,6 +5,16 @@ import { getDifficulty } from './difficulty'
 import { createFallingWord } from './engine'
 import type { DifficultyKey, FallingWord, GamePhase } from './types'
 
+type CompletedGameResult = {
+  gameId: 'falling-words'
+  score: number
+  difficulty: DifficultyKey
+}
+
+type UseFallingWordsGameOptions = {
+  onComplete?: (result: CompletedGameResult) => void | Promise<void>
+}
+
 function formatScore(elapsedMs: number) {
   return Math.floor(elapsedMs / 1000)
 }
@@ -15,7 +25,10 @@ function findExactMatch(words: FallingWord[], value: string) {
     .sort((left, right) => right.y - left.y)[0]
 }
 
-export function useFallingWordsGame(wordBankId: WordBankId) {
+export function useFallingWordsGame(
+  wordBankId: WordBankId,
+  options: UseFallingWordsGameOptions = {},
+) {
   const wordBank = getWordBank(wordBankId)
 
   let inputRef: HTMLInputElement | undefined
@@ -99,9 +112,14 @@ export function useFallingWordsGame(wordBankId: WordBankId) {
     spawnWord()
   }
 
-  const endGame = () => {
+  const endGame = (finalScore: number) => {
     setPhase('game-over')
     stopLoop()
+    void options.onComplete?.({
+      gameId: 'falling-words',
+      score: finalScore,
+      difficulty: difficulty(),
+    })
   }
 
   const submitExactMatch = (value: string) => {
@@ -237,7 +255,7 @@ export function useFallingWordsGame(wordBankId: WordBankId) {
       )
 
       if (hitBottom) {
-        endGame()
+        endGame(formatScore(timestamp - runStartTime))
         return
       }
 

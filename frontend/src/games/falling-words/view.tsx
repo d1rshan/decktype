@@ -1,4 +1,6 @@
 import type { GameViewProps } from '../types'
+import { authClient } from '../../lib/auth-client'
+import { useCreateResultMutation } from '../../features/results/api/results'
 import DifficultySelector from './components/difficulty-selector'
 import FallingWordsField from './components/falling-words-field'
 import GameHud from './components/game-hud'
@@ -6,7 +8,24 @@ import { useFallingWordsGame } from './use-falling-words-game'
 import { fallingWordsGameMeta } from './meta'
 
 function FallingWordsView(props: GameViewProps) {
-  const session = useFallingWordsGame(props.wordBankId ?? fallingWordsGameMeta.defaultWordBankId)
+  const authSession = authClient.useSession()
+  const createResultMutation = useCreateResultMutation()
+  const session = useFallingWordsGame(
+    props.wordBankId ?? fallingWordsGameMeta.defaultWordBankId,
+    {
+      onComplete: (result) => {
+        if (!authSession().data?.user) {
+          return
+        }
+
+        createResultMutation.mutate({
+          gameId: result.gameId,
+          score: result.score,
+          difficulty: result.difficulty,
+        })
+      },
+    },
+  )
 
   if (!session.wordBank) {
     return (

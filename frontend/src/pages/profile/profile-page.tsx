@@ -1,5 +1,6 @@
 import { Show, createMemo, createSignal } from 'solid-js'
 
+import ResultHistory from '../../features/results/components/result-history'
 import { authClient } from '../../lib/auth-client'
 
 type ProfilePageProps = {
@@ -259,6 +260,8 @@ function ProfilePage(props: ProfilePageProps) {
               </div>
             </div>
           </div>
+
+          <ResultHistory />
 
           <Show when={statusMessage()}>
             {(message) => (
