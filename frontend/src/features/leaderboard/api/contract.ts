@@ -8,4 +8,4 @@ export type LeaderboardEntry = {
   bestResultAt: string
 }
 
-export type LeaderboardDifficulty = 'all' | 'easy' | 'medium' | 'hard'
+export type LeaderboardDifficulty = 'easy' | 'medium' | 'hard'

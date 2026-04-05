@@ -19,7 +19,7 @@ export const leaderboardQueryOptions = (
       api.leaderboard.get({
         $query: {
           gameId,
-          ...(difficulty === 'all' ? {} : { difficulty }),
+          difficulty,
           limit,
         },
       }),
