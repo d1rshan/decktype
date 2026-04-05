@@ -4,7 +4,7 @@ import {
   createResultBodySchema,
   myResultsQuerySchema,
   resultResponseSchema,
-} from './schemas'
+} from './schema'
 import { requireSession } from '../auth/session'
 import { createResult, getUserResults } from './service'
 

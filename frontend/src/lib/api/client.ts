@@ -7,11 +7,13 @@ type AppContract = Elysia<any, any, any, any, App['~Routes'], any, any>
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000'
 
-export const api = edenTreaty<AppContract>(backendUrl, {
+const treaty = edenTreaty<AppContract>(backendUrl, {
   $fetch: {
     credentials: 'include',
   },
 })
+
+export const { api } = treaty
 
 type EdenSuccess<T> = {
   data: T
@@ -26,9 +28,28 @@ type EdenFailure = {
   }
 }
 
+type ApiErrorBody = {
+  code?: unknown
+  message?: unknown
+}
+
+const getApiErrorBody = (error: EdenFailure['error']): ApiErrorBody | null => {
+  if (!error.value || typeof error.value !== 'object') {
+    return null
+  }
+
+  return error.value as ApiErrorBody
+}
+
 const getApiErrorMessage = (error: EdenFailure['error']) => {
   if (typeof error.value === 'string') {
     return error.value
+  }
+
+  const body = getApiErrorBody(error)
+
+  if (typeof body?.message === 'string') {
+    return body.message
   }
 
   if (error.value && typeof error.value === 'object' && 'error' in error.value) {
@@ -46,11 +67,27 @@ const getApiErrorMessage = (error: EdenFailure['error']) => {
   return 'Request failed.'
 }
 
+export class ApiClientError extends Error {
+  readonly status?: number
+  readonly code?: string
+  readonly causeValue: unknown
+
+  constructor(error: EdenFailure['error']) {
+    super(getApiErrorMessage(error))
+    const body = getApiErrorBody(error)
+
+    this.name = 'ApiClientError'
+    this.status = typeof error.status === 'number' ? error.status : undefined
+    this.code = typeof body?.code === 'string' ? body.code : undefined
+    this.causeValue = error.value
+  }
+}
+
 export const unwrapEdenResponse = <T>(
   response: EdenSuccess<T> | EdenFailure,
 ) => {
   if (response.error) {
-    throw new Error(getApiErrorMessage(response.error))
+    throw new ApiClientError(response.error)
   }
 
   return response.data

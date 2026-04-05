@@ -1,6 +1,6 @@
 import type { GameViewProps } from '@/features/games/types'
+import { useCreateResultMutation } from '@/features/results/api/hooks'
 import { authClient } from '@/lib/auth-client'
-import { useCreateResultMutation } from '@/features/results/api/results'
 import DifficultySelector from './components/difficulty-selector'
 import FallingWordsField from './components/falling-words-field'
 import GameHud from './components/game-hud'

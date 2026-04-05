@@ -1,13 +1,10 @@
 import type { Filter } from 'mongodb'
 
 import { resultsCollection } from '../../db/collections'
-import type {
-  CreateGameResultInput,
-  GameResultDocument,
-  ListUserResultsFilters,
-} from './types'
+import type { GameResultDocument } from '../../db/collections'
+import type { CreateResultInput, ListUserResultsFilters } from './schema'
 
-export const insertResult = async (input: CreateGameResultInput) => {
+export const insertResult = async (input: CreateResultInput) => {
   const document: GameResultDocument = {
     ...input,
     createdAt: new Date(),

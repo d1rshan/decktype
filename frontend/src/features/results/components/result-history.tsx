@@ -1,7 +1,8 @@
 import { For, Match, Switch } from 'solid-js'
 
+import { useMyResultsQuery } from '@/features/results/api/hooks'
 import { authClient } from '@/lib/auth-client'
-import { useMyResultsQuery } from '@/features/results/api/results'
+import { ApiClientError } from '@/lib/api/client'
 
 function formatPlayedAt(value: string) {
   return new Intl.DateTimeFormat(undefined, {
@@ -30,7 +31,9 @@ function ResultHistory() {
 
         <Match when={resultsQuery.error}>
           <div class="rounded-lg bg-[var(--sub-alt)] px-4 py-4 text-sm text-[var(--error)]">
-            {resultsQuery.error instanceof Error
+            {resultsQuery.error instanceof ApiClientError
+              ? resultsQuery.error.message
+              : resultsQuery.error instanceof Error
               ? resultsQuery.error.message
               : 'Unable to load results.'}
           </div>

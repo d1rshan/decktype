@@ -3,12 +3,9 @@ import {
   insertResult,
 } from './repository'
 import { serializeGameResult } from './serializers'
-import type {
-  CreateGameResultInput,
-  ListUserResultsFilters,
-} from './types'
+import type { CreateResultInput, ListUserResultsFilters } from './schema'
 
-export const createResult = async (input: CreateGameResultInput) => {
+export const createResult = async (input: CreateResultInput) => {
   const result = await insertResult(input)
 
   return serializeGameResult(result)
