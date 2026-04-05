@@ -1,4 +1,4 @@
-import type { Theme } from '@/themes/types'
+import type { Theme } from '@/features/content/themes/types'
 
 export function applyTheme(theme: Theme) {
   const root = document.documentElement

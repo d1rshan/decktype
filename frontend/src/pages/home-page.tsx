@@ -1,9 +1,10 @@
 import { createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import GameSelector from '@/components/game-selector'
-import { getGameById } from '@/games/get-game-by-id'
-import type { GameId } from '@/games/types'
-import type { WordBankId } from '@/word-banks/types'
+
+import GameSelector from '@/features/games/components/game-selector'
+import { getGameById } from '@/features/games/get-game-by-id'
+import type { GameId } from '@/features/games/types'
+import type { WordBankId } from '@/features/content/word-banks/types'
 
 type HomePageProps = {
   selectedGameId: GameId | null
