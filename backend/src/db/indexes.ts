@@ -1,4 +1,7 @@
-import { resultsCollection } from './collections'
+import {
+  leaderboardCollection,
+  resultsCollection,
+} from './collections'
 
 const ensureResultsIndexes = async () => {
   await resultsCollection.createIndexes([
@@ -13,6 +16,21 @@ const ensureResultsIndexes = async () => {
   ])
 }
 
+const ensureLeaderboardIndexes = async () => {
+  await leaderboardCollection.createIndexes([
+    {
+      key: { gameId: 1, difficulty: 1, userId: 1 },
+      unique: true,
+      name: 'game_difficulty_user_unique',
+    },
+    {
+      key: { gameId: 1, difficulty: 1, bestScore: -1, bestResultAt: 1 },
+      name: 'game_difficulty_best_score_desc',
+    },
+  ])
+}
+
 export const ensureDatabaseIndexes = async () => {
   await ensureResultsIndexes()
+  await ensureLeaderboardIndexes()
 }

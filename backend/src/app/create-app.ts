@@ -2,6 +2,7 @@ import { Elysia } from 'elysia'
 
 import { authRoutes } from '../features/auth/routes'
 import { authPlugin } from '../features/auth/plugin'
+import { leaderboardRoutes } from '../features/leaderboard/routes'
 import { resultRoutes } from '../features/results/routes'
 import { corsPlugin } from './plugins/cors'
 import { errorHandlerPlugin } from './plugins/error-handler'
@@ -18,6 +19,7 @@ export const app = new Elysia()
     ok: true,
   }))
   .use(authRoutes)
+  .use(leaderboardRoutes)
   .use(resultRoutes)
 
 export type App = typeof app

@@ -1,11 +1,11 @@
 import type { Filter } from 'mongodb'
 
 import { resultsCollection } from '../../db/collections'
-import type { GameResultDocument } from '../../db/collections'
+import type { ResultDocument } from '../../db/collections'
 import type { CreateResultInput, ListUserResultsFilters } from './schema'
 
 export const insertResult = async (input: CreateResultInput) => {
-  const document: GameResultDocument = {
+  const document: ResultDocument = {
     ...input,
     createdAt: new Date(),
   }
@@ -19,7 +19,7 @@ export const insertResult = async (input: CreateResultInput) => {
 }
 
 export const findResultsByUser = async (filters: ListUserResultsFilters) => {
-  const query: Filter<GameResultDocument> = {
+  const query: Filter<ResultDocument> = {
     userId: filters.userId,
     ...(filters.gameId ? { gameId: filters.gameId } : {}),
   }

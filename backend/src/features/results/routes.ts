@@ -13,12 +13,17 @@ export const resultRoutes = new Elysia({ prefix: '/api/results' })
     '/',
     async ({ body, request: { headers }, set }) => {
       const { user } = await requireSession(headers)
-      const result = await createResult({
-        userId: user.id,
-        gameId: body.gameId,
-        score: body.score,
-        difficulty: body.difficulty,
-      })
+      const displayName = user.name?.trim() || user.email || user.id
+
+      const result = await createResult(
+        {
+          userId: user.id,
+          gameId: body.gameId,
+          score: body.score,
+          difficulty: body.difficulty,
+        },
+        { displayName },
+      )
 
       set.status = 201
 

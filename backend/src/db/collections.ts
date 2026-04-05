@@ -2,7 +2,7 @@ import type { Collection } from 'mongodb'
 
 import { db } from './client'
 
-export type GameResultDocument = {
+export type ResultDocument = {
   userId: string
   gameId: string
   score: number
@@ -10,5 +10,17 @@ export type GameResultDocument = {
   createdAt: Date
 }
 
-export const resultsCollection: Collection<GameResultDocument> =
-  db.collection<GameResultDocument>('typing_results')
+export type LeaderboardDocument = {
+  userId: string
+  displayName: string
+  gameId: string
+  difficulty: string
+  bestScore: number
+  bestResultAt: Date
+}
+
+export const resultsCollection: Collection<ResultDocument> =
+  db.collection<ResultDocument>('results')
+
+export const leaderboardCollection: Collection<LeaderboardDocument> =
+  db.collection<LeaderboardDocument>('leaderboard')
