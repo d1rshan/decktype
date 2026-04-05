@@ -1,5 +1,27 @@
 import { t } from 'elysia'
 
+export type CreateResultInput = {
+  userId: string
+  gameId: string
+  score: number
+  difficulty: string
+}
+
+export type ListUserResultsFilters = {
+  userId: string
+  gameId?: string
+  limit: number
+}
+
+export type ResultResponse = {
+  id: string
+  userId: string
+  gameId: string
+  score: number
+  difficulty: string
+  createdAt: string
+}
+
 export const createResultBodySchema = t.Object({
   gameId: t.String({ minLength: 1 }),
   score: t.Number(),

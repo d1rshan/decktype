@@ -1,10 +1,11 @@
 import type { ObjectId, WithId } from 'mongodb'
 
-import type { GameResultDocument, GameResultResponse } from './types'
+import type { GameResultDocument } from '../../db/collections'
+import type { ResultResponse } from './schema'
 
 export const serializeGameResult = (
   result: WithId<GameResultDocument> | (GameResultDocument & { _id: ObjectId }),
-): GameResultResponse => ({
+): ResultResponse => ({
   id: result._id.toString(),
   userId: result.userId,
   gameId: result.gameId,
