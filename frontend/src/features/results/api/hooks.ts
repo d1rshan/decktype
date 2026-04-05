@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/solid-query'
 import type { Accessor } from 'solid-js'
 
+import { toastApiError } from '@/lib/api-client'
+import { toast } from '@/lib/toast'
+
 import {
   createResultMutationOptions,
   myResultsQueryOptions,
@@ -29,9 +32,15 @@ export const useCreateResultMutation = () => {
 
   return useMutation(() => ({
     ...createResultMutationOptions(),
-    onSuccess: () =>
-      client.invalidateQueries({
+    onSuccess: () => {
+      toast.success('Result saved.')
+
+      return client.invalidateQueries({
         queryKey: resultKeys.all,
-      }),
+      })
+    },
+    onError: (error) => {
+      toastApiError(error, 'Unable to save result.')
+    },
   }))
 }

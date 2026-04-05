@@ -1,4 +1,4 @@
-import { api, unwrapEdenResponse } from '@/lib/api/client'
+import { api, request } from '@/lib/api-client'
 
 import type { CreateResultInput } from './contract'
 
@@ -10,22 +10,18 @@ export const resultKeys = {
 
 export const myResultsQueryOptions = (gameId?: string, limit = 20) => ({
   queryKey: resultKeys.mine(gameId, limit),
-  queryFn: async () => {
-    const response = await api.results.me.get({
+  queryFn: () =>
+    request(
+      api.results.me.get({
       $query: {
         ...(gameId ? { gameId } : {}),
         limit,
       },
-    })
-
-    return unwrapEdenResponse(response)
-  },
+      }),
+    ),
 })
 
 export const createResultMutationOptions = () => ({
-  mutationFn: async (input: CreateResultInput) => {
-    const response = await api.results.post(input)
-
-    return unwrapEdenResponse(response)
-  },
+  mutationFn: (input: CreateResultInput) =>
+    request(api.results.post(input)),
 })

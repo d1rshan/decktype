@@ -14,6 +14,7 @@
   --sub: #646669;
   --sub-alt: #2c2e31;
   --text: #d1d0c5;
+  --success: #7abf5a;
   --error: #ca4754;
   --error-extra: #791717;
   --colorful-error: #ca4754;
@@ -67,4 +68,20 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--sub);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast-enter {
+  animation: toast-in 180ms ease-out;
 }

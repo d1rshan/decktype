@@ -1,7 +1,8 @@
 import { edenTreaty } from '@elysiajs/eden'
 import type { Elysia } from 'elysia'
 
-import type { App } from '../../../../backend/src/app/create-app.ts'
+import type { App } from '../../../backend/src/app/create-app.ts'
+import { toast } from '@/lib/toast'
 
 type AppContract = Elysia<any, any, any, any, App['~Routes'], any, any>
 
@@ -72,14 +73,17 @@ export class ApiClientError extends Error {
   readonly code?: string
   readonly causeValue: unknown
 
-  constructor(error: EdenFailure['error']) {
-    super(getApiErrorMessage(error))
-    const body = getApiErrorBody(error)
+  constructor(error: EdenFailure['error'] | { message: string; causeValue: unknown }) {
+    super('status' in error ? getApiErrorMessage(error) : error.message)
+    const body = 'status' in error ? getApiErrorBody(error) : null
 
     this.name = 'ApiClientError'
-    this.status = typeof error.status === 'number' ? error.status : undefined
+    this.status =
+      'status' in error && typeof error.status === 'number'
+        ? error.status
+        : undefined
     this.code = typeof body?.code === 'string' ? body.code : undefined
-    this.causeValue = error.value
+    this.causeValue = 'status' in error ? error.value : error.causeValue
   }
 }
 
@@ -91,4 +95,54 @@ export const unwrapEdenResponse = <T>(
   }
 
   return response.data
+}
+
+export const request = async <T>(
+  promise: Promise<EdenSuccess<T> | EdenFailure>,
+) => {
+  try {
+    const response = await promise
+
+    return unwrapEdenResponse(response)
+  } catch (error) {
+    if (error instanceof ApiClientError) {
+      throw error
+    }
+
+    if (error instanceof Error) {
+      throw new ApiClientError({
+        message: 'Unable to reach the server.',
+        causeValue: error,
+      })
+    }
+
+    throw new ApiClientError({
+      message: 'Unable to reach the server.',
+      causeValue: error,
+    })
+  }
+}
+
+export const getErrorMessage = (error: unknown, fallback: string) => {
+  if (error instanceof ApiClientError) {
+    return error.message
+  }
+
+  if (error instanceof Error && error.message.trim()) {
+    return error.message
+  }
+
+  if (typeof error === 'string' && error.trim()) {
+    return error
+  }
+
+  return fallback
+}
+
+export const toastApiError = (error: unknown, fallback: string) => {
+  const message = getErrorMessage(error, fallback)
+
+  toast.error(message)
+
+  return message
 }

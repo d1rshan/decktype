@@ -1,4 +1,5 @@
 import { createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
+import ToastRegion from '@/app/components/toast-region'
 import Commandline from '@/features/commandline/components/commandline'
 import { games } from '@/features/games/registry'
 import AboutPage from '@/pages/about-page'
@@ -180,6 +181,7 @@ function App() {
         onSelectTheme={selectTheme}
         onPreviewTheme={previewTheme}
       />
+      <ToastRegion />
       <div class="mx-auto flex min-h-screen w-full flex-col px-24 py-8">
         <header class="mb-8 flex items-center justify-between">
           <div class="flex items-baseline gap-10">
