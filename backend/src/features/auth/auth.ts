@@ -1,8 +1,8 @@
 import { mongodbAdapter } from '@better-auth/mongo-adapter'
 import { betterAuth } from 'better-auth'
 
-import { db, mongoClient } from './db'
-import { env } from './env'
+import { env } from '../../config/env'
+import { db, mongoClient } from '../../db/client'
 
 export const auth = betterAuth({
   secret: env.betterAuthSecret,

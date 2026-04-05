@@ -1,6 +1,6 @@
 import { Db, MongoClient } from 'mongodb'
 
-import { env } from './env'
+import { env } from '../config/env'
 
 const globalMongo = globalThis as typeof globalThis & {
   __dkMongoClient?: MongoClient

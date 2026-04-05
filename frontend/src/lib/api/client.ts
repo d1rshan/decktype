@@ -1,7 +1,7 @@
 import { edenTreaty } from '@elysiajs/eden'
 import type { Elysia } from 'elysia'
 
-import type { App } from '../../../../backend/app.ts'
+import type { App } from '../../../../backend/src/app/create-app.ts'
 
 type AppContract = Elysia<any, any, any, any, App['~Routes'], any, any>
 
