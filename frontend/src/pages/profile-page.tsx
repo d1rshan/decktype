@@ -24,10 +24,14 @@ function ProfilePage(props: ProfilePageProps) {
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null)
 
   const isAuthenticated = createMemo(() => Boolean(session().data?.user))
+  const isSessionLoading = createMemo(() => session().isPending)
   const profileResultsQuery = useMyResultsQuery({
     enabled: isAuthenticated,
     limit: () => 100,
   })
+  const isPageLoading = createMemo(
+    () => isSessionLoading() || (isAuthenticated() && profileResultsQuery.isPending),
+  )
 
   const profileStats = createMemo(() => {
     const results = profileResultsQuery.data ?? []
@@ -173,7 +177,19 @@ function ProfilePage(props: ProfilePageProps) {
   return (
     <div class="flex w-full min-h-[72vh] flex-1">
       <Show
-        when={isAuthenticated()}
+        when={!isPageLoading()}
+        fallback={(
+          <div class="flex w-full items-center justify-center py-20">
+            <div
+              class="h-8 w-8 animate-spin rounded-full border-2 border-[var(--sub)]/35 border-t-[var(--main)]"
+              aria-label="Loading profile"
+              role="status"
+            />
+          </div>
+        )}
+      >
+        <Show
+          when={isAuthenticated()}
         fallback={(
           <div class="grid w-full items-start gap-6 lg:grid-cols-2">
             <form
@@ -289,8 +305,8 @@ function ProfilePage(props: ProfilePageProps) {
             </form>
           </div>
         )}
-      >
-        <div class="w-full space-y-6">
+        >
+          <div class="w-full space-y-6">
           <section class="rounded-xl bg-[var(--sub-alt)]/32 p-5 ring-1 ring-[var(--sub)]/14">
             <div class="flex flex-wrap items-start justify-between gap-5 border-b border-[var(--sub)]/20 pb-5">
               <div>
@@ -414,7 +430,8 @@ function ProfilePage(props: ProfilePageProps) {
               <div class="text-sm text-[var(--error)]">{message()}</div>
             )}
           </Show>
-        </div>
+          </div>
+        </Show>
       </Show>
     </div>
   )

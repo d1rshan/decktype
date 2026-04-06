@@ -20,4 +20,4 @@ export type FallingWord = {
   angularVelocity: number
 }
 
-export type GamePhase = 'idle' | 'running' | 'game-over'
+export type GamePhase = 'idle' | 'running' | 'paused' | 'game-over'

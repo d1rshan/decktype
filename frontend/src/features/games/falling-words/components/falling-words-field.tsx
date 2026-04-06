@@ -59,6 +59,23 @@ function FallingWordsField(props: FallingWordsFieldProps) {
         </div>
       )}
 
+      {props.phase === 'paused' && (
+        <div class="absolute inset-0 z-20 flex items-center justify-center bg-[var(--bg)]/30 backdrop-blur-[2px]">
+          <div class="text-center">
+            <p class="text-[10px] font-bold tracking-[0.5em] text-[var(--sub)] uppercase">
+              paused
+            </p>
+            <p class="mt-4 text-6xl font-bold tracking-tighter text-[var(--main)] sm:text-7xl">
+              {props.score}
+            </p>
+            <div class="mt-10 flex items-center justify-center gap-2 text-sm text-[var(--sub)]">
+              <span class="rounded bg-[var(--sub-alt)] px-2 py-1 text-xs">enter</span>
+              <span>to resume</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {props.words.map((word) => {
         const isFocused = word.id === focusedWordId()
         const isPrefixMatch =

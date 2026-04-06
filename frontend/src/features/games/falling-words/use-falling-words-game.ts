@@ -38,6 +38,7 @@ export function useFallingWordsGame(
   let lastFrameTime = 0
   let lastSpawnTime = 0
   let runStartTime = 0
+  let elapsedBeforeRun = 0
 
   const [phase, setPhase] = createSignal<GamePhase>('idle')
   const [difficulty, setDifficulty] = createSignal<DifficultyKey>('easy')
@@ -50,6 +51,14 @@ export function useFallingWordsGame(
 
   const selectedDifficulty = createMemo(() => getDifficulty(difficulty()))
   const score = createMemo(() => formatScore(elapsedMs()))
+
+  const getElapsedMsNow = () => {
+    if (phase() === 'running' && runStartTime > 0) {
+      return elapsedBeforeRun + (performance.now() - runStartTime)
+    }
+
+    return elapsedBeforeRun
+  }
 
   const stopLoop = () => {
     if (animationFrame) {
@@ -99,6 +108,7 @@ export function useFallingWordsGame(
     lastFrameTime = 0
     lastSpawnTime = 0
     runStartTime = 0
+    elapsedBeforeRun = 0
     setIsTabPressed(false)
   }
 
@@ -107,14 +117,42 @@ export function useFallingWordsGame(
     resetGame(difficulty())
     setPhase('running')
     runStartTime = performance.now()
+    elapsedBeforeRun = 0
     lastFrameTime = runStartTime
     lastSpawnTime = runStartTime
     spawnWord()
   }
 
-  const endGame = (finalScore: number) => {
+  const pauseGame = () => {
+    if (phase() !== 'running') {
+      return
+    }
+
+    elapsedBeforeRun = getElapsedMsNow()
+    setElapsedMs(elapsedBeforeRun)
+    stopLoop()
+    setPhase('paused')
+    setIsTabPressed(false)
+  }
+
+  const resumeGame = () => {
+    if (phase() !== 'paused') {
+      return
+    }
+
+    runStartTime = performance.now()
+    lastFrameTime = runStartTime
+    lastSpawnTime = runStartTime
+    setPhase('running')
+    focusInput()
+  }
+
+  const endGame = () => {
+    const finalElapsedMs = getElapsedMsNow()
+    const finalScore = formatScore(finalElapsedMs)
     setPhase('game-over')
     stopLoop()
+    setElapsedMs(finalElapsedMs)
     void options.onComplete?.({
       gameId: 'falling-words',
       score: finalScore,
@@ -137,7 +175,7 @@ export function useFallingWordsGame(
   }
 
   const handleDifficultyChange = (nextDifficulty: DifficultyKey) => {
-    if (phase() === 'running') {
+    if (phase() === 'running' || phase() === 'paused') {
       resetGame(nextDifficulty)
       return
     }
@@ -186,6 +224,12 @@ export function useFallingWordsGame(
         return
       }
 
+      if (phase() === 'paused') {
+        event.preventDefault()
+        resumeGame()
+        return
+      }
+
       event.preventDefault()
       submitExactMatch(currentInput())
     }
@@ -208,6 +252,22 @@ export function useFallingWordsGame(
     }
   }
 
+  const handleVisibilityChange = () => {
+    if (!document.hidden || phase() !== 'running') {
+      return
+    }
+
+    pauseGame()
+  }
+
+  const handleWindowBlur = () => {
+    if (phase() !== 'running') {
+      return
+    }
+
+    pauseGame()
+  }
+
   createEffect(() => {
     if (phase() !== 'running') {
       stopLoop()
@@ -217,7 +277,7 @@ export function useFallingWordsGame(
     const tick = (timestamp: number) => {
       const deltaSeconds = Math.min((timestamp - lastFrameTime) / 1000, 0.032)
       lastFrameTime = timestamp
-      setElapsedMs(timestamp - runStartTime)
+      setElapsedMs(elapsedBeforeRun + (timestamp - runStartTime))
 
       const difficultyConfig = selectedDifficulty()
 
@@ -239,7 +299,7 @@ export function useFallingWordsGame(
           const nextY = word.y + nextVelocityY * deltaSeconds
           const nextRotation = word.rotation + word.angularVelocity * deltaSeconds
 
-          if (fieldHeight() > 0 && nextY >= fieldHeight() - 40 && word.y < fieldHeight()) {
+          if (fieldHeight() > 0 && nextY >= fieldHeight() - 40) {
             hitBottom = true
           }
 
@@ -255,7 +315,7 @@ export function useFallingWordsGame(
       )
 
       if (hitBottom) {
-        endGame(formatScore(timestamp - runStartTime))
+        endGame()
         return
       }
 
@@ -284,10 +344,14 @@ export function useFallingWordsGame(
     }
 
     window.addEventListener('keyup', handleKeyUp)
+    window.addEventListener('blur', handleWindowBlur)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     onCleanup(() => {
       observer.disconnect()
       window.removeEventListener('keyup', handleKeyUp)
+      window.removeEventListener('blur', handleWindowBlur)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     })
   })
 
