@@ -17,7 +17,7 @@ function CommandlineList(props: CommandlineListProps) {
       <Show
         when={props.items.length > 0}
         fallback={(
-          <div class="px-4 py-6 text-center text-[var(--sub)]">
+          <div class="px-4 py-6 text-center text-(--sub)">
             no results...
           </div>
         )}

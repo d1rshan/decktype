@@ -34,10 +34,10 @@ function ToastRegion() {
             class={`toast-enter pointer-events-auto rounded-xl border px-3 py-2.5 backdrop-blur-sm ${variantUi[item.variant].frameClass}`}
           >
             <div class="min-w-0">
-              <div class={`text-sm leading-none font-semibold ${variantUi[item.variant].titleClass}`}>
+              <div class={`t-body leading-none font-semibold ${variantUi[item.variant].titleClass}`}>
                   {variantUi[item.variant].label}
               </div>
-              <div class="mt-1 text-sm leading-5 font-medium">
+              <div class="t-body mt-1 leading-5 font-medium">
                 {item.title}
               </div>
             </div>

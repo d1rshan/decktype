@@ -29,7 +29,7 @@ function FallingWordsView(props: GameViewProps) {
 
   if (!session.wordBank) {
     return (
-      <div class="rounded-[2rem] border border-[var(--sub-alt)] bg-[var(--sub-alt)]/40 p-8 text-[var(--sub)] backdrop-blur-xl">
+      <div class="rounded-[2rem] border border-(--sub-alt) bg-(--sub-alt)/40 p-8 text-(--sub) backdrop-blur-xl">
         Missing word bank for this game.
       </div>
     )
@@ -43,14 +43,14 @@ function FallingWordsView(props: GameViewProps) {
           onChange={session.handleDifficultyChange}
         />
 
-        <div class="flex items-center gap-6 text-[var(--sub)]">
+        <div class="flex items-center gap-6 text-(--sub)">
           <div class="flex items-center gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="opacity-50">
               <circle cx="12" cy="12" r="10" />
               <path d="M2 12h20" />
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
             </svg>
-            <span class="text-[10px] font-bold uppercase tracking-widest">
+            <span class="t-label font-bold uppercase tracking-widest">
               {session.wordBank.label}
             </span>
           </div>
@@ -59,14 +59,14 @@ function FallingWordsView(props: GameViewProps) {
               <path d="M6 12h.01M9 9h.01M15 9h.01M18 12h.01M12 15h.01" />
               <rect width="20" height="12" x="2" y="6" rx="2" />
             </svg>
-            <span class="text-[10px] font-bold uppercase tracking-widest">
+            <span class="t-label font-bold uppercase tracking-widest">
               {fallingWordsGameMeta.name.toLowerCase()}
             </span>
           </div>
         </div>
       </div>
 
-      <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-[var(--sub-alt)]/10 transition-all hover:bg-[var(--sub-alt)]/20">
+      <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20">
         <FallingWordsField
           ref={session.setFieldRef}
           words={session.activeWords()}

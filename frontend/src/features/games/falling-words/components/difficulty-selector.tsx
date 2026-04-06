@@ -9,15 +9,15 @@ type DifficultySelectorProps = {
 
 function DifficultySelector(props: DifficultySelectorProps) {
   return (
-    <div class="flex items-center gap-1 rounded-xl bg-[var(--sub-alt)] px-2 py-1.5 text-[11px] font-bold uppercase tracking-widest transition-all">
+    <div class="t-label-strong flex items-center gap-1 rounded-xl bg-(--sub-alt) px-2 py-1.5 font-bold uppercase tracking-widest transition-all">
       {difficultyOptions.map((option) => (
         <button
           type="button"
           class={cn(
             'rounded-md px-4 py-2 uppercase',
             option.key === props.activeDifficulty
-              ? 'text-[var(--text)]'
-              : 'text-[var(--sub)] hover:text-[var(--text)]',
+              ? 'text-(--text)'
+              : 'text-(--sub) hover:text-(--text)',
           )}
           onClick={() => props.onChange(option.key)}
         >

@@ -163,7 +163,7 @@ function App() {
   })
 
   return (
-    <div class="relative min-h-screen bg-[var(--bg)] font-mono text-[var(--text)]">
+    <div class="relative min-h-screen bg-(--bg) font-mono text-(--text)">
       <Commandline
         isOpen={isCommandlineOpen()}
         currentPath={currentLocation().path}
@@ -186,17 +186,17 @@ function App() {
               class="flex items-center group"
               onClick={goHome}
             >
-              <span class="text-2xl font-bold tracking-tight text-[var(--text)]">decktype</span>
+              <span class="t-title font-bold tracking-tight text-(--text)">decktype</span>
             </button>
 
-            <nav class="flex items-center gap-8 text-sm">
+            <nav class="t-body flex items-center gap-8">
               {primaryRoutes.map((route) => {
                 const isActive = currentLocation().path === route.path
 
                 return (
                   <button
                     type="button"
-                    class={`transition ${isActive ? 'text-[var(--main)]' : 'text-[var(--sub)] hover:text-[var(--text)]'
+                    class={`transition ${isActive ? 'text-(--main)' : 'text-(--sub) hover:text-(--text)'
                       }`}
                     onClick={() => navigate(route.path)}
                   >
@@ -207,10 +207,10 @@ function App() {
             </nav>
           </div>
 
-          <div class="flex items-center text-[var(--sub)]">
-            <button type="button" class="flex items-center gap-2 hover:text-[var(--text)] transition" onClick={() => navigate('/profile')}>
+          <div class="flex items-center text-(--sub)">
+            <button type="button" class="flex items-center gap-2 hover:text-(--text) transition" onClick={() => navigate('/profile')}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-              <span class="max-w-32 truncate text-xs font-bold uppercase tracking-widest">{currentUserLabel()}</span>
+              <span class="t-caption max-w-32 truncate font-bold uppercase tracking-widest">{currentUserLabel()}</span>
             </button>
           </div>
         </header>
@@ -219,14 +219,14 @@ function App() {
           {currentPage()}
         </main>
 
-        <footer class="mt-8 flex items-center justify-between text-xs text-[var(--sub)]">
+        <footer class="t-caption mt-8 flex items-center justify-between text-(--sub)">
           <div class="flex items-center gap-4">
-            <a href="#" class="hover:text-[var(--text)]">
+            <a href="#" class="hover:text-(--text)">
               contact
             </a>
-            <a href="#" class="hover:text-[var(--text)]">support</a>
-            <a href="#" class="hover:text-[var(--text)]">github</a>
-            <a href="#" class="hover:text-[var(--text)]">discord</a>
+            <a href="#" class="hover:text-(--text)">support</a>
+            <a href="#" class="hover:text-(--text)">github</a>
+            <a href="#" class="hover:text-(--text)">discord</a>
           </div>
           <span>v1.0.0</span>
         </footer>

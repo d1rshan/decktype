@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:typography": "sh -c '! rg -n \"text-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)\\\\b|text-\\\\[[0-9]\" src -g \"*.tsx\"'"
   },
   "dependencies": {
     "@elysiajs/eden": "^1.4.9",

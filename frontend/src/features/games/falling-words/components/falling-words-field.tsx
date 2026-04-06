@@ -25,33 +25,33 @@ function FallingWordsField(props: FallingWordsFieldProps) {
   return (
     <div
       ref={props.ref}
-      class="absolute inset-0 z-0 h-full w-full cursor-text overflow-hidden bg-[var(--bg)]"
+      class="absolute inset-0 z-0 h-full w-full cursor-text overflow-hidden bg-(--bg)"
       onClick={props.onFieldClick}
     >
       {props.phase === 'idle' && (
         <div class="absolute inset-0 flex items-center justify-center p-6 text-center">
-          <div class="flex items-center gap-2 text-sm text-[var(--sub)]">
-            <span class="rounded bg-[var(--sub-alt)] px-2 py-1 text-xs">enter</span>
+          <div class="t-body flex items-center gap-2 text-(--sub)">
+            <span class="t-caption rounded bg-(--sub-alt) px-2 py-1">enter</span>
             <span>to start</span>
           </div>
         </div>
       )}
 
       {props.phase === 'game-over' && (
-        <div class="absolute inset-0 z-20 flex items-center justify-center bg-[var(--bg)]/90 backdrop-blur-sm">
+        <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/90 backdrop-blur-sm">
           <div class="text-center">
-            <p class="text-[10px] font-bold tracking-[0.5em] text-[var(--sub)] uppercase">
+            <p class="t-label font-bold tracking-[0.5em] text-(--sub) uppercase">
               final score
             </p>
-            <p class="mt-4 text-8xl font-bold tracking-tighter text-[var(--main)] sm:text-9xl">
+            <p class="t-display-hero mt-4 font-bold tracking-tighter text-(--main)">
               {props.score}
             </p>
             <div class="mt-12 flex flex-col items-center gap-4">
-              <div class="flex items-center gap-2 text-sm text-[var(--sub)]">
-                <span class="rounded bg-[var(--sub-alt)] px-2 py-1 text-xs">enter</span>
+              <div class="t-body flex items-center gap-2 text-(--sub)">
+                <span class="t-caption rounded bg-(--sub-alt) px-2 py-1">enter</span>
                 <span>to restart</span>
               </div>
-              <p class="text-[10px] tracking-widest text-[var(--sub)] uppercase opacity-50">
+              <p class="t-label tracking-widest text-(--sub) uppercase opacity-50">
                 esc to reset
               </p>
             </div>
@@ -60,16 +60,16 @@ function FallingWordsField(props: FallingWordsFieldProps) {
       )}
 
       {props.phase === 'paused' && (
-        <div class="absolute inset-0 z-20 flex items-center justify-center bg-[var(--bg)]/30 backdrop-blur-[2px]">
+        <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/30 backdrop-blur-[2px]">
           <div class="text-center">
-            <p class="text-[10px] font-bold tracking-[0.5em] text-[var(--sub)] uppercase">
+            <p class="t-label font-bold tracking-[0.5em] text-(--sub) uppercase">
               paused
             </p>
-            <p class="mt-4 text-6xl font-bold tracking-tighter text-[var(--main)] sm:text-7xl">
+            <p class="t-display-score mt-4 font-bold tracking-tighter text-(--main)">
               {props.score}
             </p>
-            <div class="mt-10 flex items-center justify-center gap-2 text-sm text-[var(--sub)]">
-              <span class="rounded bg-[var(--sub-alt)] px-2 py-1 text-xs">enter</span>
+            <div class="t-body mt-10 flex items-center justify-center gap-2 text-(--sub)">
+              <span class="t-caption rounded bg-(--sub-alt) px-2 py-1">enter</span>
               <span>to resume</span>
             </div>
           </div>
@@ -87,14 +87,14 @@ function FallingWordsField(props: FallingWordsFieldProps) {
 
         return (
           <div
-            class={`absolute font-mono text-2xl tracking-tight transition-all duration-150 ${
+            class={`t-word absolute font-mono tracking-tight transition-all duration-150 ${
               isExactMatch
-                ? 'text-[var(--main)]'
+                ? 'text-(--main)'
                 : isFocused
-                  ? 'text-[var(--text)]'
+                  ? 'text-(--text)'
                   : isPrefixMatch
-                    ? 'text-[var(--text)] opacity-60'
-                    : 'text-[var(--sub)] opacity-40'
+                    ? 'text-(--text) opacity-60'
+                    : 'text-(--sub) opacity-40'
             }`}
             style={{
               transform: `translate(${word.x}px, ${word.y}px) rotate(${word.rotation}deg)`,
@@ -109,14 +109,14 @@ function FallingWordsField(props: FallingWordsFieldProps) {
                   <span
                     class={`relative transition-colors duration-200 ${
                       isTyped
-                        ? 'text-[var(--main)]'
+                        ? 'text-(--main)'
                         : isCaretSlot
-                          ? 'text-[var(--text)]'
+                          ? 'text-(--text)'
                           : 'text-inherit'
                     }`}
                   >
                     {isCaretSlot && (
-                      <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-[var(--main)] animate-pulse" />
+                      <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--main) animate-pulse" />
                     )}
                     {character}
                   </span>
@@ -124,7 +124,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
               })}
 
               {isFocused && typedLength === characters.length && (
-                <span class="ml-[1px] h-[1em] w-[2px] bg-[var(--main)] animate-pulse" />
+                <span class="ml-[1px] h-[1em] w-[2px] bg-(--main) animate-pulse" />
               )}
             </span>
           </div>

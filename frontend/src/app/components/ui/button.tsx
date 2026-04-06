@@ -12,15 +12,15 @@ type ButtonProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClassMap: Record<ButtonVariant, string> = {
   solid:
-    'bg-[color:color-mix(in_srgb,var(--sub-alt)_90%,var(--bg))] text-[var(--sub)] hover:text-[var(--text)]',
+    'bg-[color:color-mix(in_srgb,var(--sub-alt)_90%,var(--bg))] text-(--sub) hover:text-(--text)',
   outline:
-    'border border-[var(--sub)]/35 text-[var(--sub)] hover:text-[var(--text)]',
-  ghost: 'text-[var(--sub)] hover:text-[var(--text)]',
+    'border border-(--sub)/35 text-(--sub) hover:text-(--text)',
+  ghost: 'text-(--sub) hover:text-(--text)',
 }
 
 const sizeClassMap: Record<ButtonSize, string> = {
-  md: 'px-4 py-2 text-base',
-  lg: 'px-4 py-3 text-lg',
+  md: 'px-4 py-2 t-input',
+  lg: 'px-4 py-3 t-button-lg',
 }
 
 function Button(props: ButtonProps) {

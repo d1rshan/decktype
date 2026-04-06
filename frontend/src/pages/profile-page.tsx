@@ -100,7 +100,7 @@ function ProfilePage(props: ProfilePageProps) {
         fallback={(
           <div class="flex w-full items-center justify-center py-20">
             <div
-              class="h-8 w-8 animate-spin rounded-full border-2 border-[var(--sub)]/35 border-t-[var(--main)]"
+              class="h-8 w-8 animate-spin rounded-full border-2 border-(--sub)/35 border-t-(--main)"
               aria-label="Loading profile"
               role="status"
             />
@@ -114,29 +114,29 @@ function ProfilePage(props: ProfilePageProps) {
         )}
         >
           <div class="w-full space-y-6">
-          <section class="rounded-xl bg-[var(--sub-alt)]/32 p-5 ring-1 ring-[var(--sub)]/14">
-            <div class="flex flex-wrap items-start justify-between gap-5 border-b border-[var(--sub)]/20 pb-5">
+          <section class="rounded-xl bg-(--sub-alt)/32 p-5 ring-1 ring-(--sub)/14">
+            <div class="flex flex-wrap items-start justify-between gap-5 border-b border-(--sub)/20 pb-5">
               <div>
-                <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--sub)]">
+                <div class="t-label font-semibold uppercase tracking-[0.16em] text-(--sub)">
                   profile
                 </div>
-                <div class="mt-2 text-4xl leading-none text-[var(--text)]">
+                <div class="t-metric-lg mt-2 text-(--text)">
                   {session().data?.user.name}
                 </div>
-                <div class="mt-2 text-sm text-[var(--sub)]">{session().data?.user.email}</div>
+                <div class="t-body mt-2 text-(--sub)">{session().data?.user.email}</div>
               </div>
 
-              <div class="flex flex-wrap items-center gap-3 text-sm">
+              <div class="t-body flex flex-wrap items-center gap-3">
                 <button
                   type="button"
-                  class="rounded-md border border-[var(--sub)]/35 px-3 py-1.5 text-[var(--sub)] transition hover:text-[var(--text)]"
+                  class="rounded-md border border-(--sub)/35 px-3 py-1.5 text-(--sub) transition hover:text-(--text)"
                   onClick={() => props.onNavigate('/')}
                 >
                   back home
                 </button>
                 <button
                   type="button"
-                  class="rounded-md border border-[var(--sub)]/35 px-3 py-1.5 text-[var(--sub)] transition hover:text-[var(--text)] disabled:cursor-not-allowed disabled:opacity-60"
+                  class="rounded-md border border-(--sub)/35 px-3 py-1.5 text-(--sub) transition hover:text-(--text) disabled:cursor-not-allowed disabled:opacity-60"
                   onClick={handleSignOut}
                   disabled={isSigningOut()}
                 >
@@ -146,23 +146,23 @@ function ProfilePage(props: ProfilePageProps) {
             </div>
 
             <div class="mt-5 grid gap-4 sm:grid-cols-3">
-              <div class="rounded-lg bg-[var(--sub-alt)]/55 px-4 py-4">
-                <div class="text-[10px] uppercase tracking-[0.14em] text-[var(--sub)]">tests started</div>
-                <div class="mt-2 text-4xl leading-none text-[var(--text)]">
+              <div class="rounded-lg bg-(--sub-alt)/55 px-4 py-4">
+                <div class="t-label uppercase tracking-[0.14em] text-(--sub)">tests started</div>
+                <div class="t-metric-lg mt-2 text-(--text)">
                   {profileResultsQuery.isPending ? '--' : profileStats().testsStarted}
                 </div>
               </div>
 
-              <div class="rounded-lg bg-[var(--sub-alt)]/55 px-4 py-4">
-                <div class="text-[10px] uppercase tracking-[0.14em] text-[var(--sub)]">tests completed</div>
-                <div class="mt-2 text-4xl leading-none text-[var(--text)]">
+              <div class="rounded-lg bg-(--sub-alt)/55 px-4 py-4">
+                <div class="t-label uppercase tracking-[0.14em] text-(--sub)">tests completed</div>
+                <div class="t-metric-lg mt-2 text-(--text)">
                   {profileResultsQuery.isPending ? '--' : profileStats().testsCompleted}
                 </div>
               </div>
 
-              <div class="rounded-lg bg-[var(--sub-alt)]/55 px-4 py-4">
-                <div class="text-[10px] uppercase tracking-[0.14em] text-[var(--sub)]">highest score</div>
-                <div class="mt-2 text-4xl leading-none text-[var(--text)]">
+              <div class="rounded-lg bg-(--sub-alt)/55 px-4 py-4">
+                <div class="t-label uppercase tracking-[0.14em] text-(--sub)">highest score</div>
+                <div class="t-metric-lg mt-2 text-(--text)">
                   {profileResultsQuery.isPending ? '--' : profileStats().highestScore}
                 </div>
               </div>
@@ -170,51 +170,51 @@ function ProfilePage(props: ProfilePageProps) {
           </section>
 
           <section class="grid gap-4 lg:grid-cols-2">
-            <div class="rounded-xl bg-[var(--sub-alt)]/32 p-5 ring-1 ring-[var(--sub)]/14">
-              <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--sub)]">
+            <div class="rounded-xl bg-(--sub-alt)/32 p-5 ring-1 ring-(--sub)/14">
+              <div class="t-label font-semibold uppercase tracking-[0.16em] text-(--sub)">
                 score stats
               </div>
 
               <div class="mt-4 grid gap-y-4 sm:grid-cols-2">
                 <div>
-                  <div class="text-xs text-[var(--sub)]">average score</div>
-                  <div class="mt-1 text-4xl leading-none text-[var(--text)]">
+                  <div class="t-caption text-(--sub)">average score</div>
+                  <div class="t-metric-lg mt-1 text-(--text)">
                     {profileResultsQuery.isPending ? '--' : profileStats().averageScore}
                   </div>
                 </div>
 
                 <div>
-                  <div class="text-xs text-[var(--sub)]">average score (last 10)</div>
-                  <div class="mt-1 text-4xl leading-none text-[var(--text)]">
+                  <div class="t-caption text-(--sub)">average score (last 10)</div>
+                  <div class="t-metric-lg mt-1 text-(--text)">
                     {profileResultsQuery.isPending ? '--' : profileStats().averageLastTen}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="rounded-xl bg-[var(--sub-alt)]/32 p-5 ring-1 ring-[var(--sub)]/14">
-              <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--sub)]">
+            <div class="rounded-xl bg-(--sub-alt)/32 p-5 ring-1 ring-(--sub)/14">
+              <div class="t-label font-semibold uppercase tracking-[0.16em] text-(--sub)">
                 difficulty split
               </div>
 
               <div class="mt-4 grid grid-cols-3 gap-4">
                 <div>
-                  <div class="text-xs uppercase tracking-[0.1em] text-[var(--sub)]">easy</div>
-                  <div class="mt-1 text-3xl leading-none text-[var(--text)]">
+                  <div class="t-caption uppercase tracking-[0.1em] text-(--sub)">easy</div>
+                  <div class="t-metric-md mt-1 text-(--text)">
                     {profileResultsQuery.isPending ? '--' : profileStats().easyCount}
                   </div>
                 </div>
 
                 <div>
-                  <div class="text-xs uppercase tracking-[0.1em] text-[var(--sub)]">medium</div>
-                  <div class="mt-1 text-3xl leading-none text-[var(--text)]">
+                  <div class="t-caption uppercase tracking-[0.1em] text-(--sub)">medium</div>
+                  <div class="t-metric-md mt-1 text-(--text)">
                     {profileResultsQuery.isPending ? '--' : profileStats().mediumCount}
                   </div>
                 </div>
 
                 <div>
-                  <div class="text-xs uppercase tracking-[0.1em] text-[var(--sub)]">hard</div>
-                  <div class="mt-1 text-3xl leading-none text-[var(--text)]">
+                  <div class="t-caption uppercase tracking-[0.1em] text-(--sub)">hard</div>
+                  <div class="t-metric-md mt-1 text-(--text)">
                     {profileResultsQuery.isPending ? '--' : profileStats().hardCount}
                   </div>
                 </div>
@@ -222,19 +222,19 @@ function ProfilePage(props: ProfilePageProps) {
             </div>
           </section>
 
-          <section class="rounded-xl bg-[var(--sub-alt)]/22 p-5 ring-1 ring-[var(--sub)]/10">
+          <section class="rounded-xl bg-(--sub-alt)/22 p-5 ring-1 ring-(--sub)/10">
             <ResultHistory />
           </section>
 
           <Show when={statusMessage()}>
             {(message) => (
-              <div class="text-sm text-[var(--main)]">{message()}</div>
+              <div class="t-body text-(--main)">{message()}</div>
             )}
           </Show>
 
           <Show when={errorMessage()}>
             {(message) => (
-              <div class="text-sm text-[var(--error)]">{message()}</div>
+              <div class="t-body text-(--error)">{message()}</div>
             )}
           </Show>
           </div>

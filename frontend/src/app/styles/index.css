@@ -19,6 +19,22 @@
   --error-extra: #791717;
   --colorful-error: #ca4754;
   --colorful-error-extra: #791717;
+
+  --fs-label: 0.625rem;
+  --fs-label-strong: 0.6875rem;
+  --fs-caption: 0.75rem;
+  --fs-body: 0.875rem;
+  --fs-input: 1rem;
+  --fs-button-lg: 1.125rem;
+  --fs-title: 1.5rem;
+  --fs-page-title: 2rem;
+  --fs-metric-md: 1.875rem;
+  --fs-metric-lg: 2.25rem;
+  --fs-display-sm: 3.75rem;
+  --fs-display-md: 4.5rem;
+  --fs-display-lg: 6rem;
+  --fs-display-xl: 8rem;
+  --fs-word: 1.5rem;
 }
 
 html, body {
@@ -84,4 +100,94 @@ button {
 
 .toast-enter {
   animation: toast-in 180ms ease-out;
+}
+
+.t-label {
+  font-size: var(--fs-label);
+  line-height: 1.1;
+}
+
+.t-label-strong {
+  font-size: var(--fs-label-strong);
+  line-height: 1.1;
+}
+
+.t-caption {
+  font-size: var(--fs-caption);
+  line-height: 1.25;
+}
+
+.t-body {
+  font-size: var(--fs-body);
+  line-height: 1.4;
+}
+
+.t-input {
+  font-size: var(--fs-input);
+  line-height: 1.4;
+}
+
+.t-button-lg {
+  font-size: var(--fs-button-lg);
+  line-height: 1.2;
+}
+
+.t-title {
+  font-size: var(--fs-title);
+  line-height: 1.2;
+}
+
+.t-page-title {
+  font-size: var(--fs-page-title);
+  line-height: 1.2;
+}
+
+.t-metric-md {
+  font-size: var(--fs-metric-md);
+  line-height: 1;
+}
+
+.t-metric-lg {
+  font-size: var(--fs-metric-lg);
+  line-height: 1;
+}
+
+.t-display-sm {
+  font-size: var(--fs-display-sm);
+  line-height: 1;
+}
+
+.t-display-md {
+  font-size: var(--fs-display-md);
+  line-height: 1;
+}
+
+.t-display-lg {
+  font-size: var(--fs-display-lg);
+  line-height: 1;
+}
+
+.t-display-hero {
+  font-size: var(--fs-display-lg);
+  line-height: 1;
+}
+
+.t-display-score {
+  font-size: var(--fs-display-sm);
+  line-height: 1;
+}
+
+.t-word {
+  font-size: var(--fs-word);
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .t-display-hero {
+    font-size: var(--fs-display-xl);
+  }
+
+  .t-display-score {
+    font-size: var(--fs-display-md);
+  }
 }

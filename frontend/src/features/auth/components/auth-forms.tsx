@@ -166,7 +166,7 @@ function AuthForms(props: AuthFormsProps) {
             void registerForm.handleSubmit()
           }}
         >
-          <div class="mb-1 text-sm font-semibold text-[var(--sub)]">register</div>
+          <div class="t-body mb-1 font-semibold text-(--sub)">register</div>
 
           <registerForm.Field name="name">
             {(field) => {
@@ -185,7 +185,7 @@ function AuthForms(props: AuthFormsProps) {
                     required
                   />
                   <Show when={validationMessage && registerFormState().submissionAttempts > 0}>
-                    <div class="pt-1 text-sm text-[var(--error)]">{validationMessage}</div>
+                    <div class="t-body pt-1 text-(--error)">{validationMessage}</div>
                   </Show>
                 </>
               )
@@ -210,7 +210,7 @@ function AuthForms(props: AuthFormsProps) {
                     required
                   />
                   <Show when={validationMessage && registerFormState().submissionAttempts > 0}>
-                    <div class="pt-1 text-sm text-[var(--error)]">{validationMessage}</div>
+                    <div class="t-body pt-1 text-(--error)">{validationMessage}</div>
                   </Show>
                 </>
               )
@@ -235,7 +235,7 @@ function AuthForms(props: AuthFormsProps) {
                     required
                   />
                   <Show when={validationMessage && registerFormState().submissionAttempts > 0}>
-                    <div class="pt-1 text-sm text-[var(--error)]">{validationMessage}</div>
+                    <div class="t-body pt-1 text-(--error)">{validationMessage}</div>
                   </Show>
                 </>
               )
@@ -260,7 +260,7 @@ function AuthForms(props: AuthFormsProps) {
                     required
                   />
                   <Show when={validationMessage && registerFormState().submissionAttempts > 0}>
-                    <div class="pt-1 text-sm text-[var(--error)]">{validationMessage}</div>
+                    <div class="t-body pt-1 text-(--error)">{validationMessage}</div>
                   </Show>
                 </>
               )
@@ -285,7 +285,7 @@ function AuthForms(props: AuthFormsProps) {
                     required
                   />
                   <Show when={validationMessage && registerFormState().submissionAttempts > 0}>
-                    <div class="pt-1 text-sm text-[var(--error)]">{validationMessage}</div>
+                    <div class="t-body pt-1 text-(--error)">{validationMessage}</div>
                   </Show>
                 </>
               )
@@ -293,10 +293,10 @@ function AuthForms(props: AuthFormsProps) {
           </registerForm.Field>
 
           <Show when={registerStatusMessage()}>
-            {(message) => <div class="pt-1 text-sm text-[var(--main)]">{message()}</div>}
+            {(message) => <div class="t-body pt-1 text-(--main)">{message()}</div>}
           </Show>
           <Show when={registerErrorMessage()}>
-            {(message) => <div class="pt-1 text-sm text-[var(--error)]">{message()}</div>}
+            {(message) => <div class="t-body pt-1 text-(--error)">{message()}</div>}
           </Show>
 
           <Button
@@ -316,7 +316,7 @@ function AuthForms(props: AuthFormsProps) {
             void loginForm.handleSubmit()
           }}
         >
-          <div class="mb-1 text-sm font-semibold text-[var(--sub)]">login</div>
+          <div class="t-body mb-1 font-semibold text-(--sub)">login</div>
 
           <loginForm.Field name="email">
             {(field) => {
@@ -336,7 +336,7 @@ function AuthForms(props: AuthFormsProps) {
                     required
                   />
                   <Show when={validationMessage && loginFormState().submissionAttempts > 0}>
-                    <div class="pt-1 text-sm text-[var(--error)]">{validationMessage}</div>
+                    <div class="t-body pt-1 text-(--error)">{validationMessage}</div>
                   </Show>
                 </>
               )
@@ -361,7 +361,7 @@ function AuthForms(props: AuthFormsProps) {
                     required
                   />
                   <Show when={validationMessage && loginFormState().submissionAttempts > 0}>
-                    <div class="pt-1 text-sm text-[var(--error)]">{validationMessage}</div>
+                    <div class="t-body pt-1 text-(--error)">{validationMessage}</div>
                   </Show>
                 </>
               )
@@ -369,10 +369,10 @@ function AuthForms(props: AuthFormsProps) {
           </loginForm.Field>
 
           <Show when={loginStatusMessage()}>
-            {(message) => <div class="pt-1 text-sm text-[var(--main)]">{message()}</div>}
+            {(message) => <div class="t-body pt-1 text-(--main)">{message()}</div>}
           </Show>
           <Show when={loginErrorMessage()}>
-            {(message) => <div class="pt-1 text-sm text-[var(--error)]">{message()}</div>}
+            {(message) => <div class="t-body pt-1 text-(--error)">{message()}</div>}
           </Show>
 
           <Button

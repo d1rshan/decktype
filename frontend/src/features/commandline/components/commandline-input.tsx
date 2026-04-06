@@ -29,7 +29,7 @@ function CommandlineInput(props: CommandlineInputProps) {
       <input
         ref={props.inputRef}
         value={props.value}
-        class="w-full bg-transparent text-base text-[var(--text)] outline-none placeholder:text-[var(--sub)]"
+        class="t-input w-full bg-transparent text-(--text) outline-none placeholder:text-(--sub)"
         placeholder={props.placeholder}
         onInput={(event) => props.onInput(event.currentTarget.value)}
       />

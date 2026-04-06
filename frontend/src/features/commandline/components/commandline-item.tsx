@@ -59,18 +59,18 @@ function CommandlineItem(props: CommandlineItemProps) {
         : {}}
       class={cn(
         'flex w-full items-center gap-3 px-4 py-1.5 text-left transition-colors outline-none',
-        !props.isFocused && (isActive() ? 'text-[var(--text)]' : 'text-[var(--sub)]'),
+        !props.isFocused && (isActive() ? 'text-(--text)' : 'text-(--sub)'),
       )}
       onMouseEnter={props.onMouseEnter}
       onClick={props.onClick}
     >
       <div class="flex w-5 shrink-0 justify-center">
         <Show when={isActive()}>
-          <TickIcon class={props.isFocused ? 'text-[var(--sub-alt)]' : 'text-[var(--main)]'} />
+          <TickIcon class={props.isFocused ? 'text-(--sub-alt)' : 'text-(--main)'} />
         </Show>
       </div>
       <div class="min-w-0 flex-1">
-        <div class="truncate text-sm">{props.item.label}</div>
+        <div class="t-body truncate">{props.item.label}</div>
       </div>
       <Show when={props.scope === 'themes'}>
         <ThemePreview themeName={props.item.id.replace('theme-', '') as ThemeName} />

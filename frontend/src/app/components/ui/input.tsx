@@ -11,7 +11,7 @@ function Input(props: InputProps) {
     <input
       {...rest}
       class={cn(
-        'rounded-lg bg-[var(--sub-alt)] px-4 py-3 text-base text-[var(--text)] outline-none placeholder:text-[var(--sub)] focus:bg-[color:color-mix(in_srgb,var(--sub-alt)_80%,var(--bg))]',
+        't-input rounded-lg bg-(--sub-alt) px-4 py-3 text-(--text) outline-none placeholder:text-(--sub) focus:bg-[color:color-mix(in_srgb,var(--sub-alt)_80%,var(--bg))]',
         local.class,
       )}
     />

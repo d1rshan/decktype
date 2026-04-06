@@ -166,12 +166,12 @@ function Commandline(props: CommandlineProps) {
   return (
     <Show when={props.isOpen}>
       <div
-        class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[var(--bg)]/90 px-5"
+        class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-(--bg)/90 px-5"
         onClick={props.onClose}
       >
         <div class="w-full max-w-[450px]">
           <div
-            class="overflow-hidden rounded-lg bg-[var(--sub-alt)]"
+            class="overflow-hidden rounded-lg bg-(--sub-alt)"
             onClick={(event) => event.stopPropagation()}
           >
             <CommandlineInput
