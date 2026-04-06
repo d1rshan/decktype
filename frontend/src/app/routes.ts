@@ -1,7 +1,6 @@
 export const primaryRoutes = [
   { label: 'Leaderboard', path: '/leaderboard' },
   { label: 'About', path: '/about' },
-  { label: 'Settings', path: '/settings' },
 ] as const
 
 export const gameSearchParam = 'game'

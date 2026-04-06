@@ -20,7 +20,9 @@ function ResultHistory() {
 
   return (
     <div class="space-y-4">
-      <div class="text-sm text-[var(--sub)]">recent results</div>
+      <div class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--sub)]">
+        recent results
+      </div>
 
       <Switch>
         <Match when={resultsQuery.isPending}>
@@ -36,18 +38,20 @@ function ResultHistory() {
         </Match>
 
         <Match when={resultsQuery.data?.length}>
-          <div class="overflow-hidden rounded-lg bg-[var(--sub-alt)]">
+          <div class="overflow-hidden rounded-xl bg-[var(--sub-alt)]/35 ring-1 ring-[var(--sub)]/12">
+            <div class="hidden border-b border-[var(--sub)]/20 px-4 py-3.5 text-sm text-[var(--sub)] sm:grid sm:grid-cols-[1.2fr_0.7fr_0.8fr_1fr] sm:items-center">
+              <div>game</div>
+              <div>score</div>
+              <div>difficulty</div>
+              <div>date</div>
+            </div>
+
             <For each={resultsQuery.data}>
               {(result) => (
-                <div class="grid gap-2 border-b border-[var(--bg)]/50 px-4 py-4 text-sm last:border-b-0 sm:grid-cols-[1.2fr_0.8fr_0.6fr_1fr] sm:items-center">
-                  <div>
-                    <div class="text-[var(--text)]">{result.gameId}</div>
-                    <div class="mt-1 text-xs uppercase tracking-[0.18em] text-[var(--sub)]">
-                      {result.difficulty}
-                    </div>
-                  </div>
-                  <div class="text-[var(--text)]">score {result.score}</div>
-                  <div class="text-[var(--sub)]">saved</div>
+                <div class="grid gap-2 border-b border-[var(--sub)]/10 px-4 py-3.5 text-sm last:border-b-0 sm:grid-cols-[1.2fr_0.7fr_0.8fr_1fr] sm:items-center">
+                  <div class="text-[var(--text)]">{result.gameId}</div>
+                  <div class="font-semibold text-[var(--text)]">{result.score}</div>
+                  <div class="text-[var(--sub)]">{result.difficulty}</div>
                   <div class="text-[var(--sub)]">{formatPlayedAt(result.createdAt)}</div>
                 </div>
               )}

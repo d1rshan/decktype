@@ -6,7 +6,6 @@ import AboutPage from '@/pages/about-page'
 import HomePage from '@/pages/home-page'
 import LeaderboardPage from '@/pages/leaderboard-page'
 import ProfilePage from '@/pages/profile-page'
-import SettingsPage from '@/pages/settings-page'
 import type { GameId } from '@/features/games/types'
 import type { WordBankId } from '@/features/content/word-banks/types'
 import {
@@ -124,9 +123,6 @@ function App() {
     }
     if (path === '/about') {
       return <AboutPage />
-    }
-    if (path === '/settings') {
-      return <SettingsPage />
     }
 
     return (

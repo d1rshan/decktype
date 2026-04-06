@@ -59,13 +59,6 @@ export function createCommandlineRegistry(
         onSelect: () => props.onNavigate('/about'),
       },
       {
-        id: 'route-settings',
-        label: 'View Settings Page',
-        keywords: ['settings', 'preferences', 'config'],
-        active: props.currentPath === '/settings',
-        onSelect: () => props.onNavigate('/settings'),
-      },
-      {
         id: 'route-profile',
         label: 'View Account Page',
         keywords: ['profile', 'account', 'user'],
