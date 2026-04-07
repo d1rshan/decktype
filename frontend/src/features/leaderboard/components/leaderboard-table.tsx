@@ -52,8 +52,12 @@ export function LeaderboardTable(props: LeaderboardTableProps) {
   return (
     <Switch>
       <Match when={leaderboardQuery.isPending}>
-        <div class="rounded-lg bg-(--sub-alt) px-4 py-4">
-          <Text variant="body">loading leaderboard...</Text>
+        <div class="flex min-h-32 items-center justify-center px-4 py-4">
+          <div
+            class="h-8 w-8 animate-spin rounded-full border-2 border-(--sub)/35 border-t-(--main)"
+            aria-label="Loading leaderboard"
+            role="status"
+          />
         </div>
       </Match>
 

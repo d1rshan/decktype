@@ -1,9 +1,11 @@
 import { Show, createMemo, createSignal } from 'solid-js'
+import { User } from 'lucide-solid'
 
 import AuthForms from '@/features/auth/components/auth-forms'
 import ResultsTable from '@/features/results/components/results-table'
 import { getErrorMessage } from '@/lib/api-client'
 import { authClient } from '@/lib/auth-client'
+import { formatDateTime } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Text } from '@/components/ui/text'
 
@@ -19,6 +21,8 @@ function ProfilePage(props: ProfileProps) {
 
   const isAuthenticated = createMemo(() => Boolean(session().data?.user))
   const isSessionLoading = createMemo(() => session().isPending)
+  const currentUser = createMemo(() => session().data?.user)
+  const joinedAt = createMemo(() => currentUser()?.createdAt as string | undefined)
 
   const resetMessages = () => {
     setStatusMessage(null)
@@ -67,32 +71,19 @@ function ProfilePage(props: ProfileProps) {
             <AuthForms onSuccess={() => props.onNavigate('/')} />
           )}
         >
-          <div class="w-full space-y-6">
-            <section class="rounded-xl bg-(--sub-alt)/32 p-5">
-              <div class="flex flex-wrap items-start justify-between gap-5">
-                <div>
-                  <Text variant="label" upper>profile</Text>
-                  <div class="mt-2">
-                    <Text variant="metric">{session().data?.user.name}</Text>
-                  </div>
-                  <div class="mt-2">
-                    <Text variant="body">{session().data?.user.email}</Text>
-                  </div>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-3">
+          <div class="mx-auto flex w-full max-w-6xl flex-col gap-8">
+            <section class="space-y-5">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <Text variant="title" class="capitalize">profile</Text>
+                <div class="flex flex-wrap gap-3">
                   <Button
-                    variant="outline"
                     size="sm"
-                    class="px-3 py-1.5"
                     onClick={() => props.onNavigate('/')}
                   >
                     back home
                   </Button>
                   <Button
-                    variant="outline"
                     size="sm"
-                    class="px-3 py-1.5"
                     onClick={handleSignOut}
                     disabled={isSigningOut()}
                   >
@@ -100,27 +91,54 @@ function ProfilePage(props: ProfileProps) {
                   </Button>
                 </div>
               </div>
+
+              <div class="space-y-4 rounded-xl bg-(--sub-alt) p-5">
+                <div class="flex items-center gap-4">
+                  <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-(--sub) text-(--bg)">
+                    <Show
+                      when={currentUser()?.image}
+                      fallback={<User size={24} strokeWidth={2.2} />}
+                    >
+                      {(image) => (
+                        <img
+                          src={image()}
+                          alt={`${currentUser()?.name ?? 'User'} avatar`}
+                          class="h-full w-full object-cover"
+                        />
+                      )}
+                    </Show>
+                  </div>
+                  <div class="space-y-1">
+                    <Text variant="title">{currentUser()?.name}</Text>
+                    <Show when={joinedAt()}>
+                      {(value) => (
+                        <Text variant="body" tone="sub">
+                          joined {formatDateTime(value())}
+                        </Text>
+                      )}
+                    </Show>
+                  </div>
+                </div>
+              </div>
             </section>
 
-            <section class="rounded-xl bg-(--sub-alt)/22 p-5">
-              <div class="space-y-4">
-                <Text variant="label" upper>recent results</Text>
-                <ResultsTable />
-              </div>
+            <section class="space-y-4">
+              <Text variant="title" class="capitalize">recent results</Text>
+              <ResultsTable />
             </section>
 
             <Show when={statusMessage()}>
               {(message) => (
-                <div class="text-(--main)">
-                  <Text variant="body">{message()}</Text>
+                <div>
+                  <Text variant="body" tone="main">{message()}</Text>
                 </div>
               )}
             </Show>
 
             <Show when={errorMessage()}>
               {(message) => (
-                <div class="text-(--error)">
-                  <Text variant="body">{message()}</Text>
+                <div>
+                  <Text variant="body" tone="error">{message()}</Text>
                 </div>
               )}
             </Show>

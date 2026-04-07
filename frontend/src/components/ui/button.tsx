@@ -2,11 +2,9 @@ import { splitProps, type JSX } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { cn } from '@/lib/cn'
 
-type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'link'
 type ButtonSize = 'sm' | 'md' | 'lg' | 'icon'
 
 type ButtonProps = {
-  variant?: ButtonVariant
   size?: ButtonSize
   as?: keyof JSX.IntrinsicElements | any
   class?: string
@@ -14,32 +12,22 @@ type ButtonProps = {
   [key: string]: any
 }
 
-const variantClassMap: Record<ButtonVariant, string> = {
-  solid:
-    'bg-(--sub-alt)/40 text-(--sub) hover:text-(--text) hover:bg-(--sub-alt)/60',
-  outline:
-    'border border-(--sub)/35 text-(--sub) hover:text-(--text) hover:border-(--sub)/60',
-  ghost: 'text-(--sub) hover:text-(--text) hover:bg-(--sub-alt)/30',
-  link: 'text-(--sub) underline-offset-4 hover:underline hover:text-(--text) p-0 h-auto',
-}
-
 const sizeClassMap: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-[0.75rem] leading-[1.25] rounded-md',
-  md: 'px-4 py-2 text-[1rem] leading-[1.4] rounded-lg',
-  lg: 'px-6 py-3 text-[1rem] leading-[1.4] rounded-xl',
-  icon: 'p-2 rounded-lg',
+  sm: 'min-h-9 px-4 text-[0.75rem] leading-none',
+  md: 'min-h-11 px-5 text-[0.875rem] leading-none',
+  lg: 'min-h-12 px-6 text-[0.95rem] leading-none',
+  icon: 'h-11 w-11 p-0',
 }
 
 export function Button(props: ButtonProps) {
-  const [local, rest] = splitProps(props, ['class', 'variant', 'size', 'as', 'children'])
+  const [local, rest] = splitProps(props, ['class', 'size', 'as', 'children'])
 
   return (
     <Dynamic
       component={local.as ?? 'button'}
       {...rest}
       class={cn(
-        'inline-flex items-center justify-center font-medium transition disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
-        variantClassMap[local.variant ?? 'solid'],
+        'inline-flex cursor-pointer items-center justify-center rounded-lg bg-(--sub-alt) font-medium tracking-[0.08em] text-(--text) transition-[background-color,color,transform,opacity] duration-150 ease-out hover:bg-(--main) hover:text-(--bg) active:translate-y-px disabled:pointer-events-none disabled:bg-(--sub-alt)/55 disabled:text-(--sub)',
         sizeClassMap[local.size ?? 'md'],
         local.class,
       )}
