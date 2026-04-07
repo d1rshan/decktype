@@ -17,10 +17,12 @@ export function GameCard(props: GameCardProps) {
       onClick={props.onClick}
     >
       <div class="flex flex-col gap-3">
-        <div class="transition-colors group-hover:text-(--main)">
-          <Text variant="title">{props.name.toLowerCase()}</Text>
-        </div>
-        <Text variant="body">{props.description.toLowerCase()}</Text>
+        <Text variant="title" class="transition-colors group-hover:text-(--main)">
+          {props.name.toLowerCase()}
+        </Text>
+        <Text variant="body" tone="sub">
+          {props.description.toLowerCase()}
+        </Text>
       </div>
 
       <div class="absolute bottom-10 right-10 translate-x-4 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100">

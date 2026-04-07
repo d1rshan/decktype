@@ -7,7 +7,7 @@ import FallingWordsField from './components/falling-words-field'
 import GameHud from './components/game-hud'
 import { useFallingWordsGame } from './use-falling-words-game'
 import { fallingWordsGameMeta } from './meta'
-import { difficultyOptions } from './difficulty'
+import { difficultyKeys } from './difficulty'
 import { Text } from '@/components/ui/text'
 
 function FallingWordsView(props: GameViewProps) {
@@ -42,7 +42,7 @@ function FallingWordsView(props: GameViewProps) {
     <div class="flex flex-col gap-8">
       <div class="flex flex-col items-center gap-6">
         <DifficultySelector
-          options={difficultyOptions}
+          options={difficultyKeys}
           activeDifficulty={session.difficulty()}
           onChange={session.handleDifficultyChange}
         />

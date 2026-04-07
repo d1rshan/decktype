@@ -2,7 +2,6 @@ export type DifficultyKey = 'easy' | 'medium' | 'hard'
 
 export type DifficultyConfig = {
   key: DifficultyKey
-  label: string
   spawnIntervalMs: number
   baseSpeed: number
   speedJitter: number

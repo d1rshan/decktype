@@ -22,7 +22,7 @@ function LeaderboardPage() {
         <aside class="space-y-4">
           <div class="rounded-2xl bg-(--sub-alt) p-3">
             <div class="px-1 pb-2">
-              <Text variant="label" upper>game</Text>
+              <Text variant="label" tone='sub' upper>game</Text>
             </div>
             <div class="space-y-1.5">
               <For each={gameRegistry}>
@@ -44,7 +44,7 @@ function LeaderboardPage() {
 
           <div class="rounded-2xl bg-(--sub-alt) p-3">
             <div class="px-1 pb-2">
-              <Text variant="label" upper>difficulty</Text>
+              <Text variant="label" tone='sub' upper>difficulty</Text>
             </div>
             <div class="space-y-1.5">
               <For each={difficulties}>

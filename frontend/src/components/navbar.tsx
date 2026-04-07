@@ -48,7 +48,7 @@ export function Navbar() {
         >
           <User size={18} strokeWidth={2} />
           <div class="max-w-32 truncate">
-            <Text variant="caption" upper>{currentUserLabel().toLowerCase()}</Text>
+            <Text variant="body">{currentUserLabel().toLowerCase()}</Text>
           </div>
         </A>
       </div>

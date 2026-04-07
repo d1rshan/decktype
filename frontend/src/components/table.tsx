@@ -26,7 +26,7 @@ export function Table<T>(props: TableProps<T>) {
       >
         <For each={props.columns}>
           {(column) => (
-            <Text variant="label" upper>{column.label}</Text>
+            <Text variant="label" tone='sub' upper>{column.label}</Text>
           )}
         </For>
       </div>
