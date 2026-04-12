@@ -10,9 +10,10 @@ import { Text } from '@/components/ui/text'
 type CommandlineItemProps = {
   item: CommandlineItemType
   isFocused: boolean
-  onMouseEnter: () => void
+  onPointerMove: (e: PointerEvent) => void
   onClick: () => void
   scope: CommandlineScope
+  ref?: (el: HTMLButtonElement) => void
 }
 
 function ThemePreview(props: { themeName: ThemeName }) {
@@ -35,6 +36,7 @@ function CommandlineItem(props: CommandlineItemProps) {
 
   return (
     <button
+      ref={props.ref}
       type="button"
       style={props.isFocused
         ? {
@@ -43,10 +45,10 @@ function CommandlineItem(props: CommandlineItemProps) {
           }
         : {}}
       class={cn(
-        'flex w-full items-center gap-3 px-4 py-1.5 text-left transition-colors outline-none',
+        'flex w-full items-center gap-3 px-4 py-1.5 text-left outline-none',
         !props.isFocused && (isActive() ? 'text-(--text)' : 'text-(--sub)'),
       )}
-      onMouseEnter={props.onMouseEnter}
+      onPointerMove={props.onPointerMove}
       onClick={props.onClick}
     >
       <div class="flex w-5 shrink-0 justify-center">

@@ -13,6 +13,7 @@ function Commandline() {
   const [query, setQuery] = createSignal('')
   const [selectedIndex, setSelectedIndex] = createSignal(0)
   const [scope, setScope] = createSignal<CommandlineScope>('root')
+  const [interactionType, setInteractionType] = createSignal<'keyboard' | 'mouse'>('keyboard')
 
   const registry = createMemo(() =>
     createCommandlineRegistry(setScope),
@@ -142,6 +143,7 @@ function Commandline() {
 
       if (event.key === 'ArrowDown') {
         event.preventDefault()
+        setInteractionType('keyboard')
         setSelectedIndex((current) => {
           if (visibleItems().length === 0) {
             return 0
@@ -154,6 +156,7 @@ function Commandline() {
 
       if (event.key === 'ArrowUp') {
         event.preventDefault()
+        setInteractionType('keyboard')
         setSelectedIndex((current) => {
           if (visibleItems().length === 0) {
             return 0
@@ -210,7 +213,11 @@ function Commandline() {
               items={visibleItems()}
               selectedIndex={selectedIndex()}
               scope={scope()}
-              onHoverItem={setSelectedIndex}
+              interactionType={interactionType()}
+              onHoverItem={(index) => {
+                setSelectedIndex(index)
+                setInteractionType('mouse')
+              }}
               onSelectItem={handleSelectItem}
             />
           </div>
