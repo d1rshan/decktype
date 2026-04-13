@@ -6,6 +6,7 @@ import { getGameName } from '@/features/games/utils'
 import { getErrorMessage } from '@/lib/api-client'
 import { authClient } from '@/lib/auth-client'
 import { formatDateTime } from '@/lib/utils'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 type ResultsTableRow = NonNullable<ReturnType<typeof useMyResultsQuery>['data']>[number]
 
@@ -43,11 +44,7 @@ function ResultsTable() {
     <Switch>
       <Match when={resultsQuery.isPending}>
         <div class="flex min-h-32 items-center justify-center px-4 py-4">
-          <div
-            class="h-8 w-8 animate-spin rounded-full border-2 border-(--sub)/35 border-t-(--main)"
-            aria-label="Loading results"
-            role="status"
-          />
+          <LoadingSpinner />
         </div>
       </Match>
 

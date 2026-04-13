@@ -5,6 +5,7 @@ import { Match, Switch } from 'solid-js'
 import { useLeaderboardQuery } from '@/features/leaderboard/api/hooks'
 import { getErrorMessage } from '@/lib/api-client'
 import { formatDateTime } from '@/lib/utils'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 import type { LeaderboardDifficulty, LeaderboardEntry } from '../api/contract'
 
@@ -52,11 +53,7 @@ export function LeaderboardTable(props: LeaderboardTableProps) {
     <Switch>
       <Match when={leaderboardQuery.isPending}>
         <div class="flex min-h-32 items-center justify-center px-4 py-4">
-          <div
-            class="h-8 w-8 animate-spin rounded-full border-2 border-(--sub)/35 border-t-(--main)"
-            aria-label="Loading leaderboard"
-            role="status"
-          />
+          <LoadingSpinner />
         </div>
       </Match>
 

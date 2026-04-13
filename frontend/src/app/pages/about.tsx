@@ -3,6 +3,7 @@ import { For, Show } from 'solid-js'
 import { useContributorsQuery } from '@/features/contributors/api/hooks'
 import { getErrorMessage } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 function formatSyncedAt(value: string | null) {
   if (!value) {
@@ -78,11 +79,7 @@ function AboutPage() {
 
           <Show when={contributorsQuery.isPending}>
             <div class="flex min-h-32 items-center justify-center">
-              <div
-                class="h-8 w-8 animate-spin rounded-full border-2 border-(--sub)/35 border-t-(--main)"
-                aria-label="Loading contributors"
-                role="status"
-              />
+              <LoadingSpinner />
             </div>
           </Show>
 

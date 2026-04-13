@@ -1,6 +1,7 @@
 import { createSignal, For, Show } from 'solid-js'
-import { ArrowBigDown, ArrowBigUp, LoaderCircle, SendHorizontal } from 'lucide-solid'
+import { ArrowBigDown, ArrowBigUp, SendHorizontal } from 'lucide-solid'
 import { Textarea } from '@/components/ui/textarea'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { authClient } from '@/lib/auth-client'
 import { 
   useFeedbackQuery, 
@@ -91,7 +92,7 @@ export function FeedbackFeed() {
       <div class="flex flex-col gap-2.5 max-h-[360px] overflow-y-auto pr-1.5 scrollbar-thin scrollbar-thumb-(--sub)/20">
         <Show when={feedbackQuery.isPending}>
           <div class="flex justify-center py-8 text-(--sub)">
-            <LoaderCircle class="h-5 w-5 animate-spin" />
+            <LoadingSpinner />
           </div>
         </Show>
 
