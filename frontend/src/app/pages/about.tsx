@@ -27,9 +27,13 @@ function AboutPage() {
           <div class="space-y-3">
             <h2 class="text-2xl leading-tight font-bold capitalize">about decktype</h2>
             <p class="text-base leading-relaxed text-(--sub)">
-              decktype is an open source typing playground. games, experiments, weird ideas — all built around the feeling of clean, rhythmic typing.
+              decktype is an open source typing playground. games, mini experiments, weird ideas, the stuff that felt too fun to not build.
             </p>
-            <div class="pt-1">
+            <p class="text-base leading-relaxed text-(--sub)">
+              themes are straight from monkeytype. honestly one of the best designed sites on the internet. decktype would not exist without it. not affiliated, just a massive fan.
+            </p>
+            <p class="text-base leading-relaxed text-(--sub)">that's it. go type something.</p>
+            <div class="flex flex-wrap gap-3 pt-1">
               <Button
                 href="https://github.com/d1rshan/decktype"
                 target="_blank"
@@ -37,18 +41,6 @@ function AboutPage() {
               >
                 decktype github
               </Button>
-            </div>
-          </div>
-
-          <div class="space-y-3">
-            <h2 class="text-2xl leading-tight font-bold capitalize">credits</h2>
-            <p class="text-base leading-relaxed text-(--sub)">
-              themes are borrowed from monkeytype (with full credit, they're the goats). decktype isn't affiliated with them, just genuinely inspired.
-              <br />
-              <br />
-              that's it. go type something.
-            </p>
-            <div class="flex flex-wrap gap-3 pt-1">
               <Button
                 href="https://monkeytype.com"
                 target="_blank"

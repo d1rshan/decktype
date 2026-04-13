@@ -19,18 +19,15 @@ function LeaderboardPage() {
     <div class="w-full min-h-[72vh]">
       <div class="grid items-start gap-7 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <aside class="space-y-4">
-          <div class="rounded-2xl bg-(--sub-alt) p-3">
-            <div class="px-1 pb-2">
-              <span class="text-xs leading-none font-semibold tracking-widest text-(--sub) uppercase">game</span>
-            </div>
+          <div class="rounded-lg bg-(--sub-alt) p-3">
             <div class="space-y-1.5">
               <For each={gameRegistry}>
                 {(game) => (
                   <button
                     type="button"
-                    class={`block w-full rounded-md px-3 py-2 text-left text-sm leading-normal transition ${gameId() === game.id
-                      ? 'bg-(--main)/20 text-(--main)'
-                      : 'text-(--text)/90 hover:bg-(--sub)/20'
+                    class={`block w-full rounded-lg px-3 py-2 text-left text-sm leading-normal transition ${gameId() === game.id
+                      ? 'bg-(--main) text-(--sub-alt)'
+                      : 'text-(--text) hover:bg-(--sub)/20'
                       }`}
                     onClick={() => setGameId(game.id)}
                   >
@@ -41,18 +38,15 @@ function LeaderboardPage() {
             </div>
           </div>
 
-          <div class="rounded-2xl bg-(--sub-alt) p-3">
-            <div class="px-1 pb-2">
-              <span class="text-xs leading-none font-semibold tracking-widest text-(--sub) uppercase">difficulty</span>
-            </div>
+          <div class="rounded-lg bg-(--sub-alt) p-3">
             <div class="space-y-1.5">
               <For each={difficulties}>
                 {(level) => (
                   <button
                     type="button"
-                    class={`block w-full rounded-md px-3 py-2 text-left text-sm leading-normal tracking-wider transition ${difficulty() === level
-                      ? 'bg-(--main)/20 text-(--main)'
-                      : 'text-(--text)/90 hover:bg-(--sub)/20'
+                    class={`block w-full rounded-lg px-3 py-2 text-left text-sm leading-normal tracking-wider transition ${difficulty() === level
+                      ? 'bg-(--main) text-(--sub-alt)'
+                      : 'text-(--text) hover:bg-(--sub)/20'
                       }`}
                     onClick={() => setDifficulty(level)}
                   >

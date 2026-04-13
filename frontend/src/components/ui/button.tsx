@@ -16,7 +16,7 @@ export function Button(props: ButtonProps) {
       href={local.href}
       {...(rest as any)}
       class={cn(
-        'inline-flex items-center justify-center rounded-lg bg-(--sub-alt) px-4 py-3 text-sm font-medium text-(--text) transition-colors hover:bg-(--main) hover:text-(--bg) disabled:opacity-50',
+        'inline-flex items-center justify-center rounded-lg bg-(--sub-alt) px-4 py-3 text-sm font-medium text-(--text) transition-colors hover:bg-(--text) hover:text-(--sub-alt) disabled:opacity-50',
         local.class,
       )}
     >

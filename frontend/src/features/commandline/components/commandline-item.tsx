@@ -57,7 +57,7 @@ function CommandlineItem(props: CommandlineItemProps) {
       </div>
       <div class="min-w-0 flex-1">
         <div class="truncate">
-          <p class="text-base leading-normal">{props.item.label}</p>
+          <p class="text-sm leading-normal">{props.item.label}</p>
         </div>
       </div>
       <Show when={props.scope === 'themes'}>
