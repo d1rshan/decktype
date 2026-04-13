@@ -27,23 +27,25 @@ function ToastRegion() {
   const { toasts } = useToasts()
 
   return (
-    <div class="toast-region pointer-events-none fixed top-24 right-4 z-40 flex w-[min(22rem,calc(100vw-1rem))] flex-col gap-2 sm:right-6">
-      <For each={toasts()}>
-        {(item) => (
-          <div
-            class={`toast-enter pointer-events-auto rounded-xl border px-3 py-2.5 backdrop-blur-sm ${variantUi[item.variant].frameClass}`}
-          >
-            <div class="min-w-0">
-              <div class={variantUi[item.variant].titleClass}>
-                <p class="text-base leading-normal">{variantUi[item.variant].label}</p>
+    <div class="toast-region pointer-events-none fixed inset-x-0 top-24 z-40 mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10 xl:px-12">
+      <div class="ml-auto flex w-[min(20rem,100%)] flex-col gap-1.5">
+        <For each={toasts()}>
+          {(item) => (
+            <div
+              class={`toast-enter pointer-events-auto rounded-lg border px-2.5 py-2 backdrop-blur-sm ${variantUi[item.variant].frameClass}`}
+            >
+              <div class="min-w-0">
+                <div class={variantUi[item.variant].titleClass}>
+                  <p class="text-sm leading-snug">{variantUi[item.variant].label}</p>
                 </div>
-                <div class="mt-1 flex-1">
-                <p class="text-base leading-normal">{item.title}</p>
+                <div class="mt-0.5 flex-1">
+                  <p class="text-sm leading-snug">{item.title}</p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </For>
+          )}
+        </For>
+      </div>
     </div>
   )
 }
