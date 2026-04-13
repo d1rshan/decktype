@@ -23,32 +23,47 @@ function AboutPage() {
   return (
     <div class="w-full min-h-[72vh]">
       <div class="flex w-full flex-col gap-10">
-        <section class="space-y-5">
+        <section class="space-y-8">
           <div class="space-y-3">
             <h2 class="text-2xl leading-tight font-bold capitalize">about decktype</h2>
             <p class="text-base leading-relaxed text-(--sub)">
-              decktype is a typing project built around focus, rhythm, and keeping the interface
-              out of the way. it takes inspiration from the speed and clarity of monkeytype, then
-              pushes that feeling toward something a little more playful, game-like, and personal.
-              the goal is simple: make typing feel smooth, fast, and good enough that you want to
-              stay for another round.
+              decktype is an open source typing playground. games, experiments, weird ideas — all built around the feeling of clean, rhythmic typing.
             </p>
+            <div class="pt-1">
+              <Button
+                href="https://github.com/d1rshan/decktype"
+                target="_blank"
+                rel="noreferrer"
+              >
+                decktype github
+              </Button>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-3">
-            <Button
-              href="https://monkeytype.com"
-              target="_blank"
-              rel="noreferrer"
-            >
-              monkeytype website
-            </Button>
-            <Button
-              href="https://github.com/monkeytypegame/monkeytype"
-              target="_blank"
-              rel="noreferrer"
-            >
-              monkeytype github
-            </Button>
+
+          <div class="space-y-3">
+            <h2 class="text-2xl leading-tight font-bold capitalize">credits</h2>
+            <p class="text-base leading-relaxed text-(--sub)">
+              themes are borrowed from monkeytype (with full credit, they're the goats). decktype isn't affiliated with them, just genuinely inspired.
+              <br />
+              <br />
+              that's it. go type something.
+            </p>
+            <div class="flex flex-wrap gap-3 pt-1">
+              <Button
+                href="https://monkeytype.com"
+                target="_blank"
+                rel="noreferrer"
+              >
+                monkeytype website
+              </Button>
+              <Button
+                href="https://github.com/monkeytypegame/monkeytype"
+                target="_blank"
+                rel="noreferrer"
+              >
+                monkeytype github
+              </Button>
+            </div>
           </div>
         </section>
 
@@ -104,14 +119,19 @@ function AboutPage() {
                       />
                     </div>
                     <div class="min-w-0 flex-1">
-                      <div class="truncate">
+                      <div class="flex items-center gap-2 truncate">
                         <p class="text-base leading-normal transition-colors group-hover:text-(--main)">
                           {contributor.displayName ?? contributor.login}
                         </p>
+                        <Show when={contributor.login === 'd1rshan'}>
+                          <span class="rounded-md bg-(--main) px-1.5 py-0.5 text-[10px] font-bold text-(--bg) uppercase">
+                            creator
+                          </span>
+                        </Show>
                       </div>
                       <div class="truncate">
                         <span class="text-xs leading-tight text-(--sub)">
-                          @{contributor.login} • {contributor.contributions} contributions
+                          @{contributor.login}
                         </span>
                       </div>
                     </div>

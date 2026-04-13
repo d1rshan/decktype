@@ -21,7 +21,14 @@ if (!globalMongo.__dkMongoDb) {
 }
 
 export const connectToDatabase = async () => {
-  await mongoClient.connect()
+  console.log('Connecting to MongoDB...')
+  try {
+    await mongoClient.connect()
+    console.log('Successfully connected to MongoDB')
+  } catch (error) {
+    console.error('Failed to connect to MongoDB:', error)
+    throw error
+  }
 
   return db
 }
