@@ -18,6 +18,16 @@ const readOptionalEnv = (name: string) => {
   return value
 }
 
+const readNodeEnv = () => {
+  const value = (Bun.env.NODE_ENV ?? 'development').trim().toLowerCase()
+
+  if (value === 'production' || value === 'prod') {
+    return 'production'
+  }
+
+  return 'development'
+}
+
 const readPort = () => {
   const rawPort = Bun.env.PORT ?? '3000'
   const port = Number(rawPort)
@@ -43,6 +53,7 @@ const readCsvEnv = (name: string) => {
 }
 
 export const env = {
+  nodeEnv: readNodeEnv(),
   port: readPort(),
   mongoUri: readRequiredEnv('MONGODB_URI'),
   mongoDbName: readRequiredEnv('MONGODB_DB_NAME'),

@@ -1,7 +1,8 @@
 import { createSignal } from 'solid-js'
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000'
-const healthUrl = `${backendUrl.replace(/\/$/, '')}/api/health`
+import { apiBaseUrl } from '@/lib/backend-url'
+
+const healthUrl = `${apiBaseUrl}/health`
 const POLL_INTERVAL_MS = 20000
 
 const [isBackendDown, setIsBackendDown] = createSignal(false)

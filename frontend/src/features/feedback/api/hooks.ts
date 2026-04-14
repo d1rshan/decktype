@@ -13,7 +13,7 @@ export const useFeedbackQuery = (options: { enabled?: () => boolean } = {}) =>
   useQuery(() => ({
     ...feedbackQueryOptions(),
     enabled: options.enabled?.() ?? true,
-    refetchInterval: 10000, // Refetch every 10s for chat-like feel
+    // refetchInterval: 10000, // Refetch every 10s for chat-like feel
   }))
 
 export const useCreateFeedbackMutation = () => {

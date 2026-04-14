@@ -1,6 +1,6 @@
 import { createAuthClient } from 'better-auth/solid'
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000'
+import { backendUrl } from '@/lib/backend-url'
 
 export const authClient = createAuthClient({
   baseURL: backendUrl,

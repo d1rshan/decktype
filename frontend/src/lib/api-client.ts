@@ -2,11 +2,10 @@ import { edenTreaty } from '@elysiajs/eden'
 import type { Elysia } from 'elysia'
 
 import type { App } from '../../../backend/src/app/create-app.ts'
+import { backendUrl } from '@/lib/backend-url'
 import { toast } from '@/lib/toast'
 
 type AppContract = Elysia<any, any, any, any, App['~Routes'], any, any>
-
-const backendUrl = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:3000'
 
 const treaty = edenTreaty<AppContract>(backendUrl, {
   $fetch: {
