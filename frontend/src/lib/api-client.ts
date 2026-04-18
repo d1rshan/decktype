@@ -1,7 +1,7 @@
 import { edenTreaty } from '@elysiajs/eden'
 import type { Elysia } from 'elysia'
 
-import type { App } from '../../../backend/src/app/create-app.ts'
+import type { App } from '../../../backend/src/app/index.ts' // TODO: can we ditch this index.ts
 import { backendUrl } from '@/lib/backend-url'
 import { toast } from '@/lib/toast'
 

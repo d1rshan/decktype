@@ -1,3 +1,4 @@
+// TODO: use some library to do this stuff instead 
 const readRequiredEnv = (name: string) => {
   const value = Bun.env[name]
 

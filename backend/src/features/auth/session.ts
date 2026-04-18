@@ -1,7 +1,7 @@
-import { ApiError } from '../../lib/errors/api-error'
+import { ApiError } from '../../lib/errors'
 import { env } from '../../config/env'
-import { errorCodes } from '../../lib/errors/error-codes'
 import { auth } from './auth'
+import { ObjectId } from 'mongodb'
 
 export const requireSession = async (headers: Headers) => {
   const currentSession = await auth.api.getSession({
@@ -9,14 +9,16 @@ export const requireSession = async (headers: Headers) => {
   })
 
   if (!currentSession) {
-    throw new ApiError({
-      status: 401,
-      code: errorCodes.unauthorized,
-      message: 'You must be signed in.',
-    })
+    throw ApiError.unauthorized('You must be signed in.')
   }
 
-  return currentSession
+  return {
+    ...currentSession,
+    user: {
+      ...currentSession.user,
+      id: new ObjectId(currentSession.user.id),  // convert once here
+    },
+  }
 }
 
 export const requireAdminSession = async (headers: Headers) => {
@@ -24,12 +26,14 @@ export const requireAdminSession = async (headers: Headers) => {
   const userEmail = currentSession.user.email?.trim().toLowerCase()
 
   if (!userEmail || !env.adminEmails.includes(userEmail)) {
-    throw new ApiError({
-      status: 403,
-      code: errorCodes.forbidden,
-      message: 'You are not authorized to access admin resources.',
-    })
+    throw ApiError.forbidden('You are not authorized to access admin resources.')
   }
 
-  return currentSession
+  return {
+    ...currentSession,
+    user: {
+      ...currentSession.user,
+      id: new ObjectId(currentSession.user.id),  // convert once here
+    },
+  }
 }

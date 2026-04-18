@@ -1,33 +1,18 @@
 import { t } from 'elysia'
-
-export type ListLeaderboardFilters = {
-  gameId: string
-  difficulty?: string
-  limit: number
-}
-
-export type LeaderboardEntryResponse = {
-  rank: number
-  userId: string
-  displayName: string
-  gameId: string
-  difficulty: string
-  bestScore: number
-  bestResultAt: string
-}
+import { TObjectId } from '../../lib/object-id'
 
 export const leaderboardQuerySchema = t.Object({
-  gameId: t.String({ minLength: 1 }),
+  gameId: TObjectId,
   difficulty: t.Optional(t.String({ minLength: 1 })),
   limit: t.Optional(t.Numeric({ minimum: 1, maximum: 100, default: 20 })),
 })
 
 export const leaderboardEntryResponseSchema = t.Object({
   rank: t.Number(),
-  userId: t.String(),
+  userId: TObjectId,
   displayName: t.String(),
-  gameId: t.String(),
+  gameId: TObjectId,
   difficulty: t.String(),
   bestScore: t.Number(),
-  bestResultAt: t.String(),
+  createdAt: t.Date(),
 })

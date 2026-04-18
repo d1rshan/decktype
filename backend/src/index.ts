@@ -1,4 +1,4 @@
-import { app } from './app/create-app'
+import { app } from './app'
 import { env } from './config/env'
 import { connectToDatabase } from './db/client'
 import { ensureDatabaseIndexes } from './db/indexes'

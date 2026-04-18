@@ -8,7 +8,7 @@ export const adminUserResponseSchema = t.Object({
   id: t.String(),
   name: t.String(),
   email: t.String(),
-  createdAt: t.String(),
+  createdAt: t.Date(),
 })
 
 export const deleteFeedbackParamsSchema = t.Object({
@@ -18,3 +18,4 @@ export const deleteFeedbackParamsSchema = t.Object({
 export const deleteFeedbackResponseSchema = t.Object({
   ok: t.Boolean(),
 })
+

@@ -26,3 +26,5 @@ export const auth = betterAuth({
     enabled: true,
   },
 })
+
+// TODO: maybe feature based is not the way to go

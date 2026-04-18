@@ -1,37 +1,13 @@
-import { ApiError } from '../../lib/errors/api-error'
-import { errorCodes } from '../../lib/errors/error-codes'
-import { ObjectId } from 'mongodb'
-
-import * as repository from './repository'
+import { adminDAL } from './dal'
+import { serializeUser } from './serializers'
 
 export const getUsersCount = async () => {
-  const count = await repository.countUsers()
+  const count = await adminDAL.countUsers()
 
   return { count }
 }
 
 export const getUsersList = async () => {
-  return repository.listUsers(500)
-}
-
-export const removeFeedback = async (id: string) => {
-  if (!ObjectId.isValid(id)) {
-    throw new ApiError({
-      status: 400,
-      code: errorCodes.badRequest,
-      message: 'Invalid feedback id.',
-    })
-  }
-
-  const deleted = await repository.deleteFeedbackById(id)
-
-  if (!deleted) {
-    throw new ApiError({
-      status: 404,
-      code: errorCodes.notFound,
-      message: 'Feedback not found.',
-    })
-  }
-
-  return { ok: true }
+  const docs = await adminDAL.listUsers(500)
+  return docs.map((doc) => serializeUser(doc))
 }

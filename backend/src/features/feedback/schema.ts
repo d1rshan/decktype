@@ -1,14 +1,16 @@
 import { t } from 'elysia'
+import { ObjectId } from 'mongodb'
+import { TObjectId } from '../../lib/object-id'
 
 export type CreateFeedbackInput = {
   content: string
-  userId: string
+  userId: ObjectId
   userDisplayName: string
 }
 
 export type VoteFeedbackInput = {
   feedbackId: string
-  userId: string
+  userId: ObjectId
 }
 
 export const createFeedbackBodySchema = t.Object({
@@ -16,11 +18,11 @@ export const createFeedbackBodySchema = t.Object({
 })
 
 export const feedbackResponseSchema = t.Object({
-  id: t.String(),
+  id: TObjectId,
   content: t.String(),
-  userId: t.String(),
+  userId: TObjectId,
   userDisplayName: t.String(),
-  upvotedBy: t.Array(t.String()),
-  downvotedBy: t.Array(t.String()),
+  upvotedBy: t.Array(TObjectId),
+  downvotedBy: t.Array(TObjectId),
   createdAt: t.Date(),
 })

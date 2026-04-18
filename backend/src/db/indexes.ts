@@ -1,5 +1,4 @@
 import {
-  contributorsCollection,
   feedbackCollection,
   leaderboardCollection,
   resultsCollection,
@@ -26,22 +25,8 @@ const ensureLeaderboardIndexes = async () => {
       name: 'game_difficulty_user_unique',
     },
     {
-      key: { gameId: 1, difficulty: 1, bestScore: -1, bestResultAt: 1 },
+      key: { gameId: 1, difficulty: 1, bestScore: -1, createdAt: 1 },
       name: 'game_difficulty_best_score_desc',
-    },
-  ])
-}
-
-const ensureContributorsIndexes = async () => {
-  await contributorsCollection.createIndexes([
-    {
-      key: { githubId: 1 },
-      unique: true,
-      name: 'github_id_unique',
-    },
-    {
-      key: { isActive: 1, contributions: -1, login: 1 },
-      name: 'active_contributions_desc_login',
     },
   ])
 }
@@ -58,6 +43,5 @@ const ensureFeedbackIndexes = async () => {
 export const ensureDatabaseIndexes = async () => {
   await ensureResultsIndexes()
   await ensureLeaderboardIndexes()
-  await ensureContributorsIndexes()
   await ensureFeedbackIndexes()
 }

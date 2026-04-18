@@ -1,28 +1,37 @@
+import type { ObjectId } from 'mongodb';
 import { recordLeaderboardResult } from '../leaderboard/service'
-import { findResultsByUser, insertResult } from './repository'
-import { serializeGameResult } from './serializers'
-import type { CreateResultInput, ListUserResultsFilters } from './schema'
+import { resultsDAL } from './dal'
+import { serializeResult } from './serializers'
 
 export const createResult = async (
-  input: CreateResultInput,
-  options: { displayName: string },
+  input: { userId: ObjectId; gameId: ObjectId; score: number; difficulty: string },
+  { displayName }: { displayName: string },
 ) => {
-  const result = await insertResult(input)
-
-  await recordLeaderboardResult({
-    userId: result.userId,
-    displayName: options.displayName,
-    gameId: result.gameId,
-    difficulty: result.difficulty,
-    score: result.score,
-    resultCreatedAt: result.createdAt,
+  const doc = await resultsDAL.create({
+    ...input,
+    createdAt: new Date(),
   })
 
-  return serializeGameResult(result)
+  const isNewPB = await recordLeaderboardResult({
+    userId: doc.userId,
+    gameId: doc.gameId,
+    difficulty: doc.difficulty,
+    bestScore: doc.score,
+    displayName,
+    createdAt: doc.createdAt,
+  })
+
+  return {
+    ...serializeResult(doc),
+    isNewPB,
+  }
 }
 
-export const getUserResults = async (filters: ListUserResultsFilters) => {
-  const results = await findResultsByUser(filters)
-
-  return results.map(serializeGameResult)
+export const getUserResults = async (filters: {
+  userId: ObjectId
+  gameId?: ObjectId
+  limit: number
+}) => {
+  const docs = await resultsDAL.findByUser(filters)
+  return docs.map(serializeResult)
 }

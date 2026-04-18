@@ -1,21 +1,23 @@
 import { Elysia, t } from 'elysia'
 
+import { requireSession } from '../auth/session'
+
 import {
   createResultBodySchema,
+  createResultResponseSchema,
   myResultsQuerySchema,
   resultResponseSchema,
 } from './schema'
-import { requireSession } from '../auth/session'
 import { createResult, getUserResults } from './service'
 
 export const resultRoutes = new Elysia({ prefix: '/api/results' })
   .post(
     '/',
-    async ({ body, request: { headers }, set }) => {
+    async ({ body, request: { headers } }) => {
       const { user } = await requireSession(headers)
-      const displayName = user.name?.trim() || user.email || user.id
+      const displayName = user.name
 
-      const result = await createResult(
+      return createResult(
         {
           userId: user.id,
           gameId: body.gameId,
@@ -24,18 +26,13 @@ export const resultRoutes = new Elysia({ prefix: '/api/results' })
         },
         { displayName },
       )
-
-      set.status = 201
-
-      return result
     },
     {
       body: createResultBodySchema,
-      response: {
-        201: resultResponseSchema,
-      },
+      response: createResultResponseSchema,
     },
   )
+
   .get(
     '/me',
     async ({ request: { headers }, query }) => {

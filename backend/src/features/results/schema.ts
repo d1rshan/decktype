@@ -1,43 +1,32 @@
 import { t } from 'elysia'
-
-export type CreateResultInput = {
-  userId: string
-  gameId: string
-  score: number
-  difficulty: string
-}
-
-export type ListUserResultsFilters = {
-  userId: string
-  gameId?: string
-  limit: number
-}
-
-export type ResultResponse = {
-  id: string
-  userId: string
-  gameId: string
-  score: number
-  difficulty: string
-  createdAt: string
-}
+import { TObjectId } from '../../lib/object-id'
 
 export const createResultBodySchema = t.Object({
-  gameId: t.String({ minLength: 1 }),
+  gameId: TObjectId,
   score: t.Number(),
   difficulty: t.String({ minLength: 1 }),
 })
 
 export const myResultsQuerySchema = t.Object({
-  gameId: t.Optional(t.String({ minLength: 1 })),
+  gameId: t.Optional(TObjectId),
   limit: t.Optional(t.Numeric({ minimum: 1, maximum: 100, default: 20 })),
 })
 
-export const resultResponseSchema = t.Object({
-  id: t.String(),
-  userId: t.String(),
-  gameId: t.String(),
+// Base schema for shared properties
+const baseResultSchema = {
+  id: TObjectId,
+  userId: TObjectId,
+  gameId: TObjectId,
   score: t.Number(),
   difficulty: t.String(),
-  createdAt: t.String(),
+  createdAt: t.Date(),
+}
+
+export const resultResponseSchema = t.Object({
+  ...baseResultSchema,
+})
+
+export const createResultResponseSchema = t.Object({
+  ...baseResultSchema,
+  isNewPB: t.Boolean(),
 })
