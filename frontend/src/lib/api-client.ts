@@ -15,133 +15,72 @@ const treaty = edenTreaty<AppContract>(backendUrl, {
 
 export const { api } = treaty
 
-type EdenSuccess<T> = {
-  data: T
-  error: null
-}
+const DEFAULT_ERROR_MESSAGE = 'Something went wrong.'
 
-type EdenFailure = {
-  data: null
-  error: {
-    status: unknown
-    value: unknown
-  }
-}
-
-type ApiErrorBody = {
-  code?: unknown
-  message?: unknown
-}
-
-const getApiErrorBody = (error: EdenFailure['error']): ApiErrorBody | null => {
-  if (!error.value || typeof error.value !== 'object') {
-    return null
-  }
-
-  return error.value as ApiErrorBody
-}
-
-const getApiErrorMessage = (error: EdenFailure['error']) => {
-  if (typeof error.value === 'string') {
-    return error.value
-  }
-
-  const body = getApiErrorBody(error)
-
-  if (typeof body?.message === 'string') {
-    return body.message
-  }
-
-  if (error.value && typeof error.value === 'object' && 'error' in error.value) {
-    const message = error.value.error
-
-    if (typeof message === 'string') {
-      return message
-    }
-  }
-
-  if (typeof error.status === 'number') {
-    return `Request failed with status ${error.status}`
-  }
-
-  return 'Request failed.'
-}
-
-export class ApiClientError extends Error {
+export class ApiError extends Error {
   readonly status?: number
   readonly code?: string
-  readonly causeValue: unknown
 
-  constructor(error: EdenFailure['error'] | { message: string; causeValue: unknown }) {
-    super('status' in error ? getApiErrorMessage(error) : error.message)
-    const body = 'status' in error ? getApiErrorBody(error) : null
-
-    this.name = 'ApiClientError'
-    this.status =
-      'status' in error && typeof error.status === 'number'
-        ? error.status
-        : undefined
-    this.code = typeof body?.code === 'string' ? body.code : undefined
-    this.causeValue = 'status' in error ? error.value : error.causeValue
+  constructor(message: string, status?: number, code?: string) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+    this.code = code
   }
 }
 
-export const unwrapEdenResponse = <T>(
-  response: EdenSuccess<T> | EdenFailure,
-) => {
-  if (response.error) {
-    throw new ApiClientError(response.error)
-  }
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === 'string' && value.trim().length > 0
 
-  return response.data
-}
+// Eden response contract used by frontend:
+// - success: { data, error: null }
+// - server error: { data: null, error: { status, value: { code, message } } }
+// - network failure: promise rejects
+export const unwrap = async <T>(
+  promise: Promise<{ data: T | null; error: any }>,
+): Promise<T> => {
+  let response: { data: T | null; error: any }
 
-export const request = async <T>(
-  promise: Promise<EdenSuccess<T> | EdenFailure>,
-) => {
   try {
-    const response = await promise
-
-    return unwrapEdenResponse(response)
-  } catch (error) {
-    if (error instanceof ApiClientError) {
-      throw error
-    }
-
-    if (error instanceof Error) {
-      throw new ApiClientError({
-        message: 'Unable to reach the server.',
-        causeValue: error,
-      })
-    }
-
-    throw new ApiClientError({
-      message: 'Unable to reach the server.',
-      causeValue: error,
-    })
+    response = await promise
   }
+  catch {
+    throw new ApiError('Unable to reach the server.')
+  }
+
+  const { data, error } = response
+
+  if (error) {
+    const body = error.value
+    const message =
+      (typeof body === 'object' && isNonEmptyString(body?.message) && body.message) ||
+      (typeof body === 'object' && isNonEmptyString(body?.error) && body.error) ||
+      (isNonEmptyString(body) ? body : DEFAULT_ERROR_MESSAGE)
+
+    throw new ApiError(String(message), error.status, body?.code)
+  }
+
+  return data as T
 }
 
-export const getErrorMessage = (error: unknown, fallback: string) => {
-  if (error instanceof ApiClientError) {
+export const getErrorMessage = (error: unknown) => {
+  if (error instanceof ApiError) {
     return error.message
   }
 
-  if (error instanceof Error && error.message.trim()) {
+  if (error instanceof Error && isNonEmptyString(error.message)) {
     return error.message
   }
 
-  if (typeof error === 'string' && error.trim()) {
+  if (isNonEmptyString(error)) {
     return error
   }
 
-  return fallback
+  return DEFAULT_ERROR_MESSAGE
 }
 
-export const toastApiError = (error: unknown, fallback: string) => {
-  const message = getErrorMessage(error, fallback)
-
+export const toastApiError = (error: unknown) => {
+  const message = getErrorMessage(error)
   toast.error(message)
-
   return message
 }

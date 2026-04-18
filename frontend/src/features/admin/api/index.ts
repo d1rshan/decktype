@@ -1,23 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/solid-query'
 
-import { feedbackKeys } from '@/features/feedback/api/options'
-import { toastApiError } from '@/lib/api-client'
-import {
-  adminDeleteFeedbackMutationOptions,
-  adminKeys,
-  adminUsersCountQueryOptions,
-  adminUsersListQueryOptions,
-} from './options'
+import { feedbackKeys } from '@/features/feedback/api'
+import { api, toastApiError, unwrap } from '@/lib/api-client'
+
+export const adminKeys = {
+  all: ['admin'] as const,
+  usersCount: ['admin', 'users-count'] as const,
+  usersList: ['admin', 'users-list'] as const,
+}
 
 export const useAdminUsersCountQuery = () =>
   useQuery(() => ({
-    ...adminUsersCountQueryOptions(),
+    queryKey: adminKeys.usersCount,
+    queryFn: () => unwrap(api.admin.users.count.get()),
     retry: false,
   }))
 
 export const useAdminUsersListQuery = () =>
   useQuery(() => ({
-    ...adminUsersListQueryOptions(),
+    queryKey: adminKeys.usersList,
+    queryFn: () => unwrap(api.admin.users.get()),
     retry: false,
   }))
 
@@ -25,13 +27,13 @@ export const useAdminDeleteFeedbackMutation = () => {
   const client = useQueryClient()
 
   return useMutation(() => ({
-    ...adminDeleteFeedbackMutationOptions(),
+    mutationFn: (id: string) => unwrap(api.admin.feedback[id].delete()),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: feedbackKeys.all })
       void client.invalidateQueries({ queryKey: adminKeys.all })
     },
     onError: (error) => {
-      toastApiError(error, 'unable to delete message.')
+      toastApiError(error)
     },
   }))
 }

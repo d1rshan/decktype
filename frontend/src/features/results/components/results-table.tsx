@@ -1,12 +1,9 @@
 import { Table, type TableColumn } from '@/components/table'
-import { Match, Switch } from 'solid-js'
-
-import { useMyResultsQuery } from '@/features/results/api/hooks'
+import { useMyResultsQuery } from '@/features/results/api'
 import { getGameName } from '@/features/games/utils'
-import { getErrorMessage } from '@/lib/api-client'
 import { authClient } from '@/lib/auth-client'
 import { formatDateTime } from '@/lib/utils'
-import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { QueryState } from '@/components/ui/query-state'
 
 type ResultsTableRow = NonNullable<ReturnType<typeof useMyResultsQuery>['data']>[number]
 
@@ -41,32 +38,17 @@ function ResultsTable() {
   })
 
   return (
-    <Switch>
-      <Match when={resultsQuery.isPending}>
-        <div class="flex min-h-32 items-center justify-center px-4 py-4">
-          <LoadingSpinner />
-        </div>
-      </Match>
-
-      <Match when={resultsQuery.error}>
-        <div class="rounded-lg bg-(--sub-alt) px-4 py-4 text-(--error)">
-          <p class="text-base leading-normal">{getErrorMessage(resultsQuery.error, 'Unable to load results.')}</p>
-        </div>
-      </Match>
-
-      <Match when={resultsQuery.data && resultsQuery.data.length > 0}>
+    <QueryState
+      query={resultsQuery}
+      emptyMessage="no results yet"
+    >
+      {(results) => (
         <Table
           columns={columns}
-          rows={resultsQuery.data ?? []}
+          rows={results}
         />
-      </Match>
-
-      <Match when>
-        <div class="rounded-lg bg-(--sub-alt) px-4 py-4">
-          <p class="text-base leading-normal">no results yet</p>
-        </div>
-      </Match>
-    </Switch>
+      )}
+    </QueryState>
   )
 }
 

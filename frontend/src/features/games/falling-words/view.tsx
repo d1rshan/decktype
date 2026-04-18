@@ -1,6 +1,6 @@
 import { Globe, Keyboard } from 'lucide-solid'
 import type { GameViewProps } from '@/features/games/types'
-import { useCreateResultMutation } from '@/features/results/api/hooks'
+import { useCreateResultMutation } from '@/features/results/api'
 import { authClient } from '@/lib/auth-client'
 import { DifficultySelector } from '../components/difficulty-selector'
 import FallingWordsField from './components/falling-words-field'

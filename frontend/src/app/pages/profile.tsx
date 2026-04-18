@@ -44,7 +44,7 @@ function ProfilePage(props: ProfileProps) {
       setStatusMessage('Signed out.')
     }
     catch (error) {
-      setErrorMessage(getErrorMessage(error, 'Unable to sign out.'))
+      setErrorMessage(getErrorMessage(error))
     }
     finally {
       setIsSigningOut(false)

@@ -45,7 +45,7 @@ export function LoginForm(props: LoginFormProps) {
         props.onSuccess?.()
       }
       catch (error) {
-        setErrorMessage(getErrorMessage(error, 'Unable to sign in.'))
+        setErrorMessage(getErrorMessage(error))
       }
     },
   }))

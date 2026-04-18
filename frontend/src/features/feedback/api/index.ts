@@ -1,30 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/solid-query'
-import { toastApiError } from '@/lib/api-client'
-import type { Feedback } from './contract'
-import {
-  createFeedbackMutationOptions,
-  feedbackQueryOptions,
-  feedbackKeys,
-  upvoteFeedbackMutationOptions,
-  downvoteFeedbackMutationOptions
-} from './options'
+
+import { api, toastApiError, unwrap } from '@/lib/api-client'
+
+import type { CreateFeedbackInput, Feedback } from './contract'
+
+export const feedbackKeys = {
+  all: ['feedback'] as const,
+}
 
 export const useFeedbackQuery = (options: { enabled?: () => boolean } = {}) =>
   useQuery(() => ({
-    ...feedbackQueryOptions(),
+    queryKey: feedbackKeys.all,
+    queryFn: () => unwrap(api.feedback.get()),
     enabled: options.enabled?.() ?? true,
-    // refetchInterval: 10000, // Refetch every 10s for chat-like feel
   }))
 
 export const useCreateFeedbackMutation = () => {
   const client = useQueryClient()
   return useMutation(() => ({
-    ...createFeedbackMutationOptions(),
+    mutationFn: (input: CreateFeedbackInput) => unwrap(api.feedback.post(input)),
     onSuccess: () => {
       return client.invalidateQueries({ queryKey: feedbackKeys.all })
     },
     onError: (error) => {
-      toastApiError(error, 'unable to send message.')
+      toastApiError(error)
     },
   }))
 }
@@ -32,7 +31,7 @@ export const useCreateFeedbackMutation = () => {
 export const useUpvoteFeedbackMutation = (getUserId: () => string | undefined) => {
   const client = useQueryClient()
   return useMutation(() => ({
-    ...upvoteFeedbackMutationOptions(),
+    mutationFn: (id: string) => unwrap(api.feedback[id].upvote.post()),
     onMutate: async (id) => {
       await client.cancelQueries({ queryKey: feedbackKeys.all })
 
@@ -71,7 +70,7 @@ export const useUpvoteFeedbackMutation = (getUserId: () => string | undefined) =
       if (context?.previous) {
         client.setQueryData(feedbackKeys.all, context.previous)
       }
-      toastApiError(error, 'unable to upvote.')
+      toastApiError(error)
     },
   }))
 }
@@ -79,7 +78,7 @@ export const useUpvoteFeedbackMutation = (getUserId: () => string | undefined) =
 export const useDownvoteFeedbackMutation = (getUserId: () => string | undefined) => {
   const client = useQueryClient()
   return useMutation(() => ({
-    ...downvoteFeedbackMutationOptions(),
+    mutationFn: (id: string) => unwrap(api.feedback[id].downvote.post()),
     onMutate: async (id) => {
       await client.cancelQueries({ queryKey: feedbackKeys.all })
 
@@ -118,7 +117,7 @@ export const useDownvoteFeedbackMutation = (getUserId: () => string | undefined)
       if (context?.previous) {
         client.setQueryData(feedbackKeys.all, context.previous)
       }
-      toastApiError(error, 'unable to downvote.')
+      toastApiError(error)
     },
   }))
 }

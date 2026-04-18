@@ -1,6 +1,6 @@
 import { For, Show } from 'solid-js'
 
-import { useContributorsQuery } from '@/features/contributors/api/hooks'
+import { useContributorsQuery } from '@/features/contributors/api'
 import { getErrorMessage } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
@@ -85,7 +85,7 @@ function AboutPage() {
 
           <Show when={contributorsQuery.error}>
             <div class="text-(--error)">
-              <p class="text-base leading-normal">{getErrorMessage(contributorsQuery.error, 'Unable to load contributors.')}</p>
+              <p class="text-base leading-normal">{getErrorMessage(contributorsQuery.error)}</p>
             </div>
           </Show>
 

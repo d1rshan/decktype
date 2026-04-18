@@ -2,15 +2,15 @@ import { For, Show, createMemo } from 'solid-js'
 
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
-import { ApiClientError, getErrorMessage } from '@/lib/api-client'
+import { ApiError, getErrorMessage } from '@/lib/api-client'
 import { formatDateTime } from '@/lib/utils'
-import { useFeedbackQuery } from '@/features/feedback/api/hooks'
-import { useSyncContributorsMutation } from '@/features/contributors/api/hooks'
+import { useFeedbackQuery } from '@/features/feedback/api'
+import { useSyncContributorsMutation } from '@/features/contributors/api'
 import {
   useAdminDeleteFeedbackMutation,
   useAdminUsersCountQuery,
   useAdminUsersListQuery,
-} from '@/features/admin/api/hooks'
+} from '@/features/admin/api'
 
 function AdminPage() {
   const session = authClient.useSession()
@@ -26,7 +26,7 @@ function AdminPage() {
   )
 
   const isForbiddenError = (error: unknown) =>
-    error instanceof ApiClientError
+    error instanceof ApiError
     && (error.status === 403 || error.code === 'FORBIDDEN')
 
   const isUnauthorized = createMemo(() =>
@@ -84,7 +84,7 @@ function AdminPage() {
 
               <Show when={usersCountQuery.error || usersListQuery.error}>
                 <p class="text-base leading-normal text-(--error)">
-                  {getErrorMessage(usersCountQuery.error ?? usersListQuery.error, 'Unable to load admin data.')}
+                  {getErrorMessage(usersCountQuery.error ?? usersListQuery.error)}
                 </p>
               </Show>
 

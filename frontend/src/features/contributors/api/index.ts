@@ -1,8 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/solid-query'
 import type { Accessor } from 'solid-js'
 
-import { toastApiError } from '@/lib/api-client'
-import { contributorsKeys, contributorsQueryOptions, syncContributorsMutationOptions } from './options'
+import { api, toastApiError, unwrap } from '@/lib/api-client'
+
+export const contributorsKeys = {
+  all: ['contributors'] as const,
+  list: (limit = 100) => ['contributors', limit] as const,
+}
 
 export const useContributorsQuery = (options?: {
   limit?: Accessor<number | undefined>
@@ -10,19 +14,29 @@ export const useContributorsQuery = (options?: {
   useQuery(() => {
     const limit = options?.limit?.() ?? 100
 
-    return contributorsQueryOptions(limit)
+    return {
+      queryKey: contributorsKeys.list(limit),
+      queryFn: () =>
+        unwrap(
+          api.contributors.get({
+            $query: {
+              limit,
+            },
+          }),
+        ),
+    }
   })
 
 export const useSyncContributorsMutation = () => {
   const client = useQueryClient()
 
   return useMutation(() => ({
-    ...syncContributorsMutationOptions(),
+    mutationFn: () => unwrap(api.admin.contributors.sync.post()),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: contributorsKeys.all })
     },
     onError: (error) => {
-      toastApiError(error, 'unable to sync contributors.')
+      toastApiError(error)
     },
   }))
 }

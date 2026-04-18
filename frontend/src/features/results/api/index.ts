@@ -1,14 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/solid-query'
 import type { Accessor } from 'solid-js'
 
-import { toastApiError } from '@/lib/api-client'
+import { api, toastApiError, unwrap } from '@/lib/api-client'
 import { toast } from '@/lib/toast'
 
-import {
-  createResultMutationOptions,
-  myResultsQueryOptions,
-  resultKeys,
-} from './options'
+import type { CreateResultInput } from './contract'
+
+export const resultKeys = {
+  all: ['results'] as const,
+  mine: (gameId?: string, limit = 20) =>
+    ['results', 'mine', gameId ?? 'all', limit] as const,
+}
 
 export const useMyResultsQuery = (
   options: {
@@ -22,7 +24,16 @@ export const useMyResultsQuery = (
     const limit = options.limit?.() ?? 20
 
     return {
-      ...myResultsQueryOptions(gameId, limit),
+      queryKey: resultKeys.mine(gameId, limit),
+      queryFn: () =>
+        unwrap(
+          api.results.me.get({
+            $query: {
+              ...(gameId ? { gameId } : {}),
+              limit,
+            },
+          }),
+        ),
       enabled: options.enabled?.() ?? true,
     }
   })
@@ -31,7 +42,7 @@ export const useCreateResultMutation = () => {
   const client = useQueryClient()
 
   return useMutation(() => ({
-    ...createResultMutationOptions(),
+    mutationFn: (input: CreateResultInput) => unwrap(api.results.post(input)),
     onSuccess: () => {
       toast.success('Result saved.')
 
@@ -40,7 +51,7 @@ export const useCreateResultMutation = () => {
       })
     },
     onError: (error) => {
-      toastApiError(error, 'Unable to save result.')
+      toastApiError(error)
     },
   }))
 }

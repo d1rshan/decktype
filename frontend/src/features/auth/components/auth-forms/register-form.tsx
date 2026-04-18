@@ -49,7 +49,7 @@ export function RegisterForm(props: RegisterFormProps) {
         props.onSuccess?.()
       }
       catch (error) {
-        setErrorMessage(getErrorMessage(error, 'Unable to create account.'))
+        setErrorMessage(getErrorMessage(error))
       }
     },
   }))

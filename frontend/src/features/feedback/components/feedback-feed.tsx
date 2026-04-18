@@ -1,14 +1,14 @@
 import { createSignal, For, Show } from 'solid-js'
 import { ArrowBigDown, ArrowBigUp, SendHorizontal } from 'lucide-solid'
 import { Textarea } from '@/components/ui/textarea'
-import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { authClient } from '@/lib/auth-client'
+import { QueryState } from '@/components/ui/query-state'
 import { 
   useFeedbackQuery, 
   useCreateFeedbackMutation, 
   useUpvoteFeedbackMutation, 
   useDownvoteFeedbackMutation 
-} from '../api/hooks'
+} from '../api'
 
 type VoteControlProps = {
   count: number
@@ -90,54 +90,51 @@ export function FeedbackFeed() {
       </div>
 
       <div class="flex flex-col gap-2.5 max-h-[360px] overflow-y-auto pr-1.5 scrollbar-thin scrollbar-thumb-(--sub)/20">
-        <Show when={feedbackQuery.isPending}>
-          <div class="flex justify-center py-8 text-(--sub)">
-            <LoadingSpinner />
-          </div>
-        </Show>
+        <QueryState
+          query={feedbackQuery}
+          emptyMessage="no messages yet. be the first!"
+        >
+          {(data) => (
+            <For each={[...data].reverse()}>
+              {(item) => (
+                <div class="group relative flex flex-col gap-1.5 rounded-lg bg-(--sub-alt) px-3 py-2.5 transition-colors hover:bg-(--sub-alt)/80">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2 truncate">
+                      <span class="text-xs font-bold text-(--main)">
+                        {item.userDisplayName}
+                      </span>
+                      <span class="text-[10px] text-(--sub)">
+                        {new Date(item.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
 
-        <For each={[...(feedbackQuery.data ?? [])].reverse()}>
-          {(item) => (
-            <div class="group relative flex flex-col gap-1.5 rounded-lg bg-(--sub-alt) px-3 py-2.5 transition-colors hover:bg-(--sub-alt)/80">
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2 truncate">
-                  <span class="text-xs font-bold text-(--main)">
-                    {item.userDisplayName}
-                  </span>
-                  <span class="text-[10px] text-(--sub)">
-                    {new Date(item.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
-                  </span>
+                    <div class="flex items-center gap-3">
+                      <VoteControl
+                        tone="up"
+                        count={item.upvotedBy?.length ?? 0}
+                        active={(item.upvotedBy ?? []).includes(currentUserId() ?? '')}
+                        disabled={upvoteMutation.isPending || !currentUserId()}
+                        onClick={() => upvoteMutation.mutate(item.id)}
+                      />
+
+                      <VoteControl
+                        tone="down"
+                        count={item.downvotedBy?.length ?? 0}
+                        active={(item.downvotedBy ?? []).includes(currentUserId() ?? '')}
+                        disabled={downvoteMutation.isPending || !currentUserId()}
+                        onClick={() => downvoteMutation.mutate(item.id)}
+                      />
+                    </div>
+                  </div>
+
+                  <p class="whitespace-pre-wrap text-sm leading-relaxed text-(--text)">
+                    {item.content}
+                  </p>
                 </div>
-
-                <div class="flex items-center gap-3">
-                  <VoteControl
-                    tone="up"
-                    count={item.upvotedBy?.length ?? 0}
-                    active={(item.upvotedBy ?? []).includes(currentUserId() ?? '')}
-                    disabled={upvoteMutation.isPending || !currentUserId()}
-                    onClick={() => upvoteMutation.mutate(item.id)}
-                  />
-
-                  <VoteControl
-                    tone="down"
-                    count={item.downvotedBy?.length ?? 0}
-                    active={(item.downvotedBy ?? []).includes(currentUserId() ?? '')}
-                    disabled={downvoteMutation.isPending || !currentUserId()}
-                    onClick={() => downvoteMutation.mutate(item.id)}
-                  />
-                </div>
-              </div>
-
-              <p class="whitespace-pre-wrap text-sm leading-relaxed text-(--text)">
-                {item.content}
-              </p>
-            </div>
+              )}
+            </For>
           )}
-        </For>
-
-        <Show when={!feedbackQuery.isPending && (feedbackQuery.data?.length ?? 0) === 0}>
-          <div class="py-8 text-center text-(--sub)">no messages yet. be the first!</div>
-        </Show>
+        </QueryState>
       </div>
 
       <form onSubmit={handleSubmit} class="mt-6 flex flex-col gap-4">
