@@ -1,20 +1,19 @@
 {
-  "name": "dk-the-name-yet",
+  "name": "decktype",
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "concurrently \"bun run --cwd backend dev\" \"bun run --cwd frontend dev\""
+    "dev": "concurrently \"bun run --cwd apps/backend dev\" \"bun run --cwd apps/frontend dev\""
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "concurrently": "^9.2.1"
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "concurrently": "^9.2.1",
-    "tailwind-merge": "^3.5.0"
   }
 }

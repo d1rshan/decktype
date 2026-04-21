@@ -1,0 +1,33 @@
+{
+  "name": "@decktype/frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "check:typography": "sh -c '! rg -n \"text-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)\\\\b|text-\\\\[[0-9]|t-(label-strong|input|button-lg|metric-md|metric-lg|display-hero|display-score|display-sm|display-md|display-lg)\\\\b\" src -g \"*.tsx\"'"
+  },
+  "dependencies": {
+    "@decktype/api": "workspace:*",
+    "@elysiajs/eden": "^1.4.9",
+    "@solidjs/router": "^0.16.1",
+    "@tailwindcss/vite": "^4.2.2",
+    "@tanstack/solid-form": "^1.28.6",
+    "@tanstack/solid-query": "^5.96.2",
+    "better-auth": "^1.5.6",
+    "clsx": "^2.1.1",
+    "lucide-solid": "^1.7.0",
+    "solid-js": "^1.9.11",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.1",
+    "vite-plugin-solid": "^2.11.11"
+  }
+}
