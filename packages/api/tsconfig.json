@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ESNext"],
-    "types": ["bun"]
+    "lib": ["ESNext"]
   },
   "include": ["src"]
 }

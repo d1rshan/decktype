@@ -11,7 +11,7 @@
     "dev": "concurrently \"bun run --cwd apps/backend dev\" \"bun run --cwd apps/frontend dev\"",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "lint": "oxlint ."
+    "lint": "oxlint"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

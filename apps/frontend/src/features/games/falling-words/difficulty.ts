@@ -28,9 +28,9 @@ export const difficultyKeys: DifficultyKey[] = difficultyOptions.map(
   (option) => option.key,
 );
 
-export function getDifficulty(key: DifficultyKey) {
+export function getDifficulty(key: DifficultyKey): DifficultyConfig {
   return (
     difficultyOptions.find((option) => option.key === key) ??
-    difficultyOptions[0]
+    difficultyOptions[0]!
   );
 }

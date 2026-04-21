@@ -9,7 +9,9 @@ import type { GameId } from "@/features/games/types";
 const difficulties: LeaderboardDifficulty[] = ["easy", "medium", "hard"];
 
 function LeaderboardPage() {
-  const [gameId, setGameId] = createSignal<GameId>(gameRegistry[0].id);
+  const [gameId, setGameId] = createSignal<GameId>(
+    gameRegistry[0]?.id ?? "falling-words",
+  );
 
   const [difficulty, setDifficulty] =
     createSignal<LeaderboardDifficulty>("easy");

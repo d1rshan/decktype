@@ -15,6 +15,9 @@ export function createFallingWord(
   difficulty: DifficultyConfig,
 ) {
   const text = words[Math.floor(Math.random() * words.length)];
+  if (!text) {
+    throw new Error("createFallingWord requires at least one word");
+  }
   const estimatedWidth = estimateWordWidth(text);
   const safeWidth = Math.max(width - estimatedWidth - 24, 24);
   const x = randomBetween(24, safeWidth);
