@@ -1,8 +1,9 @@
 import { t } from "elysia";
-import { TObjectId } from "../../lib/object-id";
+
+import { MongoIdString } from "../../lib/object-id";
 
 export const leaderboardQuerySchema = t.Object({
-  gameId: TObjectId,
+  gameId: MongoIdString,
   difficulty: t.Optional(t.String({ minLength: 1 })),
   limit: t.Optional(t.Numeric({ minimum: 1, maximum: 100, default: 20 })),
 });

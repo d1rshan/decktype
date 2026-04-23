@@ -1,5 +1,7 @@
 import { t } from "elysia";
 
+import { MongoIdString } from "../../lib/object-id";
+
 export const usersCountResponseSchema = t.Object({
   count: t.Number(),
 });
@@ -12,7 +14,7 @@ export const adminUserResponseSchema = t.Object({
 });
 
 export const deleteFeedbackParamsSchema = t.Object({
-  id: t.String({ minLength: 1 }),
+  id: MongoIdString,
 });
 
 export const deleteFeedbackResponseSchema = t.Object({

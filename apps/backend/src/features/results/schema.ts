@@ -1,14 +1,15 @@
 import { t } from "elysia";
-import { TObjectId } from "../../lib/object-id";
+
+import { MongoIdString } from "../../lib/object-id";
 
 export const createResultBodySchema = t.Object({
-  gameId: TObjectId,
+  gameId: MongoIdString,
   score: t.Number(),
   difficulty: t.String({ minLength: 1 }),
 });
 
 export const myResultsQuerySchema = t.Object({
-  gameId: t.Optional(TObjectId),
+  gameId: t.Optional(MongoIdString),
   limit: t.Optional(t.Numeric({ minimum: 1, maximum: 100, default: 20 })),
 });
 
