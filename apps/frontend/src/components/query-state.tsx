@@ -1,5 +1,5 @@
 import { Match, Show, Switch, type JSX } from "solid-js";
-import { LoadingSpinner } from "./loading-spinner";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { getErrorMessage } from "@/lib/api-client";
 
 interface QueryStateProps<T> {
@@ -10,7 +10,6 @@ interface QueryStateProps<T> {
     data: T | undefined;
   };
   children: (data: T) => JSX.Element;
-  /** Optional message when data is empty (only if data is an array) */
   emptyMessage?: string;
 }
 

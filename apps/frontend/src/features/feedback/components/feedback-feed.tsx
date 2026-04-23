@@ -2,7 +2,7 @@ import { createSignal, For, Show } from "solid-js";
 import { ArrowBigDown, ArrowBigUp, SendHorizontal } from "lucide-solid";
 import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth-client";
-import { QueryState } from "@/components/ui/query-state";
+import { QueryState } from "@/components/query-state";
 import {
   useFeedbackQuery,
   useCreateFeedbackMutation,
