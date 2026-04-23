@@ -1,19 +1,13 @@
 import { t } from "elysia";
-import { ObjectId } from "mongodb";
 
-export type CreateFeedbackInput = {
-  content: string;
-  userId: ObjectId;
-  userDisplayName: string;
-};
-
-export type VoteFeedbackInput = {
-  feedbackId: string;
-  userId: ObjectId;
-};
+import { MongoIdString } from "../../lib/object-id";
 
 export const createFeedbackBodySchema = t.Object({
   content: t.String({ minLength: 1, maxLength: 2000 }),
+});
+
+export const feedbackParamsSchema = t.Object({
+  id: MongoIdString,
 });
 
 export const feedbackResponseSchema = t.Object({

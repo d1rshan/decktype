@@ -31,11 +31,5 @@ export const requireAdminSession = async (headers: Headers) => {
     );
   }
 
-  return {
-    ...currentSession,
-    user: {
-      ...currentSession.user,
-      id: new ObjectId(currentSession.user.id), // convert once here
-    },
-  };
+  return currentSession;
 };

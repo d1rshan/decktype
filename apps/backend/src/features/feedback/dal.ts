@@ -19,13 +19,13 @@ export class FeedbackDAL {
       .toArray();
   }
 
-  async updateVotes(id: string, userId: ObjectId, type: "up" | "down") {
+  async updateVotes(id: ObjectId, userId: ObjectId, type: "up" | "down") {
     const isUpvote = type === "up";
     const targetField = isUpvote ? "upvotedBy" : "downvotedBy";
     const oppositeField = isUpvote ? "downvotedBy" : "upvotedBy";
 
     const res = await feedbackCollection.findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      { _id: id },
       [
         {
           $set: {
@@ -48,9 +48,9 @@ export class FeedbackDAL {
     return res;
   }
 
-  async delete(id: string) {
+  async delete(id: ObjectId) {
     const result = await feedbackCollection.deleteOne({
-      _id: new ObjectId(id),
+      _id: id,
     });
     return result.deletedCount > 0;
   }

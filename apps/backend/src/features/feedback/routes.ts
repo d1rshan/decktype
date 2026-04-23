@@ -1,6 +1,11 @@
 import { Elysia, t } from "elysia";
 
-import { createFeedbackBodySchema, feedbackResponseSchema } from "./schema";
+import { parseObjectId } from "../../lib/object-id";
+import {
+  createFeedbackBodySchema,
+  feedbackParamsSchema,
+  feedbackResponseSchema,
+} from "./schema";
 import {
   submitFeedback,
   listFeedback,
@@ -40,9 +45,13 @@ export const feedbackRoutes = new Elysia({ prefix: "/api/feedback" })
     async ({ params: { id }, request: { headers } }) => {
       const { user } = await requireSession(headers);
 
-      return upvoteFeedback({ feedbackId: id, userId: user.id });
+      return upvoteFeedback({
+        feedbackId: parseObjectId(id, "feedback id"),
+        userId: user.id,
+      });
     },
     {
+      params: feedbackParamsSchema,
       response: feedbackResponseSchema,
     },
   )
@@ -51,9 +60,13 @@ export const feedbackRoutes = new Elysia({ prefix: "/api/feedback" })
     async ({ params: { id }, request: { headers } }) => {
       const { user } = await requireSession(headers);
 
-      return downvoteFeedback({ feedbackId: id, userId: user.id });
+      return downvoteFeedback({
+        feedbackId: parseObjectId(id, "feedback id"),
+        userId: user.id,
+      });
     },
     {
+      params: feedbackParamsSchema,
       response: feedbackResponseSchema,
     },
   );

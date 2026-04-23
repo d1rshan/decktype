@@ -1,8 +1,7 @@
-import { ObjectId } from "mongodb";
 import { ApiError } from "../../lib/errors";
-import type { CreateFeedbackInput, VoteFeedbackInput } from "./schema";
 import { feedbackDAL } from "./dal";
 import { serializeFeedback } from "./serializers";
+import type { CreateFeedbackInput, VoteFeedbackInput } from "./types";
 
 export const submitFeedback = async ({
   content,
@@ -51,11 +50,7 @@ export const downvoteFeedback = async ({
   return serializeFeedback(result);
 };
 
-export const removeFeedback = async (id: string) => {
-  if (!ObjectId.isValid(id)) {
-    throw ApiError.badRequest("Invalid feedback id.");
-  }
-
+export const removeFeedback = async (id: VoteFeedbackInput["feedbackId"]) => {
   const deleted = await feedbackDAL.delete(id);
 
   if (!deleted) {

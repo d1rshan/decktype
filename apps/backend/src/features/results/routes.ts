@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 
+import { parseObjectId } from "../../lib/object-id";
 import { requireSession } from "../auth/session";
 
 import {
@@ -20,7 +21,7 @@ export const resultRoutes = new Elysia({ prefix: "/api/results" })
       return createResult(
         {
           userId: user.id,
-          gameId: body.gameId,
+          gameId: parseObjectId(body.gameId, "gameId"),
           score: body.score,
           difficulty: body.difficulty,
         },
@@ -40,7 +41,9 @@ export const resultRoutes = new Elysia({ prefix: "/api/results" })
 
       return getUserResults({
         userId: user.id,
-        gameId: query.gameId,
+        gameId: query.gameId
+          ? parseObjectId(query.gameId, "gameId")
+          : undefined,
         limit: query.limit ?? 20,
       });
     },
