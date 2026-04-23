@@ -1,17 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/solid-query";
+import type { Treaty } from "@elysiajs/eden";
 
 import { api, toastApiError, unwrap } from "@/lib/api-client";
-
-import type { CreateFeedbackInput, Feedback } from "./contract";
 
 export const feedbackKeys = {
   all: ["feedback"] as const,
 };
 
+export type Feedback = Treaty.Data<typeof api.feedback.get>[number];
+export type CreateFeedbackInput = Parameters<typeof api.feedback.post>[0];
+
 export const useFeedbackQuery = (options: { enabled?: () => boolean } = {}) =>
   useQuery(() => ({
     queryKey: feedbackKeys.all,
-    queryFn: (): Promise<Feedback[]> => unwrap(api.feedback.get()),
+    queryFn: () => unwrap(api.feedback.get()),
     enabled: options.enabled?.() ?? true,
   }));
 

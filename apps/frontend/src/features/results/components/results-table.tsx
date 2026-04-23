@@ -3,7 +3,7 @@ import { useMyResultsQuery } from "@/features/results/api";
 import { getGameName } from "@/features/games/utils";
 import { authClient } from "@/lib/auth-client";
 import { formatDateTime } from "@/lib/utils";
-import { QueryState } from "@/components/ui/query-state";
+import { QueryState } from "@/components/query-state";
 
 type ResultsTableRow = NonNullable<
   ReturnType<typeof useMyResultsQuery>["data"]

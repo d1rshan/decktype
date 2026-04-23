@@ -4,12 +4,16 @@ import type { Accessor } from "solid-js";
 import { api, toastApiError, unwrap } from "@/lib/api-client";
 import { toast } from "@/lib/toast";
 
-import type { CreateResultInput } from "./contract";
-
 export const resultKeys = {
   all: ["results"] as const,
   mine: (gameId?: string, limit = 20) =>
     ["results", "mine", gameId ?? "all", limit] as const,
+};
+
+type RawCreateResultInput = Parameters<typeof api.results.post>[0];
+
+export type CreateResultInput = Omit<RawCreateResultInput, "gameId"> & {
+  gameId: string;
 };
 
 export const useMyResultsQuery = (
@@ -43,7 +47,7 @@ export const useCreateResultMutation = () => {
 
   return useMutation(() => ({
     mutationFn: (input: CreateResultInput) =>
-      unwrap(api.results.post(input as any)),
+      unwrap(api.results.post(input as unknown as RawCreateResultInput)),
     onSuccess: () => {
       toast.success("Result saved.");
 
