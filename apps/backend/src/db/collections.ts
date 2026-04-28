@@ -5,7 +5,7 @@ import { db } from "./client";
 
 export type ResultDocument = {
   userId: ObjectId;
-  gameId: ObjectId;
+  gameId: string;
   score: number;
   difficulty: string;
   createdAt: Date;
@@ -14,7 +14,7 @@ export type ResultDocument = {
 export type LeaderboardDocument = {
   userId: ObjectId;
   displayName: string;
-  gameId: ObjectId;
+  gameId: string;
   difficulty: string;
   bestScore: number;
   createdAt: Date;

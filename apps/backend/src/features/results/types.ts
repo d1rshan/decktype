@@ -2,14 +2,14 @@ import type { ObjectId } from "mongodb";
 
 export type CreateResultInput = {
   userId: ObjectId;
-  gameId: ObjectId;
+  gameId: string;
   score: number;
   difficulty: string;
 };
 
 export type GetUserResultsInput = {
   userId: ObjectId;
-  gameId?: ObjectId;
+  gameId?: string;
   limit: number;
 };
 

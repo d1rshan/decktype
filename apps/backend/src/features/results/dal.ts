@@ -14,7 +14,7 @@ export class ResultsDAL {
 
   async findByUser(filters: {
     userId: ObjectId;
-    gameId?: ObjectId;
+    gameId?: string;
     limit: number;
   }) {
     return resultsCollection

@@ -6,7 +6,7 @@ export const serializeLeaderboardEntry = (doc: WithId<LeaderboardDocument>) => {
     id: doc._id.toString(),
     userId: doc.userId.toString(),
     displayName: doc.displayName,
-    gameId: doc.gameId.toString(),
+    gameId: doc.gameId,
     difficulty: doc.difficulty,
     bestScore: doc.bestScore,
     createdAt: doc.createdAt,

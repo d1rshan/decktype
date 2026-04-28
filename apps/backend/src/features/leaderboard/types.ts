@@ -2,7 +2,7 @@ import type { ObjectId } from "mongodb";
 
 export type RecordLeaderboardResultInput = {
   userId: ObjectId;
-  gameId: ObjectId;
+  gameId: string;
   difficulty: string;
   bestScore: number;
   displayName: string;
@@ -10,7 +10,7 @@ export type RecordLeaderboardResultInput = {
 };
 
 export type GetLeaderboardInput = {
-  gameId: ObjectId;
+  gameId: string;
   difficulty?: string;
   limit: number;
 };

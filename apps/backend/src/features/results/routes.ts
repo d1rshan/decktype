@@ -21,7 +21,7 @@ export const resultRoutes = new Elysia({ prefix: "/api/results" })
       return createResult(
         {
           userId: parseObjectId(user.id),
-          gameId: parseObjectId(body.gameId),
+          gameId: body.gameId,
           score: body.score,
           difficulty: body.difficulty,
         },
@@ -41,7 +41,7 @@ export const resultRoutes = new Elysia({ prefix: "/api/results" })
 
       return getUserResults({
         userId: parseObjectId(user.id),
-        gameId: query.gameId ? parseObjectId(query.gameId) : undefined,
+        gameId: query.gameId,
         limit: query.limit ?? 20,
       });
     },

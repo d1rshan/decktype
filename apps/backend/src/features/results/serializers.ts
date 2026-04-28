@@ -5,7 +5,7 @@ export const serializeResult = (doc: WithId<ResultDocument>) => {
   return {
     id: doc._id.toString(),
     userId: doc.userId.toString(),
-    gameId: doc.gameId.toString(),
+    gameId: doc.gameId,
     score: doc.score,
     difficulty: doc.difficulty,
     createdAt: doc.createdAt,

@@ -1,5 +1,3 @@
-import type { ObjectId } from "mongodb";
-
 import { leaderboardCollection } from "../../db/collections";
 import type { LeaderboardDocument } from "../../db/collections";
 
@@ -45,7 +43,7 @@ export class LeaderboardDAL {
   }
 
   async find(filters: {
-    gameId: ObjectId;
+    gameId: string;
     difficulty?: string;
     limit: number;
   }) {
