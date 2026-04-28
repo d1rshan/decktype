@@ -1,7 +1,7 @@
 import { createSignal, For, Show } from "solid-js";
 import { ArrowBigDown, ArrowBigUp, SendHorizontal } from "lucide-solid";
 import { Textarea } from "@/components/ui/textarea";
-import { authClient } from "@/lib/auth-client";
+import { useAuthSession } from "@/features/auth/hooks";
 import { QueryState } from "@/components/query-state";
 import {
   useFeedbackQuery,
@@ -54,20 +54,18 @@ function VoteControl(props: VoteControlProps) {
 }
 
 export function FeedbackFeed() {
-  const session = authClient.useSession();
-  const currentUserId = () => session()?.data?.user?.id;
-  const isSignedIn = () => !!currentUserId();
+  const auth = useAuthSession();
   const [content, setContent] = createSignal("");
 
   const feedbackQuery = useFeedbackQuery();
 
   const createMutation = useCreateFeedbackMutation();
-  const upvoteMutation = useUpvoteFeedbackMutation(currentUserId);
-  const downvoteMutation = useDownvoteFeedbackMutation(currentUserId);
+  const upvoteMutation = useUpvoteFeedbackMutation(auth.userId);
+  const downvoteMutation = useDownvoteFeedbackMutation(auth.userId);
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
-    if (!isSignedIn()) return;
+    if (!auth.isAuthenticated()) return;
     if (!content().trim()) return;
 
     createMutation.mutate(
@@ -116,9 +114,9 @@ export function FeedbackFeed() {
                         tone="up"
                         count={item.upvotedBy?.length ?? 0}
                         active={(item.upvotedBy ?? []).some(
-                          (id) => id === (currentUserId() ?? ""),
+                          (id) => id === (auth.userId() ?? ""),
                         )}
-                        disabled={upvoteMutation.isPending || !currentUserId()}
+                        disabled={upvoteMutation.isPending || !auth.userId()}
                         onClick={() => upvoteMutation.mutate(item.id)}
                       />
 
@@ -126,10 +124,10 @@ export function FeedbackFeed() {
                         tone="down"
                         count={item.downvotedBy?.length ?? 0}
                         active={(item.downvotedBy ?? []).some(
-                          (id) => id === (currentUserId() ?? ""),
+                          (id) => id === (auth.userId() ?? ""),
                         )}
                         disabled={
-                          downvoteMutation.isPending || !currentUserId()
+                          downvoteMutation.isPending || !auth.userId()
                         }
                         onClick={() => downvoteMutation.mutate(item.id)}
                       />
@@ -152,7 +150,7 @@ export function FeedbackFeed() {
             value={content()}
             onInput={(e) => setContent(e.currentTarget.value)}
             placeholder={
-              isSignedIn()
+              auth.isAuthenticated()
                 ? "send a message..."
                 : "sign in to send a message..."
             }
@@ -165,14 +163,16 @@ export function FeedbackFeed() {
             aria-label="send message"
             class="absolute right-2.5 bottom-2.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-(--main) text-(--bg) transition disabled:cursor-not-allowed disabled:opacity-40"
             disabled={
-              createMutation.isPending || !content().trim() || !isSignedIn()
+              createMutation.isPending ||
+              !content().trim() ||
+              !auth.isAuthenticated()
             }
           >
             <SendHorizontal class="h-3.5 w-3.5" stroke-width={2.25} />
           </button>
         </div>
         <div class="flex flex-col items-center gap-2">
-          <Show when={!isSignedIn()}>
+          <Show when={!auth.isAuthenticated()}>
             <p class="text-center text-sm text-(--sub)">
               <a href="/profile" class="underline underline-offset-2">
                 sign in

@@ -1,8 +1,8 @@
 import { Table, type TableColumn } from "@/components/table";
+import { useAuthSession } from "@/features/auth/hooks";
 import { useMyResultsQuery } from "@/features/results/api";
 import type { Result } from "@/features/results/types";
 import { getGameName } from "@/features/games/utils";
-import { authClient } from "@/lib/auth-client";
 import { formatDateTime } from "@/lib/utils";
 import { QueryState } from "@/components/query-state";
 
@@ -30,9 +30,9 @@ const columns: TableColumn<Result>[] = [
 ];
 
 function ResultsTable() {
-  const session = authClient.useSession();
+  const auth = useAuthSession();
   const resultsQuery = useMyResultsQuery({
-    enabled: () => Boolean(session().data?.user),
+    enabled: auth.isAuthenticated,
     limit: () => 12,
   });
 

@@ -1,7 +1,7 @@
 import { For, Show, createMemo } from "solid-js";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { useAuthSession } from "@/features/auth/hooks";
 import { ApiError, getErrorMessage } from "@/lib/api-client";
 import { formatDateTime } from "@/lib/utils";
 import { useFeedbackQuery } from "@/features/feedback/api";
@@ -12,7 +12,7 @@ import {
 } from "@/features/admin/api";
 
 function AdminPage() {
-  const session = authClient.useSession();
+  const auth = useAuthSession();
 
   const usersCountQuery = useAdminUsersCountQuery();
   const usersListQuery = useAdminUsersListQuery();
@@ -38,7 +38,7 @@ function AdminPage() {
   return (
     <div class="w-full min-h-[72vh]">
       <Show
-        when={session().data?.user}
+        when={auth.user()}
         fallback={
           <div class="rounded-lg bg-(--sub-alt) px-5 py-5">
             <p class="text-base leading-normal text-(--sub)">
