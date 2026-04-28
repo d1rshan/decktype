@@ -10,6 +10,17 @@ export const auth = betterAuth({
   secret: env.betterAuthSecret,
   baseURL: env.betterAuthUrl,
   trustedOrigins: [env.frontendOrigin],
+  socialProviders: {
+    // google: {
+    //   clientId: env.googleClientId,
+    //   clientSecret: env.googleClientSecret,
+    // },
+    github: {
+      clientId: env.githubClientId,
+      clientSecret: env.githubClientSecret,
+      scope: ["user:email"],
+    },
+  },
   advanced: {
     useSecureCookies: isProduction,
     defaultCookieAttributes: {
@@ -26,5 +37,3 @@ export const auth = betterAuth({
     enabled: true,
   },
 });
-
-// TODO: maybe feature based is not the way to go
