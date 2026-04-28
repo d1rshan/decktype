@@ -9,17 +9,12 @@ import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 import { getDifficulty } from "./difficulty";
 import { createFallingWord } from "./engine";
-import type { DifficultyKey, FallingWord, GamePhase } from "./types";
-
-type CompletedGameResult = {
-  gameId: "falling-words";
-  score: number;
-  difficulty: DifficultyKey;
-};
-
-type UseFallingWordsGameOptions = {
-  onComplete?: (result: CompletedGameResult) => void | Promise<void>;
-};
+import type {
+  DifficultyKey,
+  FallingWord,
+  GamePhase,
+  UseFallingWordsGameOptions,
+} from "./types";
 
 function formatScore(elapsedMs: number) {
   return Math.floor(elapsedMs / 1000);

@@ -1,7 +1,7 @@
 import { For, createSignal } from "solid-js";
 
 import { gameRegistry } from "@/features/games/registry";
-import type { LeaderboardDifficulty } from "@/features/leaderboard/api";
+import type { LeaderboardDifficulty } from "@/features/leaderboard/types";
 import { LeaderboardTable } from "@/features/leaderboard/components/leaderboard-table";
 import { getGameName } from "@/features/games/utils";
 import type { GameId } from "@/features/games/types";

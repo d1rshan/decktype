@@ -116,26 +116,22 @@ export function FeedbackFeed() {
                         tone="up"
                         count={item.upvotedBy?.length ?? 0}
                         active={(item.upvotedBy ?? []).some(
-                          (id) => id.toString() === (currentUserId() ?? ""),
+                          (id) => id === (currentUserId() ?? ""),
                         )}
                         disabled={upvoteMutation.isPending || !currentUserId()}
-                        onClick={() =>
-                          upvoteMutation.mutate(item.id.toString())
-                        }
+                        onClick={() => upvoteMutation.mutate(item.id)}
                       />
 
                       <VoteControl
                         tone="down"
                         count={item.downvotedBy?.length ?? 0}
                         active={(item.downvotedBy ?? []).some(
-                          (id) => id.toString() === (currentUserId() ?? ""),
+                          (id) => id === (currentUserId() ?? ""),
                         )}
                         disabled={
                           downvoteMutation.isPending || !currentUserId()
                         }
-                        onClick={() =>
-                          downvoteMutation.mutate(item.id.toString())
-                        }
+                        onClick={() => downvoteMutation.mutate(item.id)}
                       />
                     </div>
                   </div>

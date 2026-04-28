@@ -1,19 +1,16 @@
 import { Table, type TableColumn } from "@/components/table";
 import { useMyResultsQuery } from "@/features/results/api";
+import type { Result } from "@/features/results/types";
 import { getGameName } from "@/features/games/utils";
 import { authClient } from "@/lib/auth-client";
 import { formatDateTime } from "@/lib/utils";
 import { QueryState } from "@/components/query-state";
 
-type ResultsTableRow = NonNullable<
-  ReturnType<typeof useMyResultsQuery>["data"]
->[number];
-
-const columns: TableColumn<ResultsTableRow>[] = [
+const columns: TableColumn<Result>[] = [
   {
     id: "game",
     label: "game",
-    value: (result) => getGameName(result.gameId.toString()),
+    value: (result) => getGameName(result.gameId),
   },
   {
     id: "score",

@@ -1,11 +1,11 @@
 import { Table, type TableColumn } from "@/components/table";
 import type { Accessor } from "solid-js";
 
-import {
-  useLeaderboardQuery,
-  type LeaderboardDifficulty,
-  type LeaderboardEntry,
-} from "@/features/leaderboard/api";
+import { useLeaderboardQuery } from "@/features/leaderboard/api";
+import type {
+  LeaderboardDifficulty,
+  LeaderboardEntry,
+} from "@/features/leaderboard/types";
 import { formatDateTime } from "@/lib/utils";
 import { QueryState } from "@/components/query-state";
 

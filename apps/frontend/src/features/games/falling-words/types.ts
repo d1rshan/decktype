@@ -20,3 +20,13 @@ export type FallingWord = {
 };
 
 export type GamePhase = "idle" | "running" | "paused" | "game-over";
+
+type CompletedGameResult = {
+  gameId: "falling-words";
+  score: number;
+  difficulty: DifficultyKey;
+};
+
+export type UseFallingWordsGameOptions = {
+  onComplete?: (result: CompletedGameResult) => void | Promise<void>;
+};

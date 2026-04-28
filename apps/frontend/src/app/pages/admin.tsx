@@ -150,7 +150,7 @@ function AdminPage() {
                               class="h-7 px-3 text-xs"
                               onClick={() =>
                                 deleteFeedbackMutation.mutate(
-                                  item.id.toString(),
+                                  item.id,
                                 )
                               }
                               disabled={deleteFeedbackMutation.isPending}

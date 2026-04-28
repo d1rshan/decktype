@@ -1,8 +1,8 @@
 import { createSignal } from "solid-js";
 
-export type ToastVariant = "info" | "success" | "error";
+type ToastVariant = "info" | "success" | "error";
 
-export type ToastItem = {
+type ToastItem = {
   id: number;
   title: string;
   variant: ToastVariant;
