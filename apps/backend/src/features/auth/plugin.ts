@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
 
-import { auth } from "./auth";
+import { auth } from "./index";
 
 export const authPlugin = new Elysia({ name: "auth" }).mount(auth.handler);

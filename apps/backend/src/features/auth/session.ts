@@ -1,6 +1,6 @@
 import { ApiError } from "../../lib/errors";
 import { env } from "../../config/env";
-import { auth } from "./auth";
+import { auth } from "./index";
 
 export const requireSession = async (headers: Headers) => {
   const currentSession = await auth.api.getSession({
