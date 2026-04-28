@@ -3,26 +3,32 @@ import { env } from "./config/env";
 import { connectToDatabase } from "./db/client";
 import { ensureDatabaseIndexes } from "./db/indexes";
 
-await connectToDatabase();
-await ensureDatabaseIndexes();
+let startupPromise: Promise<void> | undefined;
 
-app.listen(env.port);
-
-console.log(`Server running on ${env.betterAuthUrl}`);
-
-const gracefulShutdown = async () => {
-  try {
-    const { mongoClient } = await import("./db/client");
-    await mongoClient.close();
-  } finally {
-    process.exit(0);
+const ensureStartup = (options?: { ensureIndexes?: boolean }) => {
+  if (startupPromise) {
+    return startupPromise;
   }
+
+  startupPromise = (async () => {
+    await connectToDatabase();
+
+    if (options?.ensureIndexes) {
+      await ensureDatabaseIndexes();
+    }
+  })();
+
+  return startupPromise;
 };
 
-process.on("SIGINT", () => {
-  void gracefulShutdown();
+void ensureStartup().catch((error) => {
+  console.error("Initial MongoDB warmup failed:", error);
 });
 
-process.on("SIGTERM", () => {
-  void gracefulShutdown();
-});
+if (!env.isVercel) {
+  await ensureStartup({ ensureIndexes: true });
+  app.listen(env.port);
+  console.log(`Server running on ${env.betterAuthUrl}`);
+}
+
+export default app;

@@ -1,4 +1,4 @@
-export function LoadingSpinner() {
+export function Spinner() {
   return (
     <div
       class="h-8 w-8 animate-spin rounded-full border-2 border-(--sub)/35 border-t-(--main)"
@@ -8,4 +8,4 @@ export function LoadingSpinner() {
   );
 }
 
-export default LoadingSpinner;
+export default Spinner;

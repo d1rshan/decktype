@@ -9,6 +9,9 @@
   ],
   "scripts": {
     "dev": "concurrently \"bun run --cwd apps/backend dev\" \"bun run --cwd apps/frontend dev\"",
+    "cf:login": "wrangler login",
+    "cf:fe:build": "bun run --cwd apps/frontend build",
+    "cf:fe:deploy": "bun run cf:fe:build && wrangler pages deploy apps/frontend/dist --project-name decktype-frontend --branch main",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "lint": "oxlint"
@@ -16,7 +19,8 @@
   "devDependencies": {
     "concurrently": "^9.2.1",
     "oxlint": "^1.15.0",
-    "oxfmt": "^0.5.0"
+    "oxfmt": "^0.5.0",
+    "wrangler": "^4.86.0"
   },
   "peerDependencies": {
     "typescript": "^5"

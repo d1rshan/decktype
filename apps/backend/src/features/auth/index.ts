@@ -4,8 +4,6 @@ import { betterAuth } from "better-auth";
 import { env } from "../../config/env";
 import { db, mongoClient } from "../../db/client";
 
-const isProduction = env.nodeEnv === "production";
-
 export const auth = betterAuth({
   secret: env.betterAuthSecret,
   baseURL: env.betterAuthUrl,
@@ -22,10 +20,10 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    useSecureCookies: isProduction,
+    useSecureCookies: env.isProduction,
     defaultCookieAttributes: {
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      secure: env.isProduction,
+      sameSite: env.isProduction ? "none" : "lax",
       httpOnly: true,
     },
   },

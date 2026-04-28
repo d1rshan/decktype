@@ -1,5 +1,5 @@
 import { Match, Show, Switch, type JSX } from "solid-js";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { getErrorMessage } from "@/lib/api-client";
 
 interface QueryStateProps<T> {
@@ -18,7 +18,7 @@ export function QueryState<T>(props: QueryStateProps<T>) {
     <Switch>
       <Match when={props.query.isPending}>
         <div class="flex min-h-32 items-center justify-center">
-          <LoadingSpinner />
+          <Spinner />
         </div>
       </Match>
 

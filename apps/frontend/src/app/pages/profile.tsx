@@ -8,7 +8,7 @@ import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 import { formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Spinner } from "@/components/ui/spinner";
 
 type ProfileProps = {
   onNavigate: (target: string) => void;
@@ -55,7 +55,7 @@ function ProfilePage(props: ProfileProps) {
         when={!auth.isLoading()}
         fallback={
           <div class="flex w-full items-center justify-center py-20">
-            <LoadingSpinner />
+            <Spinner />
           </div>
         }
       >

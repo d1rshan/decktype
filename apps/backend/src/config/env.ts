@@ -1,4 +1,5 @@
-// TODO: use some library to do this stuff instead
+import { normalizeUrlOrigin, parseCsv } from "./normalize";
+
 const readRequiredEnv = (name: string) => {
   const value = Bun.env[name];
 
@@ -10,16 +11,10 @@ const readRequiredEnv = (name: string) => {
 };
 
 const readOptionalEnv = (name: string) => {
-  const value = Bun.env[name];
-
-  if (!value) {
-    return undefined;
-  }
-
-  return value;
+  return Bun.env[name];
 };
 
-const readNodeEnv = () => {
+const readAppEnv = () => {
   const value = (Bun.env.NODE_ENV ?? "development").trim().toLowerCase();
 
   if (value === "production" || value === "prod") {
@@ -47,26 +42,22 @@ const readCsvEnv = (name: string) => {
     return [];
   }
 
-  return value
-    .split(",")
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
+  return parseCsv(value).map((item) => item.toLowerCase());
 };
 
 export const env = {
-  nodeEnv: readNodeEnv(),
-  port: readPort(),
-  mongoUri: readRequiredEnv("MONGODB_URI"),
-  mongoDbName: readRequiredEnv("MONGODB_DB_NAME"),
-  betterAuthSecret: readRequiredEnv("BETTER_AUTH_SECRET"),
-  betterAuthUrl: Bun.env.BETTER_AUTH_URL ?? "http://localhost:3000",
-  frontendOrigin: Bun.env.FRONTEND_ORIGIN ?? "http://localhost:5173",
-  // googleClientId: readRequiredEnv("GOOGLE_CLIENT_ID"),
-  // googleClientSecret: readRequiredEnv("GOOGLE_CLIENT_SECRET"),
-  githubClientId: readRequiredEnv("GITHUB_CLIENT_ID"),
-  githubClientSecret: readRequiredEnv("GITHUB_CLIENT_SECRET"),
-  githubOwner: Bun.env.GITHUB_OWNER ?? "d1rshan",
-  githubRepo: Bun.env.GITHUB_REPO ?? "decktype",
-  githubToken: readOptionalEnv("GITHUB_TOKEN"),
-  adminEmails: readCsvEnv("ADMIN_EMAILS"),
+  get isProduction() { return readAppEnv() === "production"; },
+  get isVercel() { return Bun.env.VERCEL === "1"; },
+  get port() { return readPort(); },
+  get mongoUri() { return readRequiredEnv("MONGODB_URI"); },
+  get mongoDbName() { return readRequiredEnv("MONGODB_DB_NAME"); },
+  get betterAuthSecret() { return readRequiredEnv("BETTER_AUTH_SECRET"); },
+  get betterAuthUrl() { return normalizeUrlOrigin(Bun.env.BETTER_AUTH_URL ?? "http://localhost:3000"); },
+  get frontendOrigin() { return normalizeUrlOrigin(Bun.env.FRONTEND_ORIGIN ?? "http://localhost:5173"); },
+  get githubClientId() { return readRequiredEnv("GITHUB_CLIENT_ID"); },
+  get githubClientSecret() { return readRequiredEnv("GITHUB_CLIENT_SECRET"); },
+  get githubOwner() { return Bun.env.GITHUB_OWNER ?? "d1rshan"; },
+  get githubRepo() { return Bun.env.GITHUB_REPO ?? "decktype"; },
+  get githubToken() { return readOptionalEnv("GITHUB_TOKEN"); },
+  get adminEmails() { return readCsvEnv("ADMIN_EMAILS"); },
 };
