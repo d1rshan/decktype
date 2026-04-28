@@ -2,6 +2,7 @@ import { Show, createMemo, createSignal } from "solid-js";
 import { User } from "lucide-solid";
 
 import AuthForms from "@/features/auth/components/auth-forms";
+import { useAuthSession } from "@/features/auth/hooks";
 import ResultsTable from "@/features/results/components/results-table";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
@@ -14,16 +15,13 @@ type ProfileProps = {
 };
 
 function ProfilePage(props: ProfileProps) {
-  const session = authClient.useSession();
+  const auth = useAuthSession();
   const [isSigningOut, setIsSigningOut] = createSignal(false);
   const [statusMessage, setStatusMessage] = createSignal<string | null>(null);
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
 
-  const isAuthenticated = createMemo(() => Boolean(session().data?.user));
-  const isSessionLoading = createMemo(() => session().isPending);
-  const currentUser = createMemo(() => session().data?.user);
   const joinedAt = createMemo(
-    () => currentUser()?.createdAt as string | undefined,
+    () => auth.user()?.createdAt as string | undefined,
   );
 
   const resetMessages = () => {
@@ -54,7 +52,7 @@ function ProfilePage(props: ProfileProps) {
   return (
     <div class="flex w-full min-h-[72vh] flex-1">
       <Show
-        when={!isSessionLoading()}
+        when={!auth.isLoading()}
         fallback={
           <div class="flex w-full items-center justify-center py-20">
             <LoadingSpinner />
@@ -62,7 +60,7 @@ function ProfilePage(props: ProfileProps) {
         }
       >
         <Show
-          when={isAuthenticated()}
+          when={auth.isAuthenticated()}
           fallback={<AuthForms onSuccess={() => props.onNavigate("/")} />}
         >
           <div class="flex w-full flex-col gap-8">
@@ -92,13 +90,13 @@ function ProfilePage(props: ProfileProps) {
                 <div class="flex items-center gap-4">
                   <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-(--sub) text-(--bg)">
                     <Show
-                      when={currentUser()?.image}
+                      when={auth.user()?.image}
                       fallback={<User size={24} strokeWidth={2.2} />}
                     >
                       {(image) => (
                         <img
                           src={image()}
-                          alt={`${currentUser()?.name ?? "User"} avatar`}
+                          alt={`${auth.user()?.name ?? "User"} avatar`}
                           class="h-full w-full object-cover"
                         />
                       )}
@@ -106,7 +104,7 @@ function ProfilePage(props: ProfileProps) {
                   </div>
                   <div class="space-y-1">
                     <h2 class="text-2xl leading-tight font-bold">
-                      {currentUser()?.name}
+                      {auth.user()?.name}
                     </h2>
                     <Show when={joinedAt()}>
                       {(value) => (

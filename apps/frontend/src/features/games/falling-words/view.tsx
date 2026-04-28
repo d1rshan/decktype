@@ -1,7 +1,7 @@
 import { Globe, Keyboard } from "lucide-solid";
+import { useAuthSession } from "@/features/auth/hooks";
 import type { GameViewProps } from "@/features/games/types";
 import { useCreateResultMutation } from "@/features/results/api";
-import { authClient } from "@/lib/auth-client";
 import { DifficultySelector } from "../components/difficulty-selector";
 import FallingWordsField from "./components/falling-words-field";
 import GameHud from "./components/game-hud";
@@ -10,13 +10,13 @@ import { fallingWordsGameMeta } from "./meta";
 import { difficultyKeys } from "./difficulty";
 
 function FallingWordsView(props: GameViewProps) {
-  const authSession = authClient.useSession();
+  const auth = useAuthSession();
   const createResultMutation = useCreateResultMutation();
   const session = useFallingWordsGame(
     props.wordBankId ?? fallingWordsGameMeta.defaultWordBankId,
     {
       onComplete: (result) => {
-        if (!authSession().data?.user) {
+        if (!auth.isAuthenticated()) {
           return;
         }
 

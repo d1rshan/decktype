@@ -1,7 +1,6 @@
-import { createMemo } from "solid-js";
 import { A } from "@solidjs/router";
 import { User } from "lucide-solid";
-import { authClient } from "@/lib/auth-client";
+import { useAuthSession } from "@/features/auth/hooks";
 
 const routes = [
   { label: "Leaderboard", path: "/leaderboard" },
@@ -9,10 +8,7 @@ const routes = [
 ];
 
 export function Navbar() {
-  const session = authClient.useSession();
-  const currentUserLabel = createMemo(
-    () => session().data?.user.name ?? "guest",
-  );
+  const auth = useAuthSession();
 
   return (
     <header class="mb-8 flex items-center justify-between">
@@ -45,12 +41,12 @@ export function Navbar() {
           activeClass="text-(--text)"
           inactiveClass="hover:text-(--text)"
           class="flex items-center gap-1 sm:gap-2 transition"
-          aria-label={`Profile: ${currentUserLabel().toLowerCase()}`}
+          aria-label={`Profile: ${auth.displayName().toLowerCase()}`}
         >
           <User size={18} strokeWidth={2} />
           <div class="hidden max-w-32 truncate sm:block">
             <p class="text-sm leading-normal sm:text-base">
-              {currentUserLabel().toLowerCase()}
+              {auth.displayName().toLowerCase()}
             </p>
           </div>
         </A>
