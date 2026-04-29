@@ -40,11 +40,15 @@ export function SocialAuthButtons() {
           disabled={Boolean(pendingProvider())}
           onClick={() => void signInWithProvider("google")}
           title="Sign in with Google"
+        <Button
+          type="button"
+          class="h-12"
+          disabled={Boolean(pendingProvider())}
+          onClick={() => void signInWithProvider("google")}
+          aria-label="Sign in with Google"
+          title="Sign in with Google"
         >
-          <Show
-            when={pendingProvider() === "google"}
-            fallback={<FaBrandsGoogle size={18} />}
-          >
+          <Show when={pendingProvider() === "google"} fallback={<FaBrandsGoogle size={18} />}>
             <span class="text-xs">opening...</span>
           </Show>
         </Button>
@@ -53,12 +57,10 @@ export function SocialAuthButtons() {
           class="h-12"
           disabled={Boolean(pendingProvider())}
           onClick={() => void signInWithProvider("github")}
+          aria-label="Sign in with GitHub"
           title="Sign in with GitHub"
         >
-          <Show
-            when={pendingProvider() === "github"}
-            fallback={<FaBrandsGithub size={18} />}
-          >
+          <Show when={pendingProvider() === "github"} fallback={<FaBrandsGithub size={18} />}>
             <span class="text-xs">opening...</span>
           </Show>
         </Button>
