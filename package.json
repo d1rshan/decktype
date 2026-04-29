@@ -14,6 +14,7 @@
     "cf:fe:deploy": "bun run cf:fe:build && wrangler pages deploy apps/frontend/dist --project-name decktype --branch main",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
+    "sync:contributors": "bun run scripts/fetch-contributors.js",
     "lint": "oxlint",
     "typecheck": "bun run --cwd apps/backend typecheck && bun run --cwd apps/frontend typecheck"
   },

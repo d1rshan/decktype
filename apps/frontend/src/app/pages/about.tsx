@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ContributorList } from "@/features/contributors/components/contributor-list";
 
 function AboutPage() {
   return (
@@ -48,30 +49,8 @@ function AboutPage() {
           </div>
         </section>
 
-        <section class="space-y-5">
-          <div class="space-y-2">
-            <h2 class="text-2xl leading-tight font-bold capitalize">
-              contributors
-            </h2>
-            <p class="text-base leading-normal text-(--sub)">
-              synced: not synced yet
-            </p>
-            <div class="pt-1">
-              <Button
-                href="https://github.com/d1rshan/decktype/graphs/contributors"
-                target="_blank"
-                rel="noreferrer"
-              >
-                view on github
-              </Button>
-            </div>
-          </div>
-
-          <div>
-            <p class="text-base leading-normal text-(--sub)">
-              no contributors found yet
-            </p>
-          </div>
+        <section class="space-y-6">
+          <ContributorList />
         </section>
       </div>
     </div>
