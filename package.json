@@ -11,7 +11,7 @@
     "dev": "concurrently \"bun run --cwd apps/backend dev\" \"bun run --cwd apps/frontend dev\"",
     "cf:login": "wrangler login",
     "cf:fe:build": "bun run --cwd apps/frontend build",
-    "cf:fe:deploy": "bun run cf:fe:build && wrangler pages deploy apps/frontend/dist --project-name decktype-frontend --branch main",
+    "cf:fe:deploy": "bun run cf:fe:build && wrangler pages deploy apps/frontend/dist --project-name decktype --branch main",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "lint": "oxlint",

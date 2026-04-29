@@ -93,3 +93,5 @@ export const env = {
     return readCsvEnv("ADMIN_EMAILS");
   },
 };
+
+// TODO: do init check for .env and throw error for vercel
