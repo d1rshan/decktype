@@ -41,7 +41,10 @@ export function SocialAuthButtons() {
           onClick={() => void signInWithProvider("google")}
           title="Sign in with Google"
         >
-          <Show when={pendingProvider() === "google"} fallback={<FaBrandsGoogle size={18} />}>
+          <Show
+            when={pendingProvider() === "google"}
+            fallback={<FaBrandsGoogle size={18} />}
+          >
             <span class="text-xs">opening...</span>
           </Show>
         </Button>
@@ -52,7 +55,10 @@ export function SocialAuthButtons() {
           onClick={() => void signInWithProvider("github")}
           title="Sign in with GitHub"
         >
-          <Show when={pendingProvider() === "github"} fallback={<FaBrandsGithub size={18} />}>
+          <Show
+            when={pendingProvider() === "github"}
+            fallback={<FaBrandsGithub size={18} />}
+          >
             <span class="text-xs">opening...</span>
           </Show>
         </Button>
