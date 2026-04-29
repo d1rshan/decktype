@@ -80,6 +80,12 @@ export const env = {
   get githubClientSecret() {
     return readRequiredEnv("GITHUB_CLIENT_SECRET");
   },
+  get googleClientId() {
+    return readRequiredEnv("GOOGLE_CLIENT_ID");
+  },
+  get googleClientSecret() {
+    return readRequiredEnv("GOOGLE_CLIENT_SECRET");
+  },
   get githubOwner() {
     return Bun.env.GITHUB_OWNER ?? "d1rshan";
   },

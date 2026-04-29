@@ -5,10 +5,10 @@ import type { Contributor } from "../types";
 
 const contributors = _data as Contributor[];
 
+// TODO: extract out links to lib/links.ts or smth like that
 export function ContributorList() {
   return (
     <div class="space-y-6">
-      // TODO: extract out links to lib/links.ts or smth like that
       <a
         href="https://github.com/d1rshan/decktype/graphs/contributors"
         target="_blank"

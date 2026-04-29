@@ -1,20 +1,11 @@
-import { createSignal, For, Show } from "solid-js";
-import { Code, Globe } from "lucide-solid";
+import { createSignal, Show } from "solid-js";
+import { FaBrandsGoogle, FaBrandsGithub } from "solid-icons/fa";
 
 import Button from "@/components/ui/button";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 
 type OAuthProvider = "google" | "github";
-
-const providers: {
-  id: OAuthProvider;
-  label: string;
-  Icon: typeof Globe;
-}[] = [
-  { id: "google", label: "google", Icon: Globe },
-  { id: "github", label: "github", Icon: Code },
-];
 
 export function SocialAuthButtons() {
   const [pendingProvider, setPendingProvider] =
@@ -41,31 +32,36 @@ export function SocialAuthButtons() {
   };
 
   return (
-    <div class="mx-auto flex w-full max-w-sm flex-col gap-3">
-      <span class="text-xs leading-none font-semibold tracking-widest uppercase">
-        continue with
-      </span>
+    <div class="flex flex-col gap-3">
       <div class="grid grid-cols-2 gap-3">
-        <For each={providers}>
-          {(provider) => (
-            <Button
-              type="button"
-              class="h-12 gap-2"
-              disabled={Boolean(pendingProvider())}
-              onClick={() => void signInWithProvider(provider.id)}
-            >
-              <provider.Icon size={16} strokeWidth={2.2} />
-              {pendingProvider() === provider.id
-                ? "opening..."
-                : provider.label}
-            </Button>
-          )}
-        </For>
+        <Button
+          type="button"
+          class="h-12"
+          disabled={Boolean(pendingProvider())}
+          onClick={() => void signInWithProvider("google")}
+          title="Sign in with Google"
+        >
+          <Show when={pendingProvider() === "google"} fallback={<FaBrandsGoogle size={18} />}>
+            <span class="text-xs">opening...</span>
+          </Show>
+        </Button>
+        <Button
+          type="button"
+          class="h-12"
+          disabled={Boolean(pendingProvider())}
+          onClick={() => void signInWithProvider("github")}
+          title="Sign in with GitHub"
+        >
+          <Show when={pendingProvider() === "github"} fallback={<FaBrandsGithub size={18} />}>
+            <span class="text-xs">opening...</span>
+          </Show>
+        </Button>
       </div>
+
       <Show when={errorMessage()}>
         {(message) => (
-          <div class="pt-1 text-(--error)">
-            <p class="text-base leading-normal">{message()}</p>
+          <div class="text-(--error)">
+            <p class="text-sm leading-normal">{message()}</p>
           </div>
         )}
       </Show>

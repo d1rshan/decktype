@@ -9,10 +9,10 @@ export const auth = betterAuth({
   baseURL: env.betterAuthUrl,
   trustedOrigins: [env.frontendOrigin],
   socialProviders: {
-    // google: {
-    //   clientId: env.googleClientId,
-    //   clientSecret: env.googleClientSecret,
-    // },
+    google: {
+      clientId: env.googleClientId,
+      clientSecret: env.googleClientSecret,
+    },
     github: {
       clientId: env.githubClientId,
       clientSecret: env.githubClientSecret,

@@ -8,6 +8,7 @@ import { authClient } from "@/lib/auth-client";
 
 import { loginSchema } from "./schemas";
 import { getFirstValidationMessage } from "./utils";
+import { SocialAuthButtons } from "./social-auth-buttons";
 
 type LoginFormProps = {
   onSuccess?: () => void;
@@ -70,6 +71,14 @@ export function LoginForm(props: LoginFormProps) {
       <span class="text-xs leading-none font-semibold tracking-widest uppercase">
         login
       </span>
+
+      <SocialAuthButtons />
+
+      <div class="flex items-center gap-4 py-2">
+        <div class="h-[1px] flex-1 bg-(--sub-alt) opacity-50" />
+        <span class="text-xs font-medium text-(--sub) lowercase">or</span>
+        <div class="h-[1px] flex-1 bg-(--sub-alt) opacity-50" />
+      </div>
 
       <form.Field name="email">
         {(field) => {
