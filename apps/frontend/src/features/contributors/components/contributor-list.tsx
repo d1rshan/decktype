@@ -25,7 +25,6 @@ export function ContributorList() {
           />
         </div>
       </a>
-
       <Show
         when={contributors.length > 0}
         fallback={

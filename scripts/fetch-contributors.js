@@ -5,7 +5,7 @@ const REPO = "d1rshan/decktype";
 const API_URL = `https://api.github.com/repos/${REPO}/contributors`;
 const OUTPUT_PATH = join(
   process.cwd(),
-  "apps/frontend/src/features/contributors/data/contributors.json"
+  "apps/frontend/src/features/contributors/data/contributors.json",
 );
 
 async function fetchContributors() {
@@ -35,7 +35,9 @@ async function fetchContributors() {
 
     await writeFile(OUTPUT_PATH, JSON.stringify(contributors, null, 2));
 
-    console.log(`Successfully synced ${contributors.length} contributors to ${OUTPUT_PATH}`);
+    console.log(
+      `Successfully synced ${contributors.length} contributors to ${OUTPUT_PATH}`,
+    );
   } catch (error) {
     console.error("Error fetching contributors:", error);
     process.exit(1);
