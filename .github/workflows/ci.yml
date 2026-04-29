@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-and-format:
-    name: Lint & Format
+  ci:
+    name: Lint, Format and Build Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -24,27 +24,14 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run oxfmt
+      - name: Run Format Check
         run: bun run format:check
 
-      - name: Run oxlint
+      - name: Run Lint
         run: bun run lint
 
-  typecheck:
-    name: Typecheck
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Run Typecheck
+        run: bun run typecheck
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Install dependencies
-        run: bun install
-
-      - name: Typecheck Backend
-        run: bun run --cwd apps/backend typecheck
-
-      - name: Typecheck Frontend
-        run: bun run --cwd apps/frontend typecheck
+      - name: Build Frontend
+        run: bun run cf:fe:build
