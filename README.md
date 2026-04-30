@@ -1,31 +1,27 @@
 # Decktype
 
-Decktype is a **typing playground**, not a typing test. It explores what comes after the benchmark: playful, experimental typing modes built for fun, rhythm, and chaos.
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](./LICENSE)
+[![Made with Bun](https://img.shields.io/badge/Made%20with-Bun-fcf2d1?logo=bun)](https://bun.sh)
+[![Built with SolidJS](https://img.shields.io/badge/Built%20with-SolidJS-2c4f7c?logo=solid)](https://www.solidjs.com)
 
-If Monkeytype perfected the test, Decktype asks: *what if the keyboard was a playground instead of a benchmark?*
+> A typing playground, not a typing test.
 
-## What you’ll find
+Decktype is what happens when typing stops being a benchmark and starts being a playground.
 
-- Experimental typing modes and mechanics
-- Rhythm- and time-based challenges
-- Open-source, forkable, and weird by design
+It is an experimental typing app built for weird ideas, rhythmic challenges, chaotic modes, and the kind of gameplay that makes you rethink what a typing site can be.
 
-## Stack
+## What it is
 
-- **Frontend**: SolidJS + Vite (Cloudflare Pages)
-- **Backend**: ElysiaJS + Bun (Vercel)
-- **Shared**: `packages/api` (shared types + API client)
+- A space for experimental typing mechanics
+- A project focused on playful, time-based interactions
+- A forkable open-source playground for unusual typing ideas
 
-## Local development
+## Why it exists
 
-```bash
-bun dev
-```
+Monkeytype nailed the typing test. Decktype asks the next question:
 
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+*What if the keyboard was a playground instead of a benchmark?*
 
 ## License
 
-GPL-3.0. See [LICENSE](./LICENSE).
+Decktype is released under the **GPL-3.0** license.
