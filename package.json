@@ -18,10 +18,21 @@
     "format:check": "oxfmt --check .",
     "sync:contributors": "bun run scripts/fetch-contributors.js",
     "lint": "oxlint",
-    "typecheck": "bun run --cwd apps/backend typecheck && bun run --cwd apps/frontend typecheck"
+    "typecheck": "bun run --cwd apps/backend typecheck && bun run --cwd apps/frontend typecheck",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "oxfmt",
+      "oxlint --fix"
+    ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
     "concurrently": "^9.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "oxfmt": "^0.5.0",
     "oxlint": "^1.15.0",
     "typescript": "~5.9.3",
