@@ -30,7 +30,7 @@ const columns: TableColumn<LeaderboardEntry>[] = [
   {
     id: "rank",
     label: "#",
-    align: "center",
+    align: "left",
     value: (entry) => entry.rank,
   },
   {
@@ -42,20 +42,19 @@ const columns: TableColumn<LeaderboardEntry>[] = [
   {
     id: "score",
     label: "score",
-    align: "right",
+    align: "left",
     value: (entry) => entry.bestScore,
   },
   {
     id: "difficulty",
     label: "difficulty",
-    mobileLabel: "diff",
-    align: "center",
+    align: "left",
     value: (entry) => entry.difficulty,
   },
   {
     id: "date",
     label: "date",
-    align: "right",
+    align: "left",
     value: (entry) => formatLeaderboardDateTime(entry.createdAt),
   },
 ];
@@ -80,7 +79,7 @@ export function LeaderboardTable(props: LeaderboardTableProps) {
           rows={entries}
           templateColumns="2.75rem minmax(7rem,1fr) 5rem 6.5rem 8.5rem"
           minTableWidth={540}
-          mobileTemplateColumns="1rem minmax(2.75rem,1fr) 2.35rem 2.35rem 4.75rem"
+          mobileTemplateColumns="1rem minmax(2.5rem,1fr) 2.25rem 3.4rem 4.5rem"
         />
       )}
     </QueryState>

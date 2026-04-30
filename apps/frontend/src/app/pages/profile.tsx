@@ -86,7 +86,7 @@ function ProfilePage(props: ProfileProps) {
                 </div>
               </div>
 
-              <div class="space-y-4 rounded-xl bg-(--sub-alt) p-5">
+              <div class="space-y-4 rounded-xl bg-(--sub-alt) p-4 sm:p-5">
                 <div class="flex items-center gap-4">
                   <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-(--sub) text-(--bg)">
                     <Show
@@ -102,13 +102,13 @@ function ProfilePage(props: ProfileProps) {
                       )}
                     </Show>
                   </div>
-                  <div class="space-y-1">
-                    <h2 class="text-2xl leading-tight font-bold">
+                  <div class="min-w-0 flex-1 space-y-1">
+                    <h2 class="truncate text-xl leading-tight font-bold sm:text-2xl">
                       {auth.user()?.name}
                     </h2>
                     <Show when={joinedAt()}>
                       {(value) => (
-                        <p class="text-base leading-normal text-(--sub)">
+                        <p class="text-sm leading-normal text-(--sub) sm:text-base">
                           joined {formatDateTime(value())}
                         </p>
                       )}

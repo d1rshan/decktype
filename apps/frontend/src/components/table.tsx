@@ -96,7 +96,7 @@ export function Table<T>(props: TableProps<T>) {
           <For each={props.columns}>
             {(column) => (
               <span
-                class={`min-w-0 whitespace-nowrap text-[0.55rem] leading-none font-semibold tracking-wider text-(--sub) uppercase ${getAlignClass(
+                class={`min-w-0 whitespace-nowrap text-[0.48rem] leading-none font-semibold tracking-wider text-(--sub) uppercase ${getAlignClass(
                   column.align,
                 )}`}
               >
