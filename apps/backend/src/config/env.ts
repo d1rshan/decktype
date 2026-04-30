@@ -62,9 +62,11 @@ export const env = {
     return readRequiredEnv("BETTER_AUTH_SECRET");
   },
   get betterAuthUrl() {
-    return normalizeUrlOrigin(
-      Bun.env.BETTER_AUTH_URL ?? "http://localhost:3000",
-    );
+    const defaultUrl = this.isProduction
+      ? this.frontendOrigin
+      : "http://localhost:3000";
+    // FRONTEND ORIGIN
+    return normalizeUrlOrigin(defaultUrl);
   },
   get frontendOrigin() {
     return normalizeUrlOrigin(
