@@ -157,8 +157,12 @@ function FallingWordsField(props: FallingWordsFieldProps) {
 
               {isFocused && typedLength > characters.length && (
                 <span class="flex items-center">
-                  <For each={props.currentInput.slice(characters.length).split("")}>
-                    {(char) => <span class="text-(--error) opacity-80">{char}</span>}
+                  <For
+                    each={props.currentInput.slice(characters.length).split("")}
+                  >
+                    {(char) => (
+                      <span class="text-(--error) opacity-80">{char}</span>
+                    )}
                   </For>
                   <span class="ml-[1px] h-[1em] w-[2px] bg-(--main) animate-pulse" />
                 </span>
