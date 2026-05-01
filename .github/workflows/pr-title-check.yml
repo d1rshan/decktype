@@ -1,43 +1,70 @@
-name: PR Title Check
+name: "PR Title Check"
 
 on:
-  pull_request:
-    types: [opened, edited, synchronize]
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+permissions:
+  pull-requests: write
 
 jobs:
-  validate-title:
+  main:
+    name: check
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     steps:
-      - name: Check Title Format
-        uses: actions/github-script@v7
+      - name: Lint and verify PR title
+        uses: amannn/action-semantic-pull-request@v5
+        id: lint_pr_title
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          script: |
-            const title = context.payload.pull_request.title;
-            // Pattern: type(scope): description OR type: description
-            // Types: feat, fix, chore, refactor, impr, perf, docs, style, ci, test, build
-            const regex = /^(feat|fix|chore|refactor|impr|perf|docs|style|ci|test|build)(\([\w-]+\))?: .+/;
-            
-            if (!regex.test(title)) {
-              const errorMessage = `❌ **Invalid PR Title Format**
+          types: |
+            build
+            chore
+            ci
+            docs
+            feat
+            impr
+            fix
+            perf
+            refactor
+            revert
+            style
+            test
+          requireScope: false
+          # Subject must be at least one character
+          subjectPattern: ^.+$
 
-              The PR title "${title}" does not match the required format.
-              Please update it to: \`<type>(<optional-scope>): <description>\`
+      - uses: marocchino/sticky-pull-request-comment@v2
+        # When the previous steps fails, the workflow would stop. By adding this
+        # condition you can continue the execution with the populated error message.
+        if: always() && (steps.lint_pr_title.outputs.error_message != null)
+        with:
+          header: pr-title-lint-error
+          message: |
+            Hey there and thank you for opening this pull request! 👋🏼
 
-              **Allowed types:** feat, fix, chore, refactor, impr, perf, docs, style, ci, test, build
-              **Example:** \`fix(themes): improve strawberry theme colors\`
+            We require pull request titles to follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/). It looks like your proposed title needs to be adjusted.
 
-              *Note: The author tag (@user) is not required in the title.*`;
+            Details:
 
-              // Fail the check
-              core.setFailed(errorMessage);
+            ```
+            ${{ steps.lint_pr_title.outputs.error_message }}
+            ```
+            A correct version would look something like: 
 
-              // Add a comment to the PR
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                body: errorMessage
-              });
-            }
+            feat: add new feature
+            impr(quotes): add english quotes
+            fix(leaderboard): show user rank correctly
+
+      # Delete a previous comment when the issue has been resolved
+      - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-title-lint-error
+          delete: true
