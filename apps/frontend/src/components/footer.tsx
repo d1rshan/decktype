@@ -28,7 +28,7 @@ export function Footer() {
       </div>
 
       <div class="flex justify-end">
-        <span class="text-xs leading-tight">v0.1.1</span>
+        <span class="text-xs leading-tight">v{__APP_VERSION__}</span>
       </div>
     </footer>
   );
