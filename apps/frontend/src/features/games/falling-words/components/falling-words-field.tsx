@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { For, createMemo } from "solid-js";
 import { Kbd } from "@/components/ui/kbd";
 import type { FallingWord, GamePhase } from "../types";
 
@@ -12,7 +12,7 @@ type FallingWordsFieldProps = {
 };
 
 function FallingWordsField(props: FallingWordsFieldProps) {
-  const focusedWordId = () => {
+  const focusedWordId = createMemo(() => {
     if (props.currentInput.length === 0) {
       return null;
     }
@@ -55,7 +55,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
     }
 
     return bestWordId;
-  };
+  });
 
   return (
     <div
