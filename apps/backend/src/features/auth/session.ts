@@ -18,7 +18,7 @@ export const requireAdminSession = async (headers: Headers) => {
   const currentSession = await requireSession(headers);
   const userEmail = currentSession.user.email?.trim().toLowerCase();
 
-  if (!userEmail || !env.adminEmails.includes(userEmail)) {
+  if (!userEmail || userEmail !== env.adminEmail) {
     throw ApiError.forbidden(
       "You are not authorized to access admin resources.",
     );

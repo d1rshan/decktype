@@ -1,14 +1,7 @@
 export async function onRequest(context) {
-  const { request, env } = context;
+  const { request } = context;
 
-  const backendBase = env.VITE_BACKEND_URL;
-
-  if (!backendBase) {
-    return new Response(
-      "Internal Server Error: VITE_BACKEND_URL environment variable is not set in Cloudflare Pages Dashboard.",
-      { status: 500 },
-    );
-  }
+  const backendBase = "https://decktype-be.vercel.app";
 
   const targetUrl = new URL(request.url);
 

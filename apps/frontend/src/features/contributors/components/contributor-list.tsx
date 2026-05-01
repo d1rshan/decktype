@@ -1,16 +1,16 @@
 import { For, Show } from "solid-js";
 import { User, ArrowUpRight } from "lucide-solid";
+import { urls } from "@/lib/urls";
 import _data from "../data/contributors.json";
 import type { Contributor } from "../types";
 
 const contributors = _data as Contributor[];
 
-// TODO: extract out links to lib/links.ts or smth like that
 export function ContributorList() {
   return (
     <div class="space-y-6">
       <a
-        href="https://github.com/d1rshan/decktype/graphs/contributors"
+        href={`${urls.github}/graphs/contributors`}
         target="_blank"
         rel="noreferrer"
         class="group inline-block"

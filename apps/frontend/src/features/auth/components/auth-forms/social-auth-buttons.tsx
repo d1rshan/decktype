@@ -4,6 +4,7 @@ import { FaBrandsGoogle, FaBrandsGithub } from "solid-icons/fa";
 import Button from "@/components/ui/button";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
+import { urls } from "@/lib/urls";
 
 type OAuthProvider = "google" | "github";
 
@@ -19,7 +20,7 @@ export function SocialAuthButtons() {
     try {
       const result = await authClient.signIn.social({
         provider,
-        callbackURL: "https://decktype.pages.dev",
+        callbackURL: urls.frontend,
       });
 
       if (result.error) {

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ContributorList } from "@/features/contributors/components/contributor-list";
+import { urls } from "@/lib/urls";
 
 function AboutPage() {
   return (
@@ -24,11 +25,7 @@ function AboutPage() {
               that's it. go type something.
             </p>
             <div class="flex flex-wrap gap-3 pt-1">
-              <Button
-                href="https://github.com/d1rshan/decktype"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <Button href={urls.github} target="_blank" rel="noreferrer">
                 decktype github
               </Button>
               <Button
