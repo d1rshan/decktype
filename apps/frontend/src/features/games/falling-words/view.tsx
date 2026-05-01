@@ -2,12 +2,24 @@ import { Globe, Keyboard } from "lucide-solid";
 import { useAuthSession } from "@/features/auth/hooks";
 import type { GameViewProps } from "@/features/games/types";
 import { useCreateResultMutation } from "@/features/results/api";
+import { toast } from "@/lib/toast";
 import { DifficultySelector } from "../components/difficulty-selector";
 import FallingWordsField from "./components/falling-words-field";
 import GameHud from "./components/game-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";
 import { fallingWordsGameMeta } from "./meta";
 import { difficultyKeys } from "./difficulty";
+
+const MINIMUM_SCORES_BY_DIFFICULTY = {
+  easy: 20,
+  medium: 15,
+  hard: 10,
+} as const;
+
+const getShortResultMessage = (
+  difficulty: keyof typeof MINIMUM_SCORES_BY_DIFFICULTY,
+) =>
+  `Result not saved. Test too short. Minimum score for ${difficulty} is ${MINIMUM_SCORES_BY_DIFFICULTY[difficulty]}.`;
 
 function FallingWordsView(props: GameViewProps) {
   const auth = useAuthSession();
@@ -17,6 +29,13 @@ function FallingWordsView(props: GameViewProps) {
     {
       onComplete: (result) => {
         if (!auth.isAuthenticated()) {
+          return;
+        }
+
+        const minimumScore = MINIMUM_SCORES_BY_DIFFICULTY[result.difficulty];
+
+        if (result.score < minimumScore) {
+          toast.info(getShortResultMessage(result.difficulty));
           return;
         }
 
