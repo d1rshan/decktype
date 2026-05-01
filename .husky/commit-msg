@@ -1,1 +1,5 @@
-bun x commitlint --edit $1
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$current_branch" = "main" ]; then
+  bun x commitlint --edit "$1"
+fi
