@@ -1,3 +1,4 @@
+import { For, createMemo } from "solid-js";
 import { Kbd } from "@/components/ui/kbd";
 import type { FallingWord, GamePhase } from "../types";
 
@@ -11,17 +12,50 @@ type FallingWordsFieldProps = {
 };
 
 function FallingWordsField(props: FallingWordsFieldProps) {
-  const focusedWordId = () => {
+  const focusedWordId = createMemo(() => {
     if (props.currentInput.length === 0) {
       return null;
     }
 
-    const candidates = props.words
+    // Try exact prefix match first
+    const exactPrefixCandidates = props.words
       .filter((word) => word.text.startsWith(props.currentInput))
       .sort((left, right) => right.y - left.y);
 
-    return candidates[0]?.id ?? null;
-  };
+    if (exactPrefixCandidates.length > 0) {
+      return exactPrefixCandidates[0]?.id ?? null;
+    }
+
+    // If no exact prefix match, find the word that HAS the longest prefix match with currentInput
+    // This allows for mistakes at the end of the input while keeping focus
+    let bestWordId = null;
+    let longestPrefix = 0;
+    let lowestY = -1;
+
+    for (const word of props.words) {
+      let prefixLen = 0;
+      while (
+        prefixLen < props.currentInput.length &&
+        prefixLen < word.text.length &&
+        props.currentInput.charAt(prefixLen) === word.text.charAt(prefixLen)
+      ) {
+        prefixLen++;
+      }
+
+      if (prefixLen > 0) {
+        if (prefixLen > longestPrefix) {
+          longestPrefix = prefixLen;
+          bestWordId = word.id;
+          lowestY = word.y;
+        } else if (prefixLen === longestPrefix && word.y > lowestY) {
+          bestWordId = word.id;
+          lowestY = word.y;
+        }
+      }
+    }
+
+    return bestWordId;
+  });
 
   return (
     <div
@@ -87,9 +121,9 @@ function FallingWordsField(props: FallingWordsFieldProps) {
               isExactMatch
                 ? "text-(--main)"
                 : isFocused
-                  ? "text-(--text)"
+                  ? "text-(--sub)"
                   : isPrefixMatch
-                    ? "text-(--text) opacity-60"
+                    ? "text-(--sub) opacity-60"
                     : "text-(--sub) opacity-40"
             }`}
             style={{
@@ -105,7 +139,9 @@ function FallingWordsField(props: FallingWordsFieldProps) {
                   <span
                     class={`relative transition-colors duration-200 ${
                       isTyped
-                        ? "text-(--main)"
+                        ? props.currentInput.charAt(index) === character
+                          ? "text-(--text)"
+                          : "text-(--error)"
                         : isCaretSlot
                           ? "text-(--text)"
                           : "text-inherit"
@@ -118,6 +154,19 @@ function FallingWordsField(props: FallingWordsFieldProps) {
                   </span>
                 );
               })}
+
+              {isFocused && typedLength > characters.length && (
+                <span class="flex items-center">
+                  <For
+                    each={props.currentInput.slice(characters.length).split("")}
+                  >
+                    {(char) => (
+                      <span class="text-(--error) opacity-80">{char}</span>
+                    )}
+                  </For>
+                  <span class="ml-[1px] h-[1em] w-[2px] bg-(--main) animate-pulse" />
+                </span>
+              )}
 
               {isFocused && typedLength === characters.length && (
                 <span class="ml-[1px] h-[1em] w-[2px] bg-(--main) animate-pulse" />

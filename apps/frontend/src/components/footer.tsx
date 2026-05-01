@@ -1,11 +1,12 @@
 import { Kbd } from "@/components/ui/kbd";
+import { urls } from "@/lib/urls";
 
 export function Footer() {
   return (
     <footer class="flex h-12 w-full items-center justify-between text-(--sub) sm:grid sm:grid-cols-[1fr_auto_1fr]">
       <div class="flex items-center gap-6">
         <a
-          href="https://github.com/d1rshan/decktype"
+          href={urls.github}
           target="_blank"
           rel="noreferrer"
           class="hover:text-(--text)"
@@ -27,7 +28,7 @@ export function Footer() {
       </div>
 
       <div class="flex justify-end">
-        <span class="text-xs leading-tight">v1.0.0</span>
+        <span class="text-xs leading-tight">v0.1.1</span>
       </div>
     </footer>
   );

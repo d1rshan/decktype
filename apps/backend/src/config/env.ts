@@ -1,102 +1,51 @@
-import { normalizeUrlOrigin, parseCsv } from "./normalize";
+import { normalizeUrlOrigin } from "./normalize";
+
+const isProduction =
+  (Bun.env.NODE_ENV ?? "development").trim().toLowerCase() === "production" ||
+  (Bun.env.NODE_ENV ?? "development").trim().toLowerCase() === "prod";
 
 const readRequiredEnv = (name: string) => {
   const value = Bun.env[name];
 
   if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
+    throw new Error(`MISSING REQUIRED ENVIRONMENT VARIABLE: ${name}`);
   }
 
   return value;
 };
 
-const readOptionalEnv = (name: string) => {
-  return Bun.env[name];
-};
-
-const readAppEnv = () => {
-  const value = (Bun.env.NODE_ENV ?? "development").trim().toLowerCase();
-
-  if (value === "production" || value === "prod") {
-    return "production";
+const getEnv = () => {
+  if (isProduction) {
+    return {
+      isProduction: true,
+      port: Number(Bun.env.PORT ?? "3000"),
+      mongoUri: readRequiredEnv("MONGODB_URI"),
+      mongoDbName: readRequiredEnv("MONGODB_DB_NAME"),
+      betterAuthSecret: readRequiredEnv("BETTER_AUTH_SECRET"),
+      betterAuthUrl: normalizeUrlOrigin(readRequiredEnv("BETTER_AUTH_URL")),
+      frontendOrigin: normalizeUrlOrigin(readRequiredEnv("FRONTEND_ORIGIN")),
+      githubClientId: readRequiredEnv("GITHUB_CLIENT_ID"),
+      githubClientSecret: readRequiredEnv("GITHUB_CLIENT_SECRET"),
+      googleClientId: readRequiredEnv("GOOGLE_CLIENT_ID"),
+      googleClientSecret: readRequiredEnv("GOOGLE_CLIENT_SECRET"),
+      adminEmail: Bun.env.ADMIN_EMAIL?.trim().toLowerCase(),
+    } as const;
   }
 
-  return "development";
+  return {
+    isProduction: false,
+    port: 3000,
+    mongoUri: readRequiredEnv("MONGODB_URI"),
+    mongoDbName: readRequiredEnv("MONGODB_DB_NAME"),
+    betterAuthSecret: Bun.env.BETTER_AUTH_SECRET ?? "secret",
+    betterAuthUrl: "http://localhost:3000",
+    frontendOrigin: "http://localhost:5173",
+    githubClientId: Bun.env.GITHUB_CLIENT_ID ?? "",
+    githubClientSecret: Bun.env.GITHUB_CLIENT_SECRET ?? "",
+    googleClientId: Bun.env.GOOGLE_CLIENT_ID ?? "",
+    googleClientSecret: Bun.env.GOOGLE_CLIENT_SECRET ?? "",
+    adminEmail: Bun.env.ADMIN_EMAIL?.trim().toLowerCase(),
+  } as const;
 };
 
-const readPort = () => {
-  const rawPort = Bun.env.PORT ?? "3000";
-  const port = Number(rawPort);
-
-  if (Number.isNaN(port)) {
-    throw new Error(`Invalid PORT value: ${rawPort}`);
-  }
-
-  return port;
-};
-
-const readCsvEnv = (name: string) => {
-  const value = Bun.env[name];
-
-  if (!value) {
-    return [];
-  }
-
-  return parseCsv(value).map((item) => item.toLowerCase());
-};
-
-export const env = {
-  get isProduction() {
-    return readAppEnv() === "production";
-  },
-  get port() {
-    return readPort();
-  },
-  get mongoUri() {
-    return readRequiredEnv("MONGODB_URI");
-  },
-  get mongoDbName() {
-    return readRequiredEnv("MONGODB_DB_NAME");
-  },
-  get betterAuthSecret() {
-    return readRequiredEnv("BETTER_AUTH_SECRET");
-  },
-  get betterAuthUrl() {
-    const defaultUrl = this.isProduction
-      ? this.frontendOrigin
-      : "http://localhost:3000";
-    // FRONTEND ORIGIN
-    return normalizeUrlOrigin(defaultUrl);
-  },
-  get frontendOrigin() {
-    return normalizeUrlOrigin(
-      Bun.env.FRONTEND_ORIGIN ?? "http://localhost:5173",
-    );
-  },
-  get githubClientId() {
-    return readRequiredEnv("GITHUB_CLIENT_ID");
-  },
-  get githubClientSecret() {
-    return readRequiredEnv("GITHUB_CLIENT_SECRET");
-  },
-  get googleClientId() {
-    return readRequiredEnv("GOOGLE_CLIENT_ID");
-  },
-  get googleClientSecret() {
-    return readRequiredEnv("GOOGLE_CLIENT_SECRET");
-  },
-  get githubOwner() {
-    return Bun.env.GITHUB_OWNER ?? "d1rshan";
-  },
-  get githubRepo() {
-    return Bun.env.GITHUB_REPO ?? "decktype";
-  },
-  get githubToken() {
-    return readOptionalEnv("GITHUB_TOKEN");
-  },
-  get adminEmails() {
-    return readCsvEnv("ADMIN_EMAILS");
-  },
-};
-
-// TODO: do init check for .env and throw error for vercel
+export const env = getEnv();

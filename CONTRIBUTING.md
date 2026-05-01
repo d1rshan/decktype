@@ -1,16 +1,41 @@
-# Contributing to Decktype
+# Contributing to decktype
 
-Thanks for contributing! Decktype is a playful, experimental typing project, so bold ideas are welcome.
+## Getting started
 
-## Quick start
+1. **Fork and clone**
 
-```bash
-bun install
-bun dev
-```
+   ```bash
+   git clone https://github.com/your_username/decktype.git
+   cd decktype
+   ```
 
-## Submitting a PR
+2. **Install dependencies**
 
-1. Fork the repo and create a feature branch.
-2. Make your changes.
-3. Open a PR describing **what** you changed and **why**.
+   ```bash
+   bun install
+   ```
+
+3. **Configure environment**
+   create a `.env` file in `apps/backend/` with:
+
+   ```env
+   MONGODB_URI=<your_mongodb_uri>
+   MONGODB_DB_NAME=decktype
+   ```
+
+4. **Start development**
+
+   ```bash
+   bun dev
+   ```
+
+> envs are managed in `backend/src/config/env.ts` and `frontend/src/lib/urls.ts`.
+
+## Pull requests
+
+- use [conventional commits](https://www.conventionalcommits.org/) for **pr titles**.
+- **scopes:** `feat`, `fix`, `refactor`, `chore`, `docs`, `impr`, `style`, `ci`, `perf`.
+- **examples:**
+  - `feat: implement global leaderboard for daily challenges`
+  - `fix: layout shift on results screen during transition`
+  - `refactor: optimize word bank generation performance`

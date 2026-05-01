@@ -1,9 +1,9 @@
 import { createAuthClient } from "better-auth/solid";
 
-import { backendUrl } from "@/lib/backend-url";
+import { urls } from "@/lib/urls";
 
 export const authClient = createAuthClient({
-  baseURL: backendUrl,
+  baseURL: urls.backend,
   fetchOptions: {
     credentials: "include",
   },

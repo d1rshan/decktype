@@ -25,6 +25,15 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Sync Contributors
+        run: bun run sync:contributors
+
+      - name: Update version
+        run: |
+          VERSION=${{ inputs.version }}
+          VERSION=${VERSION#v}
+          npm version $VERSION --no-git-tag-version 
+
       - name: Deploy Backend (Vercel)
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -37,15 +46,6 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: bun run deploy:fe
-
-      - name: Sync Contributors
-        run: bun run sync:contributors
-
-      - name: Update version
-        run: |
-          VERSION=${{ inputs.version }}
-          VERSION=${VERSION#v}
-          npm version $VERSION --no-git-tag-version 
 
       - name: Commit and Push changes
         run: |

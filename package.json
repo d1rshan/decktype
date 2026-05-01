@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "concurrently \"bun run --cwd apps/backend dev\" \"bun run --cwd apps/frontend dev\"",
     "build:fe": "bun run --cwd apps/frontend build",
-    "deploy:fe": "VITE_BACKEND_URL=https://decktype-be.vercel.app bun run build:fe && cd apps/frontend && wrangler pages deploy dist --project-name decktype --branch main",
+    "deploy:fe": "bun run build:fe && cd apps/frontend && wrangler pages deploy dist --project-name decktype --branch main",
     "deploy:be": "vercel deploy --prod",
     "deploy:all": "bun run deploy:be && bun run deploy:fe",
     "format": "oxfmt .",

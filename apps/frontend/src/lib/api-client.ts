@@ -1,10 +1,10 @@
 import { treaty } from "@elysiajs/eden";
 
 import type { App } from "@decktype/api";
-import { backendUrl } from "@/lib/backend-url";
+import { urls } from "@/lib/urls";
 import { toast } from "@/lib/toast";
 
-export const { api } = treaty<App>(backendUrl, {
+export const { api } = treaty<App>(urls.backend, {
   fetch: {
     credentials: "include",
   },

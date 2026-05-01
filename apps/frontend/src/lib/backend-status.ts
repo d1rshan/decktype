@@ -1,8 +1,8 @@
 import { createSignal } from "solid-js";
 
-import { apiBaseUrl } from "@/lib/backend-url";
+import { urls } from "@/lib/urls";
 
-const healthUrl = `${apiBaseUrl}/health`;
+const healthUrl = `${urls.backend}/api/health`;
 const POLL_INTERVAL_MS = 20000;
 
 const [isBackendDown, setIsBackendDown] = createSignal(false);

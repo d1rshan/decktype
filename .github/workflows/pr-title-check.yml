@@ -1,0 +1,59 @@
+# yoinked from monkeytype, thanks mio <3
+name: "PR Title Check"
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - reopened
+permissions:
+  pull-requests: write
+jobs:
+  main:
+    name: check
+    runs-on: ubuntu-slim
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
+    steps:
+      - name: Lint and verify PR title
+        uses: amannn/action-semantic-pull-request@v6
+        id: lint_pr_title
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            refactor
+            chore
+            docs
+            impr
+            style
+            ci
+            perf
+          requireScope: false
+          subjectPattern: ^.+$
+      - uses: marocchino/sticky-pull-request-comment@v2
+        if: always() && (steps.lint_pr_title.outputs.error_message != null)
+        with:
+          header: pr-title-lint-error
+          message: |
+            Hey, thanks for opening a PR! 👋
+            We follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/) for PR titles — looks like yours needs a small adjustment.
+
+            Details:
+            ```
+            ${{ steps.lint_pr_title.outputs.error_message }}
+            ```
+
+            Here are some examples of valid titles:
+            ```
+            feat(game): add new typing game mode
+            fix: correct leaderboard score calculation
+            feat(themes): add dark mode theme
+            ```
+      # Delete a previous comment when the issue has been resolved
+      - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-title-lint-error
+          delete: true
