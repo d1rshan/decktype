@@ -1,70 +1,41 @@
-# Contributing to Decktype
+# Contributing to decktype
 
-First off, thanks for taking the time to contribute! Decktype is an open-source typing project, and we love to see new faces.
+## Getting started
 
-## Prerequisites
+1. **Fork and clone**
 
-- [Bun](https://bun.sh/) (Runtime & Package Manager)
-- [MongoDB](https://www.mongodb.com/docs/manual/installation/) (Running locally or a cloud instance)
-
-## Getting Started
-
-1. **Fork and Clone** the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/decktype.git
+   git clone https://github.com/your_username/decktype.git
    cd decktype
    ```
 
-2. **Install dependencies**:
+2. **Install dependencies**
+
    ```bash
    bun install
    ```
 
-3. **Set up Environment Variables**:
-   Copy the example environment file in the backend app:
-   
-   **Backend:**
-   ```bash
-   cp apps/backend/.env.example apps/backend/.env
-   ```
-   
-   *Note: The frontend works out of the box with defaults (pointing to localhost:3000). You only need to set up the backend environment.*
+3. **Configure environment**
+   create a `.env` file in `apps/backend/` with:
 
-4. **Run the development server**:
+   ```env
+   MONGODB_URI=<your_mongodb_uri>
+   MONGODB_DB_NAME=decktype
+   ```
+
+4. **Start development**
+
    ```bash
    bun dev
    ```
-   This will start both the backend (port 3000) and the frontend (port 5173).
 
-## Development Workflow
+> envs are managed in `backend/src/config/env.ts` and `frontend/src/lib/urls.ts`.
 
-### Project Structure
-- `apps/backend`: Elysia server with MongoDB.
-- `apps/frontend`: SolidJS application with Vite and Tailwind CSS.
-- `packages/api`: Shared types and API client.
+## Pull requests
 
-### Linting & Formatting
-We use `oxlint` for linting and `oxfmt` for formatting. They are blazingly fast!
-```bash
-# Format code
-bun run format
-
-# Run linter
-bun run lint
-
-# Type check
-bun run typecheck
-```
-
-## Submitting a Pull Request
-
-1. Create a new branch for your feature or bugfix: `git checkout -b feat/my-cool-feature`.
-2. Commit your changes. We follow [Conventional Commits](https://www.conventionalcommits.org/).
-3. Push to your fork and open a Pull Request.
-4. Provide a clear description of what you've changed and why.
-
-## Need Help?
-
-If you have questions or get stuck, feel free to open an issue or reach out to the maintainers.
-
-Happy coding! 🚀
+- use [conventional commits](https://www.conventionalcommits.org/) for **pr titles**.
+- **scopes:** `feat`, `fix`, `refactor`, `chore`, `docs`, `impr`, `style`.
+- **examples:**
+  - `feat: implement global leaderboard for daily challenges`
+  - `fix: layout shift on results screen during transition`
+  - `refactor: optimize word bank generation performance`
