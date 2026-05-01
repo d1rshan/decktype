@@ -23,9 +23,13 @@ export const auth = betterAuth({
     useSecureCookies: env.isProduction,
     defaultCookieAttributes: {
       secure: env.isProduction,
-      sameSite: env.isProduction ? "none" : "lax",
+      sameSite: "lax",
       httpOnly: true,
     },
+    storeStateStrategy: "cookie",
+  },
+  account: {
+    skipStateCookieCheck: true,
   },
   database: mongodbAdapter(db, {
     client: mongoClient,

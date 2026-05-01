@@ -6,34 +6,56 @@ import type {
   LeaderboardDifficulty,
   LeaderboardEntry,
 } from "@/features/leaderboard/types";
-import { formatDateTime } from "@/lib/utils";
 import { QueryState } from "@/components/query-state";
+
+function formatLeaderboardDateTime(value: string | Date) {
+  const date = new Date(value);
+  const month = date.toLocaleString(undefined, { month: "short" });
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return (
+    <>
+      <span class="block">
+        {date.getDate()} {month} {date.getFullYear()}
+      </span>
+      <span class="block">
+        {hours}:{minutes}
+      </span>
+    </>
+  );
+}
 
 const columns: TableColumn<LeaderboardEntry>[] = [
   {
     id: "rank",
     label: "#",
+    align: "left",
     value: (entry) => entry.rank,
   },
   {
     id: "player",
     label: "player",
+    align: "left",
     value: (entry) => entry.displayName,
   },
   {
     id: "score",
     label: "score",
+    align: "left",
     value: (entry) => entry.bestScore,
   },
   {
     id: "difficulty",
     label: "difficulty",
+    align: "left",
     value: (entry) => entry.difficulty,
   },
   {
     id: "date",
     label: "date",
-    value: (entry) => formatDateTime(entry.createdAt),
+    align: "left",
+    value: (entry) => formatLeaderboardDateTime(entry.createdAt),
   },
 ];
 
@@ -51,7 +73,15 @@ export function LeaderboardTable(props: LeaderboardTableProps) {
 
   return (
     <QueryState query={leaderboardQuery} emptyMessage="no scores yet">
-      {(entries) => <Table columns={columns} rows={entries} />}
+      {(entries) => (
+        <Table
+          columns={columns}
+          rows={entries}
+          templateColumns="2.75rem minmax(7rem,1fr) 5rem 6.5rem 8.5rem"
+          minTableWidth={540}
+          mobileTemplateColumns="1rem minmax(2.5rem,1fr) 2.25rem 3.4rem 4.5rem"
+        />
+      )}
     </QueryState>
   );
 }

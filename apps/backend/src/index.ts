@@ -23,12 +23,11 @@ const ensureStartup = (options?: { ensureIndexes?: boolean }) => {
   return startupPromise;
 };
 
-void ensureStartup().catch((error) => {
+await ensureStartup({ ensureIndexes: !env.isProduction }).catch((error) => {
   console.error("Initial MongoDB warmup failed:", error);
 });
 
-if (!env.isVercel) {
-  await ensureStartup({ ensureIndexes: true });
+if (!env.isProduction) {
   app.listen(env.port);
   console.log(`Server running on ${env.betterAuthUrl}`);
 }

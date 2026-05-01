@@ -19,6 +19,7 @@ export function SocialAuthButtons() {
     try {
       const result = await authClient.signIn.social({
         provider,
+        callbackURL: "https://decktype.pages.dev",
       });
 
       if (result.error) {

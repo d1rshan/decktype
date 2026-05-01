@@ -25,11 +25,13 @@ async function fetchContributors() {
 
     const data = await response.json();
 
-    const contributors = data.map((c) => ({
-      login: c.login,
-      avatar_url: c.avatar_url,
-      html_url: c.html_url,
-    }));
+    const contributors = data
+      .filter((c) => c.type === "User" && !c.login.endsWith("[bot]"))
+      .map((c) => ({
+        login: c.login,
+        avatar_url: c.avatar_url,
+        html_url: c.html_url,
+      }));
 
     await mkdir(dirname(OUTPUT_PATH), { recursive: true });
 

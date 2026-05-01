@@ -1,6 +1,6 @@
 {
   "name": "decktype",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -11,17 +11,28 @@
   "scripts": {
     "dev": "concurrently \"bun run --cwd apps/backend dev\" \"bun run --cwd apps/frontend dev\"",
     "build:fe": "bun run --cwd apps/frontend build",
-    "deploy:fe": "bun run build:fe && wrangler pages deploy apps/frontend/dist --project-name decktype --branch main",
+    "deploy:fe": "VITE_BACKEND_URL=https://decktype-be.vercel.app bun run build:fe && cd apps/frontend && wrangler pages deploy dist --project-name decktype --branch main",
     "deploy:be": "vercel deploy --prod",
     "deploy:all": "bun run deploy:be && bun run deploy:fe",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "sync:contributors": "bun run scripts/fetch-contributors.js",
     "lint": "oxlint",
-    "typecheck": "bun run --cwd apps/backend typecheck && bun run --cwd apps/frontend typecheck"
+    "typecheck": "bun run --cwd apps/backend typecheck && bun run --cwd apps/frontend typecheck",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "oxfmt",
+      "oxlint --fix"
+    ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
     "concurrently": "^9.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "oxfmt": "^0.5.0",
     "oxlint": "^1.15.0",
     "typescript": "~5.9.3",

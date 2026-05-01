@@ -1,45 +1,15 @@
-# decktype
+# Decktype
 
-a typing playground, not a typing test.
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](./LICENSE)
+[![Made with Bun](https://img.shields.io/badge/Made%20with-Bun-fcf2d1?logo=bun)](https://bun.sh)
+[![Built with SolidJS](https://img.shields.io/badge/Built%20with-SolidJS-2c4f7c?logo=solid)](https://www.solidjs.com)
 
-monkeytype nailed the typing test. decktype asks what comes after that — what if the keyboard was a playground instead of a benchmark?
+Decktype is not a typing benchmark. It is a typing playground built for experimental ideas, rhythm based challenges, and unusual typing mechanics.
 
-timed chaos modes, rhythm-based typing, and mechanics you've genuinely never seen on a typing site before. open source, forkable, and weird by design.
+Monkeytype mastered the typing test. Decktype is inspired by that and takes the idea in a more playful direction.
 
-## stack
+It is open source and meant for strange, creative, and experimental typing experiences.
 
-- **frontend** — SolidJS + Vite, deployed to Cloudflare Pages
-- **backend** — ElysiaJS + Bun, deployed to Vercel
-- **shared** — `packages/api` for shared types and API client
+## License
 
-## structure
-
-```
-decktype/
-├── apps/
-│   ├── frontend/   # SolidJS app
-│   └── backend/    # ElysiaJS API
-└── packages/
-    └── api/        # shared types
-```
-
-## getting started
-
-```bash
-# install dependencies
-bun install
-
-# run frontend
-cd apps/frontend && bun dev
-
-# run backend
-cd apps/backend && bun dev
-```
-
-## contributing
-
-fork it, break it, ship your strange idea into it. PRs welcome.
-
-## license
-
-MIT
+Decktype is released under the GPL 3.0 license.
