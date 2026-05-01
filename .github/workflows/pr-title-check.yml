@@ -58,7 +58,7 @@ jobs:
             ```
             A correct version would look something like: 
 
-            feat: add new feature
+            feat(command line): add new feature
             impr(quotes): add english quotes
             fix(leaderboard): show user rank correctly
 
