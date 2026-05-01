@@ -1,0 +1,43 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  validate-title:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Check Title Format
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title;
+            // Pattern: type(scope): description OR type: description
+            // Types: feat, fix, chore, refactor, impr, perf, docs, style, ci, test, build
+            const regex = /^(feat|fix|chore|refactor|impr|perf|docs|style|ci|test|build)(\([\w-]+\))?: .+/;
+            
+            if (!regex.test(title)) {
+              const errorMessage = `❌ **Invalid PR Title Format**
+
+              The PR title "${title}" does not match the required format.
+              Please update it to: \`<type>(<optional-scope>): <description>\`
+
+              **Allowed types:** feat, fix, chore, refactor, impr, perf, docs, style, ci, test, build
+              **Example:** \`fix(themes): improve strawberry theme colors\`
+
+              *Note: The author tag (@user) is not required in the title.*`;
+
+              // Fail the check
+              core.setFailed(errorMessage);
+
+              // Add a comment to the PR
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: errorMessage
+              });
+            }
