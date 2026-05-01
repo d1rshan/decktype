@@ -1,0 +1,5 @@
+procs:
+  backend:
+    shell: bun run --cwd apps/backend dev
+  frontend:
+    shell: bun run --cwd apps/frontend dev

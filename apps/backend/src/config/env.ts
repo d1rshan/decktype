@@ -37,7 +37,9 @@ const getEnv = () => {
     port: 3000,
     mongoUri: readRequiredEnv("MONGODB_URI"),
     mongoDbName: readRequiredEnv("MONGODB_DB_NAME"),
-    betterAuthSecret: Bun.env.BETTER_AUTH_SECRET ?? "secret",
+    betterAuthSecret:
+      Bun.env.BETTER_AUTH_SECRET ??
+      "reallylongsupersecuresecretreallylongsupersecuresecret",
     betterAuthUrl: "http://localhost:3000",
     frontendOrigin: "http://localhost:5173",
     githubClientId: Bun.env.GITHUB_CLIENT_ID ?? "",
