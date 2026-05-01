@@ -23,7 +23,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
       .sort((left, right) => right.y - left.y);
 
     if (exactPrefixCandidates.length > 0) {
-      return exactPrefixCandidates[0].id;
+      return exactPrefixCandidates[0]?.id ?? null;
     }
 
     // If no exact prefix match, find the word that HAS the longest prefix match with currentInput
@@ -37,7 +37,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
       while (
         prefixLen < props.currentInput.length &&
         prefixLen < word.text.length &&
-        props.currentInput[prefixLen] === word.text[prefixLen]
+        props.currentInput.charAt(prefixLen) === word.text.charAt(prefixLen)
       ) {
         prefixLen++;
       }
@@ -139,7 +139,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
                   <span
                     class={`relative transition-colors duration-200 ${
                       isTyped
-                        ? props.currentInput[index] === character
+                        ? props.currentInput.charAt(index) === character
                           ? "text-(--text)"
                           : "text-(--error)"
                         : isCaretSlot
