@@ -34,7 +34,7 @@
 ## Pull requests
 
 - use [conventional commits](https://www.conventionalcommits.org/) for **pr titles**.
-- **scopes:** `feat`, `fix`, `refactor`, `chore`, `docs`, `impr`, `style`.
+- **scopes:** `feat`, `fix`, `refactor`, `chore`, `docs`, `impr`, `style`, `ci`, `perf`.
 - **examples:**
   - `feat: implement global leaderboard for daily challenges`
   - `fix: layout shift on results screen during transition`

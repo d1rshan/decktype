@@ -1,5 +1,5 @@
+# yoinked from monkeytype, thanks mio <3
 name: "PR Title Check"
-
 on:
   pull_request_target:
     types:
@@ -7,10 +7,8 @@ on:
       - edited
       - synchronize
       - reopened
-
 permissions:
   pull-requests: write
-
 jobs:
   main:
     name: check
@@ -18,53 +16,45 @@ jobs:
     if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     steps:
       - name: Lint and verify PR title
-        uses: amannn/action-semantic-pull-request@2d952a119666398e774059ba358bb2d2ee72c573 # v5.5.3
+        uses: amannn/action-semantic-pull-request@v5
         id: lint_pr_title
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           types: |
-            build
-            chore
-            ci
-            docs
             feat
-            impr
             fix
-            perf
             refactor
-            revert
+            chore
+            docs
+            impr
             style
-            test
+            ci
+            perf
           requireScope: false
-          # Subject must be at least one character
           subjectPattern: ^.+$
-
-      - uses: marocchino/sticky-pull-request-comment@efaaab9297ca232d061732c0c145511500219752 # v2.9.0
-        # When the previous steps fails, the workflow would stop. By adding this
-        # condition you can continue the execution with the populated error message.
+      - uses: marocchino/sticky-pull-request-comment@v2
         if: always() && (steps.lint_pr_title.outputs.error_message != null)
         with:
           header: pr-title-lint-error
           message: |
-            Hey there and thank you for opening this pull request! 👋🏼
-
-            We require pull request titles to follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/). It looks like your proposed title needs to be adjusted.
+            Hey, thanks for opening a PR! 👋
+            We follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/) for PR titles — looks like yours needs a small adjustment.
 
             Details:
-
             ```
             ${{ steps.lint_pr_title.outputs.error_message }}
             ```
-            A correct version would look something like: 
 
-            feat(command line): add new feature
-            impr(quotes): add english quotes
-            fix(leaderboard): show user rank correctly
-
+            Here are some examples of valid titles:
+            ```
+            feat(game): add new typing game mode
+            fix: correct leaderboard score calculation
+            feat(themes): add catppuccin theme
+            ```
       # Delete a previous comment when the issue has been resolved
       - if: ${{ steps.lint_pr_title.outputs.error_message == null }}
-        uses: marocchino/sticky-pull-request-comment@efaaab9297ca232d061732c0c145511500219752 # v2.9.0
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-title-lint-error
           delete: true
