@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { User } from "lucide-solid";
+import { User, Shield } from "lucide-solid";
 import { useAuthSession } from "@/features/auth/hooks";
 
 const routes = [
@@ -32,6 +32,17 @@ export function Navbar() {
               </A>
             );
           })}
+          {auth.isAdmin() && (
+            <A
+              href="/admin"
+              activeClass="text-(--main)"
+              inactiveClass="text-(--sub) hover:text-(--text)"
+              class="flex items-center gap-1 transition"
+            >
+              <Shield size={14} strokeWidth={2} />
+              <p class="text-sm leading-normal sm:text-base">admin</p>
+            </A>
+          )}
         </nav>
       </div>
 

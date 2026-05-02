@@ -1,5 +1,4 @@
 import { ApiError } from "../../lib/errors";
-import { env } from "../../config/env";
 import { auth } from "./index";
 
 export const requireSession = async (headers: Headers) => {
@@ -16,9 +15,9 @@ export const requireSession = async (headers: Headers) => {
 
 export const requireAdminSession = async (headers: Headers) => {
   const currentSession = await requireSession(headers);
-  const userEmail = currentSession.user.email?.trim().toLowerCase();
+  const user = currentSession.user as { admin?: boolean };
 
-  if (!userEmail || userEmail !== env.adminEmail) {
+  if (!user.admin) {
     throw ApiError.forbidden(
       "You are not authorized to access admin resources.",
     );
