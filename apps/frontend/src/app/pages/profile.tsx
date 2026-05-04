@@ -3,8 +3,8 @@ import { User } from "lucide-solid";
 
 import AuthForms from "@/features/auth/components/auth-forms";
 import { useAuthSession } from "@/features/auth/hooks";
-import PersonalBests from "@/features/results/components/personal-bests";
-import ResultsTable from "@/features/results/components/results-table";
+import PersonalBests from "@/features/users/pbs/components/personal-bests";
+import ResultsTable from "@/features/users/results/components/results-table";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 import { formatDateTime } from "@/lib/utils";

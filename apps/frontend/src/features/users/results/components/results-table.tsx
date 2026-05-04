@@ -1,9 +1,10 @@
 import { Table, type TableColumn } from "@/components/table";
 import { useAuthSession } from "@/features/auth/hooks";
-import { useMyResultsQuery } from "@/features/results/api";
-import type { Result } from "@/features/results/types";
 import { getGameName } from "@/features/games/utils";
 import { QueryState } from "@/components/query-state";
+
+import { useMyResultsQuery } from "../api";
+import type { Result } from "../types";
 
 function formatResultsDateTime(value: string | Date) {
   const date = new Date(value);

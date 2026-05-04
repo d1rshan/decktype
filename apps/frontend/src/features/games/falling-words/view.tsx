@@ -1,7 +1,7 @@
 import { Globe, Keyboard } from "lucide-solid";
 import { useAuthSession } from "@/features/auth/hooks";
 import type { GameViewProps } from "@/features/games/types";
-import { useCreateResultMutation } from "@/features/results/api";
+import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
 import { DifficultySelector } from "../components/difficulty-selector";
 import FallingWordsField from "./components/falling-words-field";

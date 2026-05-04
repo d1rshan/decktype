@@ -40,7 +40,7 @@ export const useCreateResultMutation = () => {
       unwrap(api.users.results.post(input)),
     onSuccess: (data) => {
       if (data.isNewPB) {
-        toast.success("New Personal Best! 🎉");
+        toast.success("New Personal Best!");
       } else {
         toast.success("Result saved.");
       }

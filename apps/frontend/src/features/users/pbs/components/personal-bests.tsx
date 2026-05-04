@@ -1,9 +1,10 @@
 import { For, Show } from "solid-js";
 
 import { useAuthSession } from "@/features/auth/hooks";
-import { usePersonalBestsQuery } from "@/features/results/api/personal-bests";
 import { getGameName } from "@/features/games/utils";
 import { QueryState } from "@/components/query-state";
+
+import { usePersonalBestsQuery } from "../api";
 
 type PBEntry = {
   bestScore: number;
