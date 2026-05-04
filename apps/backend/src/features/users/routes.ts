@@ -54,7 +54,7 @@ export const usersRoutes = new Elysia({ prefix: "/api/users" })
     async ({ request: { headers } }) => {
       const { user } = await requireSession(headers);
 
-      return getUserPBs({ userId: parseObjectId(user.id) });
+      return getUserPBs(parseObjectId(user.id));
     },
     {
       response: userPBsResponseSchema,

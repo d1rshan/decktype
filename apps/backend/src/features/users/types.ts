@@ -13,10 +13,6 @@ export type GetUserResultsInput = {
   limit: number;
 };
 
-export type GetUserPBsInput = {
-  userId: ObjectId;
-};
-
 // PBS
 type PBEntry = {
   bestScore: number;

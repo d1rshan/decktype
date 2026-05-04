@@ -1,13 +1,11 @@
+import type { ObjectId } from "mongodb";
+
 import { ApiError } from "../../lib/errors";
-import { leaderboardDAL } from "../leaderboard/dal";
+import { getUsersLeaderboardEntries } from "../leaderboard/service";
 import { recordLeaderboardResult } from "../leaderboard/service";
 import { usersDAL } from "./dal";
 import { serializeResult, serializeUserPBs } from "./serializers";
-import type {
-  CreateResultInput,
-  GetUserPBsInput,
-  GetUserResultsInput,
-} from "./types";
+import type { CreateResultInput, GetUserResultsInput } from "./types";
 
 // TODO: Move rules and shared configs to a new package
 const FALLING_WORDS_MINIMUM_SCORES = {
@@ -76,7 +74,7 @@ export const getUserResults = async (filters: GetUserResultsInput) => {
   return docs.map(serializeResult);
 };
 
-export const getUserPBs = async (filters: GetUserPBsInput) => {
-  const docs = await leaderboardDAL.findByUserId(filters.userId);
+export const getUserPBs = async (userId: ObjectId) => {
+  const docs = await getUsersLeaderboardEntries(userId);
   return serializeUserPBs(docs);
 };

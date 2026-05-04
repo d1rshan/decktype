@@ -1,3 +1,5 @@
+import type { ObjectId } from "mongodb";
+
 import { leaderboardDAL } from "./dal";
 import { serializeLeaderboardEntry } from "./serializers";
 import type {
@@ -17,3 +19,6 @@ export const getLeaderboard = async (filters: GetLeaderboardInput) => {
     ...serializeLeaderboardEntry(doc),
   }));
 };
+
+export const getUsersLeaderboardEntries = async (userId: ObjectId) =>
+  leaderboardDAL.findByUserId(userId);
