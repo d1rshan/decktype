@@ -3,8 +3,8 @@ import type { ObjectId } from "mongodb";
 import { resultsCollection } from "../../db/collections";
 import type { ResultDocument } from "../../db/collections";
 
-export class ResultsDAL {
-  async create(doc: ResultDocument) {
+export class UsersDAL {
+  async createResult(doc: ResultDocument) {
     const res = await resultsCollection.insertOne(doc);
     return {
       _id: res.insertedId,
@@ -12,7 +12,7 @@ export class ResultsDAL {
     };
   }
 
-  async findByUser(filters: {
+  async findResultsByUser(filters: {
     userId: ObjectId;
     gameId?: string;
     limit: number;
@@ -29,4 +29,4 @@ export class ResultsDAL {
   }
 }
 
-export const resultsDAL = new ResultsDAL();
+export const usersDAL = new UsersDAL();

@@ -41,3 +41,5 @@ apps/**/.wrangler/
 .DS_Store
 .vercel
 .env*.local
+
+AGENTS.md

@@ -1,3 +1,5 @@
+import type { ObjectId } from "mongodb";
+
 import { leaderboardCollection } from "../../db/collections";
 import type { LeaderboardDocument } from "../../db/collections";
 
@@ -52,6 +54,10 @@ export class LeaderboardDAL {
         { sort: { bestScore: -1, createdAt: 1 }, limit: filters.limit },
       )
       .toArray();
+  }
+
+  async findByUserId(userId: ObjectId) {
+    return leaderboardCollection.find({ userId }).toArray();
   }
 }
 

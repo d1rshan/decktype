@@ -5,7 +5,7 @@ import { authRoutes } from "../features/auth/routes";
 import { authPlugin } from "../features/auth/plugin";
 import { feedbackRoutes } from "../features/feedback/routes";
 import { leaderboardRoutes } from "../features/leaderboard/routes";
-import { resultRoutes } from "../features/results/routes";
+import { usersRoutes } from "../features/users/routes";
 
 import { corsPlugin } from "./plugins/cors";
 import { errorHandlerPlugin } from "./plugins/error-handler";
@@ -37,8 +37,8 @@ export const app = new Elysia()
   .use(authRoutes)
   .use(adminRoutes)
   .use(leaderboardRoutes)
-  .use(resultRoutes)
   .use(feedbackRoutes)
+  .use(usersRoutes)
   .compile();
 
 export type App = typeof app;

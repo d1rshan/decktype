@@ -2,18 +2,18 @@ import { Elysia, t } from "elysia";
 
 import { parseObjectId } from "../../lib/object-id";
 import { requireSession } from "../auth/session";
-
 import {
   createResultBodySchema,
   createResultResponseSchema,
   myResultsQuerySchema,
   resultResponseSchema,
+  userPBsResponseSchema,
 } from "./schema";
-import { createResult, getUserResults } from "./service";
+import { createResult, getUserPBs, getUserResults } from "./service";
 
-export const resultRoutes = new Elysia({ prefix: "/api/results" })
+export const usersRoutes = new Elysia({ prefix: "/api/users" })
   .post(
-    "/",
+    "/results",
     async ({ body, request: { headers } }) => {
       const { user } = await requireSession(headers);
       const displayName = user.name;
@@ -33,9 +33,8 @@ export const resultRoutes = new Elysia({ prefix: "/api/results" })
       response: createResultResponseSchema,
     },
   )
-
   .get(
-    "/me",
+    "/results",
     async ({ request: { headers }, query }) => {
       const { user } = await requireSession(headers);
 
@@ -48,5 +47,16 @@ export const resultRoutes = new Elysia({ prefix: "/api/results" })
     {
       query: myResultsQuerySchema,
       response: t.Array(resultResponseSchema),
+    },
+  )
+  .get(
+    "/results/pbs",
+    async ({ request: { headers } }) => {
+      const { user } = await requireSession(headers);
+
+      return getUserPBs({ userId: parseObjectId(user.id) });
+    },
+    {
+      response: userPBsResponseSchema,
     },
   );

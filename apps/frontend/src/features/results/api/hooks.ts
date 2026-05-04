@@ -21,7 +21,7 @@ export const useMyResultsQuery = (
       queryKey: resultKeys.mine(gameId, limit),
       queryFn: () =>
         unwrap(
-          api.results.me.get({
+          api.users.results.get({
             query: {
               ...(gameId ? { gameId } : {}),
               limit,
@@ -36,10 +36,14 @@ export const useCreateResultMutation = () => {
   const client = useQueryClient();
 
   return useMutation(() => ({
-    mutationFn: (input: Parameters<typeof api.results.post>[0]) =>
-      unwrap(api.results.post(input)),
-    onSuccess: () => {
-      toast.success("Result saved.");
+    mutationFn: (input: Parameters<typeof api.users.results.post>[0]) =>
+      unwrap(api.users.results.post(input)),
+    onSuccess: (data) => {
+      if (data.isNewPB) {
+        toast.success("New Personal Best! 🎉");
+      } else {
+        toast.success("Result saved.");
+      }
 
       return client.invalidateQueries({
         queryKey: resultKeys.all,

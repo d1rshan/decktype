@@ -1,10 +1,11 @@
 import { ApiError } from "../../lib/errors";
+import { leaderboardDAL } from "../leaderboard/dal";
 import { recordLeaderboardResult } from "../leaderboard/service";
-import { resultsDAL } from "./dal";
-import { serializeResult } from "./serializers";
+import { usersDAL } from "./dal";
+import { serializeResult, serializeUserPBs } from "./serializers";
 import type {
-  CreateResultContext,
   CreateResultInput,
+  GetUserPBsInput,
   GetUserResultsInput,
 } from "./types";
 
@@ -38,7 +39,7 @@ const getResultValidationMessage = (
 
 export const createResult = async (
   input: CreateResultInput,
-  { displayName }: CreateResultContext,
+  { displayName }: { displayName: string },
 ) => {
   const validationMessage = getResultValidationMessage(
     input.gameId,
@@ -50,7 +51,7 @@ export const createResult = async (
     throw ApiError.badRequest(validationMessage);
   }
 
-  const doc = await resultsDAL.create({
+  const doc = await usersDAL.createResult({
     ...input,
     createdAt: new Date(),
   });
@@ -71,6 +72,11 @@ export const createResult = async (
 };
 
 export const getUserResults = async (filters: GetUserResultsInput) => {
-  const docs = await resultsDAL.findByUser(filters);
+  const docs = await usersDAL.findResultsByUser(filters);
   return docs.map(serializeResult);
+};
+
+export const getUserPBs = async (filters: GetUserPBsInput) => {
+  const docs = await leaderboardDAL.findByUserId(filters.userId);
+  return serializeUserPBs(docs);
 };
