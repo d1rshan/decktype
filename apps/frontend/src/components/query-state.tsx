@@ -31,10 +31,13 @@ export function QueryState<T>(props: QueryStateProps<T>) {
       <Match when={props.query.data !== undefined}>
         <Show when={props.query.data} keyed>
           {(content) => {
-            const isEmptyArray =
-              Array.isArray(content) && (content as unknown[]).length === 0;
+            const isEmpty =
+              (Array.isArray(content) && content.length === 0) ||
+              (typeof content === "object" &&
+                content !== null &&
+                Object.keys(content).length === 0);
 
-            if (isEmptyArray && props.emptyMessage) {
+            if (isEmpty && props.emptyMessage) {
               return (
                 <div class="rounded-lg bg-(--sub-alt) p-4">
                   <p class="text-base opacity-50">{props.emptyMessage}</p>

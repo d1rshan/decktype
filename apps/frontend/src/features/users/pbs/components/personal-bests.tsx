@@ -1,28 +1,14 @@
-import { For, Show } from "solid-js";
+import { For } from "solid-js";
 
 import { useAuthSession } from "@/features/auth/hooks";
 import { getGameName } from "@/features/games/utils";
 import { QueryState } from "@/components/query-state";
+import { formatDateTime } from "@/lib/utils";
 
 import { usePersonalBestsQuery } from "../api";
+import type { UserPBs } from "../types";
 
-type PBEntry = {
-  bestScore: number;
-  createdAt: string | Date;
-};
-
-type PBsByDifficulty = Record<string, PBEntry>;
-
-type UserPBs = Record<string, PBsByDifficulty>;
-
-function formatPBDateTime(value: string | Date) {
-  const date = new Date(value);
-  const month = date.toLocaleString(undefined, { month: "short" });
-
-  return `${date.getDate()} ${month} ${date.getFullYear()}`;
-}
-
-function PersonalBestsTable(pbs: UserPBs) {
+function PersonalBestsCards(pbs: UserPBs) {
   const gameEntries = Object.entries(pbs);
 
   return (
@@ -44,7 +30,7 @@ function PersonalBestsTable(pbs: UserPBs) {
                       {pb.bestScore}
                     </div>
                     <div class="mt-1 text-xs leading-normal text-(--sub)">
-                      {formatPBDateTime(pb.createdAt)}
+                      {formatDateTime(pb.createdAt)}
                     </div>
                   </div>
                 )}
@@ -65,18 +51,7 @@ function PersonalBests() {
 
   return (
     <QueryState query={pbsQuery} emptyMessage="no personal bests yet">
-      {(data) => (
-        <Show
-          when={Object.keys(data.pbs).length > 0}
-          fallback={
-            <p class="text-base leading-normal text-(--sub)">
-              no personal bests yet
-            </p>
-          }
-        >
-          {PersonalBestsTable(data.pbs)}
-        </Show>
-      )}
+      {(data) => PersonalBestsCards(data.pbs)}
     </QueryState>
   );
 }
