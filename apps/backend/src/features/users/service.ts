@@ -78,3 +78,7 @@ export const getUserPBs = async (userId: ObjectId) => {
   const docs = await getUsersLeaderboardEntries(userId);
   return serializeUserPBs(docs);
 };
+
+// TODO: Make the result write and leaderboard update atomic.
+// usersDAL.createResult() persists the result before recordLeaderboardResult() runs.
+// If the leaderboard update fails, the API will error after the result has already been stored, and retries can create duplicate results or an inconsistent PB state.
