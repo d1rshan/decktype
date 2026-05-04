@@ -22,7 +22,7 @@ function PersonalBestsCards(pbs: UserPBs) {
             <div class="grid grid-cols-3 gap-2">
               <For each={Object.entries(difficulties)}>
                 {([difficulty, pb]) => (
-                  <div class="rounded-lg bg-(--sub-alt)/50 p-3">
+                  <div class="rounded-lg bg-(--sub-alt) p-3">
                     <div class="mb-1 text-xs font-medium uppercase tracking-wider text-(--sub)">
                       {difficulty}
                     </div>
