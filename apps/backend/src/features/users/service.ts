@@ -25,7 +25,7 @@ const getResultValidationMessage = (
 
   const minimumScore =
     FALLING_WORDS_MINIMUM_SCORES[
-      difficulty as keyof typeof FALLING_WORDS_MINIMUM_SCORES
+    difficulty as keyof typeof FALLING_WORDS_MINIMUM_SCORES
     ];
 
   if (minimumScore === undefined || score >= minimumScore) {
@@ -155,6 +155,30 @@ export const changeUsername = async (userId: ObjectId, newUsername: string) => {
   await usersDAL.syncUsernameReferences(userId, newUsername);
 
   return { success: true };
+}
+
+export const getPublicProfile = async (username: string) => {
+  const normalizedUsername = username.toLowerCase();
+  const user = await usersDAL.findUserByUsername(normalizedUsername);
+
+  if (!user) {
+    throw ApiError.notFound("User not found");
+  }
+
+  const userId = user._id;
+  const { pbs } = await getUserPBs(userId);
+  const results = await getUserResults({ userId, limit: 12 });
+
+  return {
+    user: {
+      id: userId.toString(),
+      username: user.displayUsername,
+      image: user.image,
+      createdAt: user.createdAt,
+    },
+    pbs,
+    results,
+  };
 };
 
 // TODO: Make the result write and leaderboard update atomic.

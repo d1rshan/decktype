@@ -1,6 +1,6 @@
 import { t } from "elysia";
 
-const baseResultSchema = t.Object({
+const resultSchema = t.Object({
   id: t.String(),
   userId: t.String(),
   gameId: t.String(),
@@ -26,30 +26,43 @@ export const changeUsernameBodySchema = t.Object({
 });
 
 export const createResultResponseSchema = t.Object({
-  ...baseResultSchema.properties,
+  ...resultSchema.properties,
   isNewPB: t.Boolean(),
 });
 
-export const resultResponseSchema = baseResultSchema;
+export const resultResponseSchema = resultSchema;
 
 export const myResultsQuerySchema = t.Object({
   gameId: t.Optional(t.String()),
   limit: t.Optional(t.Numeric({ minimum: 1, maximum: 100, default: 20 })),
 });
 
+export const publicProfileParamsSchema = t.Object({
+  username: t.String(),
+});
+
+const userPBsSchema = t.Record(
+  t.String(),
+  t.Object({
+    easy: t.Optional(t.Object({ bestScore: t.Number(), createdAt: t.Date() })),
+    medium: t.Optional(
+      t.Object({ bestScore: t.Number(), createdAt: t.Date() }),
+    ),
+    hard: t.Optional(t.Object({ bestScore: t.Number(), createdAt: t.Date() })),
+  }),
+);
+
 export const userPBsResponseSchema = t.Object({
-  pbs: t.Record(
-    t.String(),
-    t.Object({
-      easy: t.Optional(
-        t.Object({ bestScore: t.Number(), createdAt: t.Date() }),
-      ),
-      medium: t.Optional(
-        t.Object({ bestScore: t.Number(), createdAt: t.Date() }),
-      ),
-      hard: t.Optional(
-        t.Object({ bestScore: t.Number(), createdAt: t.Date() }),
-      ),
-    }),
-  ),
+  pbs: userPBsSchema,
+});
+
+export const publicProfileResponseSchema = t.Object({
+  user: t.Object({
+    id: t.String(),
+    username: t.String(),
+    image: t.Optional(t.String()),
+    createdAt: t.Date(),
+  }),
+  pbs: userPBsSchema,
+  results: t.Array(resultResponseSchema),
 });

@@ -7,12 +7,15 @@ import {
   createResultBodySchema,
   createResultResponseSchema,
   myResultsQuerySchema,
+  publicProfileParamsSchema,
+  publicProfileResponseSchema,
   resultResponseSchema,
   userPBsResponseSchema,
 } from "./schema";
 import {
   changeUsername,
   createResult,
+  getPublicProfile,
   getUserPBs,
   getUserResults,
 } from "./service";
@@ -27,6 +30,15 @@ export const usersRoutes = new Elysia({ prefix: "/api/users" })
     },
     {
       body: changeUsernameBodySchema,
+    }
+  ).get(
+    "/profile/:username",
+    async ({ params }) => {
+      return getPublicProfile(params.username);
+    },
+    {
+      params: publicProfileParamsSchema,
+      response: publicProfileResponseSchema,
     },
   )
   .post(

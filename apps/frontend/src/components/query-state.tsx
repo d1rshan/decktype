@@ -11,15 +11,23 @@ interface QueryStateProps<T> {
   };
   children: (data: T) => JSX.Element;
   emptyMessage?: string;
+  loadingFallback?: JSX.Element;
 }
 
 export function QueryState<T>(props: QueryStateProps<T>) {
   return (
     <Switch>
       <Match when={props.query.isPending}>
-        <div class="flex min-h-32 items-center justify-center">
-          <Spinner />
-        </div>
+        <Show
+          when={props.loadingFallback}
+          fallback={
+            <div class="flex min-h-32 items-center justify-center">
+              <Spinner />
+            </div>
+          }
+        >
+          {props.loadingFallback}
+        </Show>
       </Match>
 
       <Match when={props.query.isError}>

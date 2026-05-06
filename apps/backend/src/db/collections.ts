@@ -38,6 +38,7 @@ export type UserDocument = {
   username: string; // Better Auth lookup field, always lowercase
   displayUsername: string;
   usernameLastChangedAt?: Date;
+  image?: string;
   createdAt: Date;
   updatedAt: Date;
 };

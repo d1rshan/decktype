@@ -8,8 +8,8 @@ import { formatDateTime } from "@/lib/utils";
 import { usePersonalBestsQuery } from "../api";
 import type { UserPBs } from "../types";
 
-function PersonalBestsCards(pbs: UserPBs) {
-  const gameEntries = Object.entries(pbs);
+export function PersonalBestsCards(props: { pbs: UserPBs }) {
+  const gameEntries = Object.entries(props.pbs);
 
   return (
     <div class="flex flex-col gap-4">
@@ -51,7 +51,7 @@ function PersonalBests() {
 
   return (
     <QueryState query={pbsQuery} emptyMessage="no personal bests yet">
-      {(data) => PersonalBestsCards(data.pbs)}
+      {(data) => <PersonalBestsCards pbs={data.pbs} />}
     </QueryState>
   );
 }

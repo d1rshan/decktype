@@ -51,6 +51,18 @@ const columns: TableColumn<Result>[] = [
   },
 ];
 
+export function ResultsTableUi(props: { results: Result[] }) {
+  return (
+    <Table
+      columns={columns}
+      rows={props.results}
+      templateColumns="minmax(9rem, 1fr) 5rem 6.5rem 8.5rem"
+      minTableWidth={520}
+      mobileTemplateColumns="minmax(5rem, 1fr) 2.5rem 3.5rem 5rem"
+    />
+  );
+}
+
 function ResultsTable() {
   const auth = useAuthSession();
   const resultsQuery = useMyResultsQuery({
@@ -60,15 +72,7 @@ function ResultsTable() {
 
   return (
     <QueryState query={resultsQuery} emptyMessage="no results yet">
-      {(results) => (
-        <Table
-          columns={columns}
-          rows={results}
-          templateColumns="minmax(9rem, 1fr) 5rem 6.5rem 8.5rem"
-          minTableWidth={520}
-          mobileTemplateColumns="minmax(5rem, 1fr) 2.5rem 3.5rem 5rem"
-        />
-      )}
+      {(results) => <ResultsTableUi results={results} />}
     </QueryState>
   );
 }

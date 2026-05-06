@@ -53,6 +53,13 @@ function App() {
           return <ProfilePage onNavigate={navigate} />;
         }}
       />
+      <Route
+        path="/profile/:username"
+        component={() => {
+          const navigate = useNavigate();
+          return <ProfilePage onNavigate={navigate} />;
+        }}
+      />
       <Route path="/about" component={AboutPage} />
       <Route
         path="*paramName"
