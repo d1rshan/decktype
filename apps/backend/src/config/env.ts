@@ -28,6 +28,7 @@ const getEnv = () => {
       githubClientSecret: readRequiredEnv("GITHUB_CLIENT_SECRET"),
       googleClientId: readRequiredEnv("GOOGLE_CLIENT_ID"),
       googleClientSecret: readRequiredEnv("GOOGLE_CLIENT_SECRET"),
+      discordWebhookUrl: Bun.env.DISCORD_WEBHOOK_URL,
     } as const;
   }
 
@@ -45,6 +46,7 @@ const getEnv = () => {
     githubClientSecret: Bun.env.GITHUB_CLIENT_SECRET ?? "",
     googleClientId: Bun.env.GOOGLE_CLIENT_ID ?? "",
     googleClientSecret: Bun.env.GOOGLE_CLIENT_SECRET ?? "",
+    discordWebhookUrl: Bun.env.DISCORD_WEBHOOK_URL,
   } as const;
 };
 

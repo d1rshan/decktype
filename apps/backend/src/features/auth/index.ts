@@ -38,4 +38,40 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          if (!env.discordWebhookUrl) return;
+
+          try {
+            const res = await fetch(env.discordWebhookUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                embeds: [
+                  {
+                    title: "New User Registered!",
+                    description: `**${user.name}**`,
+                    color: 0x57f287,
+                    timestamp: new Date().toISOString(),
+                  },
+                ],
+              }),
+            });
+
+            if (!res.ok) {
+              console.error(
+                "Discord webhook failed:",
+                res.status,
+                await res.text(),
+              );
+            }
+          } catch (error) {
+            console.error("Failed to send Discord webhook:", error);
+          }
+        },
+      },
+    },
+  },
 });
