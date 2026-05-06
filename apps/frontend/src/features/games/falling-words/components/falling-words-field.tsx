@@ -1,4 +1,4 @@
-import { For, createMemo } from "solid-js";
+import { For } from "solid-js";
 import { Kbd } from "@/components/ui/kbd";
 import type { FallingWord, GamePhase } from "../types";
 
@@ -6,57 +6,13 @@ type FallingWordsFieldProps = {
   ref?: (el: HTMLDivElement) => void;
   words: FallingWord[];
   currentInput: string;
+  focusedWordId: number | null;
   phase: GamePhase;
   score: number;
   onFieldClick: () => void;
 };
 
 function FallingWordsField(props: FallingWordsFieldProps) {
-  const focusedWordId = createMemo(() => {
-    if (props.currentInput.length === 0) {
-      return null;
-    }
-
-    // Try exact prefix match first
-    const exactPrefixCandidates = props.words
-      .filter((word) => word.text.startsWith(props.currentInput))
-      .sort((left, right) => right.y - left.y);
-
-    if (exactPrefixCandidates.length > 0) {
-      return exactPrefixCandidates[0]?.id ?? null;
-    }
-
-    // If no exact prefix match, find the word that HAS the longest prefix match with currentInput
-    // This allows for mistakes at the end of the input while keeping focus
-    let bestWordId = null;
-    let longestPrefix = 0;
-    let lowestY = -1;
-
-    for (const word of props.words) {
-      let prefixLen = 0;
-      while (
-        prefixLen < props.currentInput.length &&
-        prefixLen < word.text.length &&
-        props.currentInput.charAt(prefixLen) === word.text.charAt(prefixLen)
-      ) {
-        prefixLen++;
-      }
-
-      if (prefixLen > 0) {
-        if (prefixLen > longestPrefix) {
-          longestPrefix = prefixLen;
-          bestWordId = word.id;
-          lowestY = word.y;
-        } else if (prefixLen === longestPrefix && word.y > lowestY) {
-          bestWordId = word.id;
-          lowestY = word.y;
-        }
-      }
-    }
-
-    return bestWordId;
-  });
-
   return (
     <div
       ref={props.ref}
@@ -106,7 +62,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
       )}
 
       {props.words.map((word) => {
-        const isFocused = word.id === focusedWordId();
+        const isFocused = word.id === props.focusedWordId;
         const isPrefixMatch =
           props.currentInput.length > 0 &&
           word.text.startsWith(props.currentInput);

@@ -53,6 +53,54 @@ export function useFallingWordsGame(
   const selectedDifficulty = createMemo(() => getDifficulty(difficulty()));
   const score = createMemo(() => formatScore(elapsedMs()));
 
+  const focusedWordId = createMemo(() => {
+    const input = currentInput();
+    const words = activeWords();
+
+    if (input.length === 0) {
+      return null;
+    }
+
+    // Try exact prefix match first
+    const exactPrefixCandidates = words
+      .filter((word) => word.text.startsWith(input))
+      .sort((left, right) => right.y - left.y);
+
+    if (exactPrefixCandidates.length > 0) {
+      return exactPrefixCandidates[0]?.id ?? null;
+    }
+
+    // If no exact prefix match, find the word that HAS the longest prefix match with currentInput
+    // This allows for mistakes at the end of the input while keeping focus
+    let bestWordId = null;
+    let longestPrefix = 0;
+    let lowestY = -1;
+
+    for (const word of words) {
+      let prefixLen = 0;
+      while (
+        prefixLen < input.length &&
+        prefixLen < word.text.length &&
+        input.charAt(prefixLen) === word.text.charAt(prefixLen)
+      ) {
+        prefixLen++;
+      }
+
+      if (prefixLen > 0) {
+        if (prefixLen > longestPrefix) {
+          longestPrefix = prefixLen;
+          bestWordId = word.id;
+          lowestY = word.y;
+        } else if (prefixLen === longestPrefix && word.y > lowestY) {
+          bestWordId = word.id;
+          lowestY = word.y;
+        }
+      }
+    }
+
+    return bestWordId;
+  });
+
   const getElapsedMsNow = () => {
     if (phase() === "running" && runStartTime > 0) {
       return elapsedBeforeRun + (performance.now() - runStartTime);
@@ -161,9 +209,13 @@ export function useFallingWordsGame(
     });
   };
 
-  const submitExactMatch = (value: string) => {
+  const submitExactMatch = (value: string, requireFocusMatch = false) => {
     const targetWord = findExactMatch(activeWords(), value);
     if (!targetWord) {
+      return false;
+    }
+
+    if (requireFocusMatch && targetWord.id !== focusedWordId()) {
       return false;
     }
 
@@ -194,7 +246,7 @@ export function useFallingWordsGame(
     if (phase() === "idle" && sanitized.length > 0) {
       startGame();
       setCurrentInput(sanitized);
-      submitExactMatch(sanitized);
+      submitExactMatch(sanitized, true);
       return;
     }
 
@@ -204,7 +256,7 @@ export function useFallingWordsGame(
     }
 
     setCurrentInput(sanitized);
-    submitExactMatch(sanitized);
+    submitExactMatch(sanitized, true);
   };
 
   const handleKeyDown = (
@@ -236,7 +288,7 @@ export function useFallingWordsGame(
       }
 
       event.preventDefault();
-      submitExactMatch(currentInput());
+      submitExactMatch(currentInput(), false);
     }
 
     if (event.key === "Escape") {
@@ -247,7 +299,7 @@ export function useFallingWordsGame(
 
     if (event.key === " ") {
       event.preventDefault();
-      submitExactMatch(currentInput());
+      submitExactMatch(currentInput(), false);
     }
   };
 
@@ -370,6 +422,7 @@ export function useFallingWordsGame(
     activeWords,
     currentInput,
     difficulty,
+    focusedWordId,
     handleDifficultyChange,
     handleInput,
     handleKeyDown,

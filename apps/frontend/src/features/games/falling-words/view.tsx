@@ -86,6 +86,7 @@ function FallingWordsView(props: GameViewProps) {
           ref={session.setFieldRef}
           words={session.activeWords()}
           currentInput={session.currentInput()}
+          focusedWordId={session.focusedWordId()}
           phase={session.phase()}
           score={session.score()}
           onFieldClick={session.focusInput}
