@@ -5,13 +5,12 @@ import AuthForms from "@/features/auth/components/auth-forms";
 import { useAuthSession } from "@/features/auth/hooks";
 import PersonalBests from "@/features/users/pbs/components/personal-bests";
 import ResultsTable from "@/features/users/results/components/results-table";
-import { ChangeUsernameForm } from "@/features/users/components/change-username-form";
+import { ChangeUsernameModal } from "@/features/users/components/change-username-modal";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 import { formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { Modal } from "@/components/ui/modal";
 
 type ProfileProps = {
   onNavigate: (target: string) => void;
@@ -159,12 +158,10 @@ function ProfilePage(props: ProfileProps) {
         </Show>
       </Show>
 
-      <Modal
+      <ChangeUsernameModal
         isOpen={isUsernameModalOpen()}
         onClose={() => setIsUsernameModalOpen(false)}
-      >
-        <ChangeUsernameForm onCancel={() => setIsUsernameModalOpen(false)} />
-      </Modal>
+      />
     </div>
   );
 }

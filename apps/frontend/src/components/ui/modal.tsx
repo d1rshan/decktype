@@ -1,4 +1,4 @@
-import { Show, onCleanup, onMount, type JSX } from "solid-js";
+import { Show, onCleanup, createEffect, type JSX } from "solid-js";
 import { Portal } from "solid-js/web";
 import { X } from "lucide-solid";
 
@@ -14,17 +14,20 @@ type ModalProps = {
 };
 
 export function Modal(props: ModalProps) {
-  // Close on Escape
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") props.onClose();
-  };
+  createEffect(() => {
+    if (!props.isOpen) return;
 
-  onMount(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") props.onClose();
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-  });
+    document.body.style.overflow = "hidden";
 
-  onCleanup(() => {
-    window.removeEventListener("keydown", handleKeyDown);
+    onCleanup(() => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    });
   });
 
   return (
