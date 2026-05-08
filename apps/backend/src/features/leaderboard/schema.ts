@@ -9,7 +9,7 @@ export const leaderboardQuerySchema = t.Object({
 export const leaderboardEntryResponseSchema = t.Object({
   rank: t.Number(),
   userId: t.String(),
-  displayName: t.String(),
+  username: t.String(),
   gameId: t.String(),
   difficulty: t.String(),
   bestScore: t.Number(),

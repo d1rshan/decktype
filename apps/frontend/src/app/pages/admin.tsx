@@ -101,7 +101,7 @@ function AdminPage() {
                         <div class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-(--sub-alt) px-4 py-3">
                           <div class="min-w-0">
                             <p class="truncate text-sm text-(--text)">
-                              {user.name}
+                              {user.username ?? user.name}
                             </p>
                             <p class="truncate text-xs text-(--sub)">
                               {user.email}

@@ -6,7 +6,7 @@ export const serializeFeedback = (doc: WithId<FeedbackDocument>) => {
     id: doc._id.toString(),
     content: doc.content,
     userId: doc.userId.toString(),
-    userDisplayName: doc.userDisplayName,
+    username: doc.username,
     upvotedBy: doc.upvotedBy.map((userId) => userId.toString()),
     downvotedBy: doc.downvotedBy.map((userId) => userId.toString()),
     createdAt: doc.createdAt,

@@ -12,7 +12,7 @@ export const feedbackResponseSchema = t.Object({
   id: t.String(),
   content: t.String(),
   userId: t.String(),
-  userDisplayName: t.String(),
+  username: t.String(),
   upvotedBy: t.Array(t.String()),
   downvotedBy: t.Array(t.String()),
   createdAt: t.Date(),

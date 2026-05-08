@@ -3,7 +3,7 @@ import type { ObjectId } from "mongodb";
 export type CreateFeedbackInput = {
   content: string;
   userId: ObjectId;
-  userDisplayName: string;
+  username: string;
 };
 
 export type VoteFeedbackInput = {

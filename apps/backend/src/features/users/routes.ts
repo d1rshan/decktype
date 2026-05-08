@@ -16,7 +16,7 @@ export const usersRoutes = new Elysia({ prefix: "/api/users" })
     "/results",
     async ({ body, request: { headers } }) => {
       const { user } = await requireSession(headers);
-      const displayName = user.name;
+      const username = user.displayUsername ?? user.username ?? "";
 
       return createResult(
         {
@@ -25,7 +25,7 @@ export const usersRoutes = new Elysia({ prefix: "/api/users" })
           score: body.score,
           difficulty: body.difficulty,
         },
-        { displayName },
+        { username },
       );
     },
     {

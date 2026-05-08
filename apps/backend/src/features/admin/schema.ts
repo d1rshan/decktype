@@ -7,7 +7,7 @@ export const usersCountResponseSchema = t.Object({
 export const adminUserResponseSchema = t.Array(
   t.Object({
     id: t.String(),
-    name: t.String(),
+    username: t.String(),
     email: t.String(),
     createdAt: t.Date(),
   }),

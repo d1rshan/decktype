@@ -5,7 +5,7 @@ export type RecordLeaderboardResultInput = {
   gameId: string;
   difficulty: string;
   bestScore: number;
-  displayName: string;
+  username: string;
   createdAt: Date;
 };
 

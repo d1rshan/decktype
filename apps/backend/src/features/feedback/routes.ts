@@ -32,7 +32,7 @@ export const feedbackRoutes = new Elysia({ prefix: "/api/feedback" })
       return submitFeedback({
         content: body.content,
         userId: parseObjectId(user.id),
-        userDisplayName: user.name,
+        username: user.displayUsername,
       });
     },
     {

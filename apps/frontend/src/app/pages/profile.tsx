@@ -97,7 +97,7 @@ function ProfilePage(props: ProfileProps) {
                       {(image) => (
                         <img
                           src={image()}
-                          alt={`${auth.user()?.name ?? "User"} avatar`}
+                          alt={`${auth.user()?.username ?? auth.user()?.name ?? "User"} avatar`}
                           class="h-full w-full object-cover"
                         />
                       )}
@@ -105,7 +105,7 @@ function ProfilePage(props: ProfileProps) {
                   </div>
                   <div class="min-w-0 flex-1 space-y-1">
                     <h2 class="truncate text-xl leading-tight font-bold sm:text-2xl">
-                      {auth.user()?.name}
+                      {auth.user()?.username ?? auth.user()?.name}
                     </h2>
                     <Show when={joinedAt()}>
                       {(value) => (

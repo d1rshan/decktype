@@ -37,7 +37,7 @@ const getResultValidationMessage = (
 
 export const createResult = async (
   input: CreateResultInput,
-  { displayName }: { displayName: string },
+  { username }: { username: string },
 ) => {
   const validationMessage = getResultValidationMessage(
     input.gameId,
@@ -59,7 +59,7 @@ export const createResult = async (
     gameId: doc.gameId,
     difficulty: doc.difficulty,
     bestScore: doc.score,
-    displayName,
+    username,
     createdAt: doc.createdAt,
   });
 

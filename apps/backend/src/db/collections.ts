@@ -13,7 +13,7 @@ export type ResultDocument = {
 
 export type LeaderboardDocument = {
   userId: ObjectId;
-  displayName: string;
+  username: string;
   gameId: string;
   difficulty: string;
   bestScore: number;
@@ -23,7 +23,7 @@ export type LeaderboardDocument = {
 export type FeedbackDocument = {
   content: string;
   userId: ObjectId;
-  userDisplayName: string;
+  username: string;
   upvotedBy: ObjectId[];
   downvotedBy: ObjectId[];
   createdAt: Date;
@@ -32,9 +32,11 @@ export type FeedbackDocument = {
 // Better Auth owns the `user` collection shape. We keep this here so feature
 // repositories can import one centralized collection registry.
 export type UserDocument = {
-  name: string;
+  // name: string;
   email: string;
   emailVerified: boolean;
+  // username: string; // used by better-auth ie "lower case version"
+  displayUsername: string;
   createdAt: Date;
   updatedAt: Date;
 };

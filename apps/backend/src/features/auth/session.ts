@@ -1,7 +1,8 @@
 import { ApiError } from "../../lib/errors";
 import { auth } from "./index";
+import { type AppSession } from "./types";
 
-export const requireSession = async (headers: Headers) => {
+export const requireSession = async (headers: Headers): Promise<AppSession> => {
   const currentSession = await auth.api.getSession({
     headers,
   });
@@ -10,10 +11,12 @@ export const requireSession = async (headers: Headers) => {
     throw ApiError.unauthorized("You must be signed in.");
   }
 
-  return currentSession;
+  return currentSession as AppSession;
 };
 
-export const requireAdminSession = async (headers: Headers) => {
+export const requireAdminSession = async (
+  headers: Headers,
+): Promise<AppSession> => {
   const currentSession = await requireSession(headers);
   const user = currentSession.user as { admin?: boolean };
 
@@ -23,5 +26,5 @@ export const requireAdminSession = async (headers: Headers) => {
     );
   }
 
-  return currentSession;
+  return currentSession as AppSession;
 };
