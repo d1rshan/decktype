@@ -99,7 +99,7 @@ export function FeedbackFeed() {
                   <div class="flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2 truncate">
                       <span class="text-xs font-bold text-(--main)">
-                        {item.userDisplayName}
+                        {item.username}
                       </span>
                       <span class="text-[10px] text-(--sub)">
                         {new Date(item.createdAt).toLocaleTimeString(

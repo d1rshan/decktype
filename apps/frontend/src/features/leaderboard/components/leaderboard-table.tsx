@@ -37,7 +37,7 @@ const columns: TableColumn<LeaderboardEntry>[] = [
     id: "player",
     label: "player",
     align: "left",
-    value: (entry) => entry.displayName,
+    value: (entry) => entry.username,
   },
   {
     id: "score",

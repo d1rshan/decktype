@@ -101,7 +101,7 @@ function AdminPage() {
                         <div class="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-(--sub-alt) px-4 py-3">
                           <div class="min-w-0">
                             <p class="truncate text-sm text-(--text)">
-                              {user.username ?? user.name}
+                              {user.username}
                             </p>
                             <p class="truncate text-xs text-(--sub)">
                               {user.email}
@@ -140,7 +140,7 @@ function AdminPage() {
                           <div class="flex items-center justify-between gap-2">
                             <div>
                               <p class="text-sm text-(--text)">
-                                {item.userDisplayName}
+                                {item.username}
                               </p>
                               <p class="text-xs text-(--sub)">
                                 {formatDateTime(new Date(item.createdAt))}
