@@ -52,13 +52,11 @@ export function Navbar() {
           activeClass="text-(--text)"
           inactiveClass="hover:text-(--text)"
           class="flex items-center gap-1 sm:gap-2 transition"
-          aria-label={`Profile: ${auth.displayName().toLowerCase()}`}
+          aria-label={`Profile: ${auth.username()}`}
         >
           <User size={18} strokeWidth={2} />
           <div class="hidden max-w-32 truncate sm:block">
-            <p class="text-sm leading-normal sm:text-base">
-              {auth.displayName().toLowerCase()}
-            </p>
+            <p class="text-sm leading-normal sm:text-base">{auth.username()}</p>
           </div>
         </A>
       </div>

@@ -7,9 +7,7 @@ export function useAuthSession() {
 
   const user = createMemo(() => session().data?.user ?? null);
   const userId = createMemo(() => user()?.id);
-  const displayName = createMemo(
-    () => user()?.username ?? user()?.name ?? "guest",
-  );
+  const username = createMemo(() => user()?.displayUsername ?? "guest");
   const isAuthenticated = createMemo(() => Boolean(user()));
   const isLoading = createMemo(() => session().isPending);
   const isAdmin = createMemo(
@@ -20,7 +18,7 @@ export function useAuthSession() {
     session,
     user,
     userId,
-    displayName,
+    username,
     isAuthenticated,
     isLoading,
     isAdmin,

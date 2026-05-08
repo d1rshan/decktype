@@ -23,6 +23,7 @@ export class LeaderboardDAL {
         $set: {
           bestScore: doc.bestScore,
           createdAt: doc.createdAt,
+          username: doc.username,
         },
       },
     );
