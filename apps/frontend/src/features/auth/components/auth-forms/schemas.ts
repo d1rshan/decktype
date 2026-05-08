@@ -1,13 +1,35 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  email: z.string().trim().email("Please enter a valid email."),
+  usernameOrEmail: z
+    .string()
+    .trim()
+    .min(1, "Please enter your username or email.")
+    .superRefine((val, ctx) => {
+      if (val.includes("@")) {
+        if (!z.string().email().safeParse(val).success) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Please enter a valid email.",
+          });
+        }
+      } else if (val.length > 0 && (val.length < 3 || val.length > 30)) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Username must be between 3 and 30 characters.",
+        });
+      }
+    }),
   password: z.string().min(1, "Password is required."),
 });
 
 export const registerSchema = z
   .object({
-    name: z.string().trim().min(1, "Username is required."),
+    username: z
+      .string()
+      .trim()
+      .min(3, "Username must be at least 3 characters.")
+      .max(30, "Username must be at most 30 characters."),
     email: z.string().trim().email("Please enter a valid email."),
     confirmEmail: z
       .string()

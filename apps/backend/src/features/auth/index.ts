@@ -1,5 +1,6 @@
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { betterAuth } from "better-auth";
+import { username } from "better-auth/plugins";
 
 import { env } from "../../config/env";
 import { db, mongoClient } from "../../db/client";
@@ -7,6 +8,12 @@ import { db, mongoClient } from "../../db/client";
 export const auth = betterAuth({
   secret: env.betterAuthSecret,
   baseURL: env.betterAuthUrl,
+  plugins: [
+    username({
+      minUsernameLength: 3,
+      maxUsernameLength: 30,
+    }),
+  ],
   trustedOrigins: [env.frontendOrigin],
   socialProviders: {
     google: {

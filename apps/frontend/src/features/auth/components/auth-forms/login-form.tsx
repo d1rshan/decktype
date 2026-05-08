@@ -21,7 +21,7 @@ export function LoginForm(props: LoginFormProps) {
 
   const form = createForm(() => ({
     defaultValues: {
-      email: "",
+      usernameOrEmail: "",
       password: "",
     },
     validators: {
@@ -32,10 +32,18 @@ export function LoginForm(props: LoginFormProps) {
       setErrorMessage(null);
 
       try {
-        const result = await authClient.signIn.email({
-          email: value.email.trim(),
-          password: value.password,
-        });
+        const identifier = value.usernameOrEmail.trim();
+        const isEmail = identifier.includes("@");
+
+        const result = isEmail
+          ? await authClient.signIn.email({
+              email: identifier,
+              password: value.password,
+            })
+          : await authClient.signIn.username({
+              username: identifier,
+              password: value.password,
+            });
 
         if (result.error) {
           setErrorMessage(result.error.message ?? "Unable to sign in.");
@@ -80,7 +88,7 @@ export function LoginForm(props: LoginFormProps) {
         <div class="h-[1px] flex-1 bg-(--sub-alt) opacity-50" />
       </div>
 
-      <form.Field name="email">
+      <form.Field name="usernameOrEmail">
         {(field) => {
           const validationMessage = getFirstValidationMessage(
             field().state.meta.errors,
@@ -89,14 +97,14 @@ export function LoginForm(props: LoginFormProps) {
           return (
             <>
               <Input
-                type="email"
+                type="text"
                 value={field().state.value}
                 onInput={(event) => {
                   clearMessages();
                   field().handleChange(event.currentTarget.value);
                 }}
                 onBlur={field().handleBlur}
-                placeholder="email"
+                placeholder="username or email"
                 required
               />
               <Show

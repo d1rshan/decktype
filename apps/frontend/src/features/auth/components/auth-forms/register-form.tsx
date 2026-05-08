@@ -20,7 +20,7 @@ export function RegisterForm(props: RegisterFormProps) {
 
   const form = createForm(() => ({
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       confirmEmail: "",
       password: "",
@@ -35,7 +35,8 @@ export function RegisterForm(props: RegisterFormProps) {
 
       try {
         const result = await authClient.signUp.email({
-          name: value.name.trim(),
+          name: value.username.trim(),
+          username: value.username.trim(),
           email: value.email.trim(),
           password: value.password,
         });
@@ -75,7 +76,7 @@ export function RegisterForm(props: RegisterFormProps) {
         register
       </span>
 
-      <form.Field name="name">
+      <form.Field name="username">
         {(field) => {
           const validationMessage = getFirstValidationMessage(
             field().state.meta.errors,
