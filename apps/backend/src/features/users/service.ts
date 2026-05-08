@@ -1,5 +1,10 @@
 import type { ObjectId } from "mongodb";
 
+import {
+  feedbackCollection,
+  leaderboardCollection,
+  usersCollection,
+} from "../../db/collections";
 import { ApiError } from "../../lib/errors";
 import { getUsersLeaderboardEntries } from "../leaderboard/service";
 import { recordLeaderboardResult } from "../leaderboard/service";
@@ -77,6 +82,65 @@ export const getUserResults = async (filters: GetUserResultsInput) => {
 export const getUserPBs = async (userId: ObjectId) => {
   const docs = await getUsersLeaderboardEntries(userId);
   return serializeUserPBs(docs);
+};
+
+export const changeUsername = async (userId: ObjectId, newUsername: string) => {
+  const user = await usersCollection.findOne({ _id: userId });
+
+  if (!user) {
+    throw ApiError.notFound("User not found.");
+  }
+
+  // Enforce 7 day limit
+  if (user.usernameLastChangedAt) {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    if (user.usernameLastChangedAt > sevenDaysAgo) {
+      const nextAvailableDate = new Date(user.usernameLastChangedAt);
+      nextAvailableDate.setDate(nextAvailableDate.getDate() + 7);
+      throw ApiError.badRequest(
+        `You can only change your username once every 7 days. Next change available after ${nextAvailableDate.toLocaleDateString()}.`,
+      );
+    }
+  }
+
+  // Check if username taken
+  const existingUser = await usersCollection.findOne({
+    username: newUsername.toLowerCase(),
+    _id: { $ne: userId },
+  });
+
+  if (existingUser) {
+    throw ApiError.badRequest("Username is already taken.");
+  }
+
+  // Update user
+  await usersCollection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        username: newUsername.toLowerCase(),
+        displayUsername: newUsername,
+        usernameLastChangedAt: new Date(),
+      },
+    },
+  );
+
+  // Sync with other collections
+  // TODO: Use a transaction if possible/necessary
+  await Promise.all([
+    leaderboardCollection.updateMany(
+      { userId },
+      { $set: { username: newUsername } },
+    ),
+    feedbackCollection.updateMany(
+      { userId },
+      { $set: { username: newUsername } },
+    ),
+  ]);
+
+  return { success: true };
 };
 
 // TODO: Make the result write and leaderboard update atomic.

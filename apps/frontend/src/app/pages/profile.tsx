@@ -5,11 +5,13 @@ import AuthForms from "@/features/auth/components/auth-forms";
 import { useAuthSession } from "@/features/auth/hooks";
 import PersonalBests from "@/features/users/pbs/components/personal-bests";
 import ResultsTable from "@/features/users/results/components/results-table";
+import { ChangeUsernameForm } from "@/features/users/components/change-username-form";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 import { formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { Modal } from "@/components/ui/modal";
 
 type ProfileProps = {
   onNavigate: (target: string) => void;
@@ -18,6 +20,7 @@ type ProfileProps = {
 function ProfilePage(props: ProfileProps) {
   const auth = useAuthSession();
   const [isSigningOut, setIsSigningOut] = createSignal(false);
+  const [isUsernameModalOpen, setIsUsernameModalOpen] = createSignal(false);
   const [statusMessage, setStatusMessage] = createSignal<string | null>(null);
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
 
@@ -73,9 +76,9 @@ function ProfilePage(props: ProfileProps) {
                 <div class="flex flex-wrap gap-3">
                   <Button
                     class="h-8 px-3 text-xs"
-                    onClick={() => props.onNavigate("/")}
+                    onClick={() => setIsUsernameModalOpen(true)}
                   >
-                    back home
+                    change username
                   </Button>
                   <Button
                     class="h-8 px-3 text-xs"
@@ -155,6 +158,13 @@ function ProfilePage(props: ProfileProps) {
           </div>
         </Show>
       </Show>
+
+      <Modal
+        isOpen={isUsernameModalOpen()}
+        onClose={() => setIsUsernameModalOpen(false)}
+      >
+        <ChangeUsernameForm onCancel={() => setIsUsernameModalOpen(false)} />
+      </Modal>
     </div>
   );
 }

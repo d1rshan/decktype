@@ -15,6 +15,16 @@ export const createResultBodySchema = t.Object({
   difficulty: t.String({ minLength: 1 }),
 });
 
+export const changeUsernameBodySchema = t.Object({
+  username: t.String({
+    minLength: 3,
+    maxLength: 30,
+    pattern: "^[a-z0-9_]+$",
+    error:
+      "Username must be 3-30 characters and contain only lowercase letters, numbers, and underscores.",
+  }),
+});
+
 export const createResultResponseSchema = t.Object({
   ...baseResultSchema.properties,
   isNewPB: t.Boolean(),

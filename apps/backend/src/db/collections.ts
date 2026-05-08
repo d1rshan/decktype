@@ -37,6 +37,7 @@ export type UserDocument = {
   emailVerified: boolean;
   // username: string; // used by better-auth ie "lower case version"
   displayUsername: string;
+  usernameLastChangedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 };

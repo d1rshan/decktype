@@ -3,15 +3,32 @@ import { Elysia, t } from "elysia";
 import { parseObjectId } from "../../lib/object-id";
 import { requireSession } from "../auth/session";
 import {
+  changeUsernameBodySchema,
   createResultBodySchema,
   createResultResponseSchema,
   myResultsQuerySchema,
   resultResponseSchema,
   userPBsResponseSchema,
 } from "./schema";
-import { createResult, getUserPBs, getUserResults } from "./service";
+import {
+  changeUsername,
+  createResult,
+  getUserPBs,
+  getUserResults,
+} from "./service";
 
 export const usersRoutes = new Elysia({ prefix: "/api/users" })
+  .patch(
+    "/username",
+    async ({ body, request: { headers } }) => {
+      const { user } = await requireSession(headers);
+
+      return changeUsername(parseObjectId(user.id), body.username);
+    },
+    {
+      body: changeUsernameBodySchema,
+    },
+  )
   .post(
     "/results",
     async ({ body, request: { headers } }) => {
