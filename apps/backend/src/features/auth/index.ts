@@ -5,6 +5,21 @@ import { username } from "better-auth/plugins";
 import { env } from "../../config/env";
 import { db, mongoClient } from "../../db/client";
 
+const createUsernameBase = (name?: string | null) => {
+  const sanitized = (name ?? "user")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "")
+    .replace(/_+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 25);
+
+  return sanitized || "user";
+};
+
 export const auth = betterAuth({
   secret: env.betterAuthSecret,
   baseURL: env.betterAuthUrl,
@@ -62,13 +77,8 @@ export const auth = betterAuth({
             return { data: user };
           }
 
-          // Generate base username from name (lowercase, spaces to underscores)
-          const baseUsername = (user.name || "user")
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "_")
-            .replace(/[^a-z0-9_]/g, "")
-            .slice(0, 25); // Leave room for suffix
+          // Generate a stable ASCII username base from the provider name.
+          const baseUsername = createUsernameBase(user.name);
 
           let finalUsername = baseUsername;
           let counter = 0;

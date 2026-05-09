@@ -1,6 +1,11 @@
 import type { ObjectId } from "mongodb";
 
-import { resultsCollection } from "../../db/collections";
+import {
+  feedbackCollection,
+  leaderboardCollection,
+  resultsCollection,
+  usersCollection,
+} from "../../db/collections";
 import type { ResultDocument } from "../../db/collections";
 
 export class UsersDAL {
@@ -26,6 +31,53 @@ export class UsersDAL {
         { sort: { createdAt: -1 }, limit: filters.limit },
       )
       .toArray();
+  }
+
+  findUserById(userId: ObjectId) {
+    return usersCollection.findOne({ _id: userId });
+  }
+
+  findUserByUsername(username: string, excludedUserId: ObjectId) {
+    return usersCollection.findOne({
+      username,
+      _id: { $ne: excludedUserId },
+    });
+  }
+
+  changeUsernameIfEligible(input: {
+    userId: ObjectId;
+    normalizedUsername: string;
+    displayUsername: string;
+    cooldownCutoff: Date;
+    now: Date;
+  }) {
+    return usersCollection.findOneAndUpdate(
+      {
+        _id: input.userId,
+        username: { $ne: input.normalizedUsername },
+        $or: [
+          { usernameLastChangedAt: { $exists: false } },
+          { usernameLastChangedAt: { $lte: input.cooldownCutoff } },
+        ],
+      },
+      {
+        $set: {
+          username: input.normalizedUsername,
+          displayUsername: input.displayUsername,
+          usernameLastChangedAt: input.now,
+        },
+      },
+      {
+        returnDocument: "after",
+      },
+    );
+  }
+
+  syncUsernameReferences(userId: ObjectId, username: string) {
+    return Promise.all([
+      leaderboardCollection.updateMany({ userId }, { $set: { username } }),
+      feedbackCollection.updateMany({ userId }, { $set: { username } }),
+    ]);
   }
 }
 

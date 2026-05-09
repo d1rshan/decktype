@@ -1,10 +1,5 @@
 import type { ObjectId } from "mongodb";
 
-import {
-  feedbackCollection,
-  leaderboardCollection,
-  usersCollection,
-} from "../../db/collections";
 import { ApiError } from "../../lib/errors";
 import { getUsersLeaderboardEntries } from "../leaderboard/service";
 import { recordLeaderboardResult } from "../leaderboard/service";
@@ -85,60 +80,79 @@ export const getUserPBs = async (userId: ObjectId) => {
 };
 
 export const changeUsername = async (userId: ObjectId, newUsername: string) => {
-  const user = await usersCollection.findOne({ _id: userId });
-
-  if (!user) {
-    throw ApiError.notFound("User not found.");
-  }
-
-  // Enforce 7 day limit
-  if (user.usernameLastChangedAt) {
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    if (user.usernameLastChangedAt > sevenDaysAgo) {
-      const nextAvailableDate = new Date(user.usernameLastChangedAt);
-      nextAvailableDate.setDate(nextAvailableDate.getDate() + 7);
-      throw ApiError.badRequest(
-        `You can only change your username once every 7 days. Next change available after ${nextAvailableDate.toLocaleDateString()}.`,
-      );
-    }
-  }
+  const normalizedUsername = newUsername.toLowerCase();
 
   // Check if username taken
-  const existingUser = await usersCollection.findOne({
-    username: newUsername.toLowerCase(),
-    _id: { $ne: userId },
-  });
+  const existingUser = await usersDAL.findUserByUsername(
+    normalizedUsername,
+    userId,
+  );
 
   if (existingUser) {
     throw ApiError.badRequest("Username is already taken.");
   }
 
-  // Update user
-  await usersCollection.updateOne(
-    { _id: userId },
-    {
-      $set: {
-        username: newUsername.toLowerCase(),
-        displayUsername: newUsername,
-        usernameLastChangedAt: new Date(),
-      },
-    },
-  );
+  const now = new Date();
+  const cooldownCutoff = new Date(now);
+  cooldownCutoff.setDate(cooldownCutoff.getDate() - 7);
+
+  const user = await usersDAL.findUserById(userId);
+
+  if (!user) {
+    throw ApiError.notFound("User not found.");
+  }
+
+  if (user.displayUsername === newUsername) {
+    return { success: true };
+  }
+
+  if (
+    user.usernameLastChangedAt &&
+    user.usernameLastChangedAt > cooldownCutoff
+  ) {
+    const nextAvailableDate = new Date(user.usernameLastChangedAt);
+    nextAvailableDate.setDate(nextAvailableDate.getDate() + 7);
+    throw ApiError.badRequest(
+      `You can only change your username once every 7 days. Next change available after ${nextAvailableDate.toLocaleDateString()}.`,
+    );
+  }
+
+  // Enforce the cooldown at write time to avoid concurrent rename bypasses.
+  const guardedUpdate = await usersDAL.changeUsernameIfEligible({
+    userId,
+    normalizedUsername,
+    displayUsername: newUsername,
+    cooldownCutoff,
+    now,
+  });
+
+  if (!guardedUpdate) {
+    const freshUser = await usersDAL.findUserById(userId);
+
+    if (!freshUser) {
+      throw ApiError.notFound("User not found.");
+    }
+
+    if (freshUser.displayUsername === newUsername) {
+      return { success: true };
+    }
+
+    if (
+      freshUser.usernameLastChangedAt &&
+      freshUser.usernameLastChangedAt > cooldownCutoff
+    ) {
+      const nextAvailableDate = new Date(freshUser.usernameLastChangedAt);
+      nextAvailableDate.setDate(nextAvailableDate.getDate() + 7);
+      throw ApiError.badRequest(
+        `You can only change your username once every 7 days. Next change available after ${nextAvailableDate.toLocaleDateString()}.`,
+      );
+    }
+
+    throw ApiError.badRequest("Unable to update username right now.");
+  }
 
   // Sync with other collections
-  // TODO: Use a transaction if possible/necessary
-  await Promise.all([
-    leaderboardCollection.updateMany(
-      { userId },
-      { $set: { username: newUsername } },
-    ),
-    feedbackCollection.updateMany(
-      { userId },
-      { $set: { username: newUsername } },
-    ),
-  ]);
+  await usersDAL.syncUsernameReferences(userId, newUsername);
 
   return { success: true };
 };
