@@ -25,7 +25,7 @@ const getResultValidationMessage = (
 
   const minimumScore =
     FALLING_WORDS_MINIMUM_SCORES[
-    difficulty as keyof typeof FALLING_WORDS_MINIMUM_SCORES
+      difficulty as keyof typeof FALLING_WORDS_MINIMUM_SCORES
     ];
 
   if (minimumScore === undefined || score >= minimumScore) {
@@ -155,7 +155,7 @@ export const changeUsername = async (userId: ObjectId, newUsername: string) => {
   await usersDAL.syncUsernameReferences(userId, newUsername);
 
   return { success: true };
-}
+};
 
 export const getPublicProfile = async (username: string) => {
   const normalizedUsername = username.toLowerCase();

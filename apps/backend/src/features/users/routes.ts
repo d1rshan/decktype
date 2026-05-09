@@ -30,8 +30,9 @@ export const usersRoutes = new Elysia({ prefix: "/api/users" })
     },
     {
       body: changeUsernameBodySchema,
-    }
-  ).get(
+    },
+  )
+  .get(
     "/profile/:username",
     async ({ params }) => {
       return getPublicProfile(params.username);
