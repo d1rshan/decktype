@@ -2,6 +2,7 @@ import {
   feedbackCollection,
   leaderboardCollection,
   resultsCollection,
+  usersCollection,
 } from "./collections";
 
 const ensureResultsIndexes = async () => {
@@ -40,8 +41,16 @@ const ensureFeedbackIndexes = async () => {
   ]);
 };
 
+const ensureUserIndexes = async () => {
+  await usersCollection.createIndex(
+    { username: 1 },
+    { unique: true, sparse: true, name: "username_unique" },
+  );
+};
+
 export const ensureDatabaseIndexes = async () => {
   await ensureResultsIndexes();
   await ensureLeaderboardIndexes();
   await ensureFeedbackIndexes();
+  await ensureUserIndexes();
 };
