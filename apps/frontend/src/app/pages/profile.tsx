@@ -160,14 +160,14 @@ function ProfilePage(props: ProfileProps) {
                 </div>
               )}
             </Show>
+
+            <ChangeUsernameModal
+              isOpen={isUsernameModalOpen()}
+              onClose={() => setIsUsernameModalOpen(false)}
+            />
           </div>
         </Show>
       </Show>
-
-      <ChangeUsernameModal
-        isOpen={isUsernameModalOpen()}
-        onClose={() => setIsUsernameModalOpen(false)}
-      />
     </div>
   );
 }
