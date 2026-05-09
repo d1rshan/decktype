@@ -46,20 +46,8 @@ function App() {
       />
       <Route path="/leaderboard" component={LeaderboardPage} />
       <Route path="/admin" component={AdminPage} />
-      <Route
-        path="/profile"
-        component={() => {
-          const navigate = useNavigate();
-          return <ProfilePage onNavigate={navigate} />;
-        }}
-      />
-      <Route
-        path="/profile/:username"
-        component={() => {
-          const navigate = useNavigate();
-          return <ProfilePage onNavigate={navigate} />;
-        }}
-      />
+      <Route path="/profile" component={ProfilePage} />
+      <Route path="/profile/:username" component={ProfilePage} />
       <Route path="/about" component={AboutPage} />
       <Route
         path="*paramName"

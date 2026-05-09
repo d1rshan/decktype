@@ -48,7 +48,9 @@ export function Navbar() {
 
       <div class="flex items-center text-(--sub)">
         <A
-          href="/profile"
+          href={
+            auth.isAuthenticated() ? `/profile/${auth.username()}` : "/profile"
+          }
           activeClass="text-(--text)"
           inactiveClass="hover:text-(--text)"
           class="flex items-center gap-1 sm:gap-2 transition"

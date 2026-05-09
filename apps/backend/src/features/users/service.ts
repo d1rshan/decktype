@@ -83,7 +83,7 @@ export const changeUsername = async (userId: ObjectId, newUsername: string) => {
   const normalizedUsername = newUsername.toLowerCase();
 
   // Check if username taken
-  const existingUser = await usersDAL.findUserByUsername(
+  const existingUser = await usersDAL.findOtherUserByUsername(
     normalizedUsername,
     userId,
   );

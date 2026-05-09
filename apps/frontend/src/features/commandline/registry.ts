@@ -11,6 +11,7 @@ import type {
 } from "@/features/commandline/types";
 import type { GameId } from "@/features/games/types";
 import { themeManager } from "@/features/content/themes/manager";
+import { useAuthSession } from "@/features/auth/hooks";
 
 export function createCommandlineRegistry(
   setScope: (scope: CommandlineScope) => void,
@@ -18,6 +19,7 @@ export function createCommandlineRegistry(
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const auth = useAuthSession();
 
   const currentPath = () => location.pathname;
   const selectedGameId = () => searchParams.game as GameId | null;
@@ -89,8 +91,12 @@ export function createCommandlineRegistry(
         id: "route-profile",
         label: "View Account Page",
         keywords: ["profile", "account", "user"],
-        active: currentPath() === "/profile",
-        onSelect: () => handleNavigate("/profile"),
+        active:
+          currentPath() === "/profile" || currentPath().startsWith("/profile/"),
+        onSelect: () =>
+          handleNavigate(
+            auth.isAuthenticated() ? `/profile/${auth.username()}` : "/profile",
+          ),
       },
     ],
     games: gameRegistry.map((game) => ({

@@ -5,9 +5,13 @@ import { api, unwrap } from "@/lib/api-client";
 
 import { profileKeys } from "./keys";
 
-export const usePublicProfileQuery = (username: Accessor<string>) =>
+export const usePublicProfileQuery = (
+  username: Accessor<string>,
+  options: { enabled?: Accessor<boolean> } = {},
+) =>
   useQuery(() => ({
     queryKey: profileKeys.username(username()),
     queryFn: () => unwrap(api.users.profile({ username: username() }).get()),
-    enabled: !!username(),
+    enabled: options.enabled?.() ?? Boolean(username()),
+    retry: false,
   }));

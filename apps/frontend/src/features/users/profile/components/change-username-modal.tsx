@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { X } from "lucide-solid";
-import { Portal } from "solid-js/web";
 import { Show, createEffect, createSignal, onCleanup } from "solid-js";
+import { Portal } from "solid-js/web";
 
-import { getFirstValidationMessage } from "@/features/auth/components/auth-forms/utils";
 import { useAuthSession } from "@/features/auth/hooks";
+import { getFirstValidationMessage } from "@/features/auth/components/auth-forms/utils";
 import { api, toastApiError, unwrap } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/lib/toast";
@@ -26,6 +26,7 @@ const changeUsernameSchema = z.object({
 type ChangeUsernameModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: (username: string) => void;
 };
 
 export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
@@ -62,7 +63,6 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
     event.preventDefault();
 
     const currentUsername = auth.username();
-
     const result = changeUsernameSchema.safeParse({
       username: username(),
     });
@@ -89,6 +89,7 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
 
       toast.success("Username updated successfully.");
       await authClient.getSession();
+      props.onSuccess?.(result.data.username);
       props.onClose();
     } catch (error) {
       toastApiError(error);

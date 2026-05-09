@@ -37,10 +37,16 @@ export class UsersDAL {
     return usersCollection.findOne({ _id: userId });
   }
 
-  findUserByUsername(username: string, excludedUserId?: ObjectId) {
+  findUserByUsername(username: string) {
     return usersCollection.findOne({
       username,
-      _id: { $ne: excludedUserId }, // what if excludedUserId is undefined
+    });
+  }
+
+  findOtherUserByUsername(username: string, excludedUserId: ObjectId) {
+    return usersCollection.findOne({
+      username,
+      _id: { $ne: excludedUserId },
     });
   }
 

@@ -32,11 +32,6 @@ export const createResultResponseSchema = t.Object({
 
 export const resultResponseSchema = resultSchema;
 
-export const myResultsQuerySchema = t.Object({
-  gameId: t.Optional(t.String()),
-  limit: t.Optional(t.Numeric({ minimum: 1, maximum: 100, default: 20 })),
-});
-
 export const publicProfileParamsSchema = t.Object({
   username: t.String(),
 });
@@ -51,10 +46,6 @@ const userPBsSchema = t.Record(
     hard: t.Optional(t.Object({ bestScore: t.Number(), createdAt: t.Date() })),
   }),
 );
-
-export const userPBsResponseSchema = t.Object({
-  pbs: userPBsSchema,
-});
 
 export const publicProfileResponseSchema = t.Object({
   user: t.Object({
