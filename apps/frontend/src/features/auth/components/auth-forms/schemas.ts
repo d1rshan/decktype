@@ -1,15 +1,5 @@
 import { z } from "zod";
 
-export const usernameSchema = z
-  .string()
-  .trim()
-  .min(3, "Username must be at least 3 characters.")
-  .max(30, "Username must be at most 30 characters.")
-  .regex(
-    /^[a-z0-9_]+$/,
-    "Username can only contain lowercase letters, numbers, and underscores.",
-  );
-
 export const loginSchema = z.object({
   usernameOrEmail: z
     .string()
@@ -35,7 +25,11 @@ export const loginSchema = z.object({
 
 export const registerSchema = z
   .object({
-    username: usernameSchema,
+    username: z
+      .string()
+      .trim()
+      .min(3, "Username must be at least 3 characters.")
+      .max(30, "Username must be at most 30 characters."),
     email: z.string().trim().email("Please enter a valid email."),
     confirmEmail: z
       .string()
@@ -61,7 +55,3 @@ export const registerSchema = z
       });
     }
   });
-
-export const changeUsernameSchema = z.object({
-  username: usernameSchema,
-});

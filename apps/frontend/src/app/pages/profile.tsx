@@ -75,6 +75,12 @@ function ProfilePage(props: ProfileProps) {
                 <div class="flex flex-wrap gap-3">
                   <Button
                     class="h-8 px-3 text-xs"
+                    onClick={() => props.onNavigate("/")}
+                  >
+                    back home
+                  </Button>
+                  <Button
+                    class="h-8 px-3 text-xs"
                     onClick={() => setIsUsernameModalOpen(true)}
                   >
                     change username

@@ -103,7 +103,7 @@ export const changeUsername = async (userId: ObjectId, newUsername: string) => {
   }
 
   if (user.displayUsername === newUsername) {
-    return { success: true };
+    throw ApiError.badRequest("Please choose a different username.");
   }
 
   if (
@@ -134,7 +134,7 @@ export const changeUsername = async (userId: ObjectId, newUsername: string) => {
     }
 
     if (freshUser.displayUsername === newUsername) {
-      return { success: true };
+      throw ApiError.badRequest("Please choose a different username.");
     }
 
     if (

@@ -54,7 +54,7 @@ export class UsersDAL {
     return usersCollection.findOneAndUpdate(
       {
         _id: input.userId,
-        username: { $ne: input.normalizedUsername },
+        displayUsername: { $ne: input.displayUsername },
         $or: [
           { usernameLastChangedAt: { $exists: false } },
           { usernameLastChangedAt: { $lte: input.cooldownCutoff } },

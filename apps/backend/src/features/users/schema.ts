@@ -19,9 +19,9 @@ export const changeUsernameBodySchema = t.Object({
   username: t.String({
     minLength: 3,
     maxLength: 30,
-    pattern: "^[a-z0-9_]+$",
+    pattern: "^[A-Za-z0-9_]+$",
     error:
-      "Username must be 3-30 characters and contain only lowercase letters, numbers, and underscores.",
+      "Username must be 3-30 characters and contain only letters, numbers, and underscores.",
   }),
 });
 
