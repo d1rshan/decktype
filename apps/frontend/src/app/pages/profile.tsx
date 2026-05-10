@@ -1,17 +1,14 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Show, createEffect, createMemo, createSignal } from "solid-js";
-import { User } from "lucide-solid";
 
 import AuthForms from "@/features/auth/components/auth-forms";
 import { useAuthSession } from "@/features/auth/hooks";
-import { PersonalBestsCards } from "@/features/users/pbs/components/personal-bests";
 import { usePublicProfileQuery } from "@/features/users/profile/api/hooks";
-import { ChangeUsernameModal } from "@/features/users/profile/components/change-username-modal";
-import { ResultsTableUi } from "@/features/users/results/components/results-table";
+import { OwnProfileView } from "@/features/users/profile/components/own-profile-view";
+import { PublicProfileView } from "@/features/users/profile/components/public-profile-view";
 import { QueryState } from "@/components/query-state";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
-import { formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -76,45 +73,8 @@ function ProfilePage() {
     }
   };
 
-  const profileHero = (profile: {
-    username: string;
-    image?: string | null;
-    joinedAt?: string | Date;
-  }) => (
-    <div class="space-y-4 rounded-xl bg-(--sub-alt) p-4 sm:p-5">
-      <div class="flex items-center gap-4">
-        <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-(--sub) text-(--bg)">
-          <Show
-            when={profile.image}
-            fallback={<User size={24} strokeWidth={2.2} />}
-          >
-            {(image) => (
-              <img
-                src={image()}
-                alt={`${profile.username} avatar`}
-                class="h-full w-full object-cover"
-              />
-            )}
-          </Show>
-        </div>
-        <div class="min-w-0 flex-1 space-y-1">
-          <h2 class="truncate text-xl leading-tight font-bold sm:text-2xl">
-            {profile.username}
-          </h2>
-          <Show when={profile.joinedAt}>
-            {(value) => (
-              <p class="text-sm leading-normal text-(--sub) sm:text-base">
-                joined {formatDateTime(value())}
-              </p>
-            )}
-          </Show>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
-    <div class="flex w-full min-h-[72vh] flex-1">
+    <div class="flex w-full flex-1">
       <Show
         when={isCanonicalProfileRoute()}
         fallback={
@@ -144,94 +104,52 @@ function ProfilePage() {
         <QueryState
           query={publicProfileQuery}
           loadingFallback={
-            <div class="flex w-full items-center justify-center py-20">
+            <div class="flex w-full flex-1 items-center justify-center py-20">
               <Spinner />
             </div>
           }
+          errorFallback={(error) => (
+            <div class="flex w-full flex-1 flex-col items-center justify-center gap-3 text-center">
+              <p class="text-4xl leading-none font-bold text-(--main) lowercase sm:text-6xl">
+                404
+              </p>
+              <p class="max-w-md text-sm leading-normal text-(--sub) sm:text-base">
+                {getErrorMessage(error)}
+              </p>
+              <Button
+                class="mt-2 h-8 px-3 text-xs"
+                onClick={() => navigate("/")}
+              >
+                back home
+              </Button>
+            </div>
+          )}
         >
           {(data) => (
-            <div class="flex w-full flex-col gap-8">
-              <section class="space-y-5">
-                <div class="flex flex-wrap items-center justify-between gap-3">
-                  <h2 class="text-2xl leading-tight font-bold capitalize">
-                    profile
-                  </h2>
-                  <div class="flex flex-wrap gap-3">
-                    <Button
-                      class="h-8 px-3 text-xs"
-                      onClick={() => navigate("/")}
-                    >
-                      back home
-                    </Button>
-                    <Show when={canShowSelfActions()}>
-                      <Button
-                        class="h-8 px-3 text-xs"
-                        onClick={() => setIsUsernameModalOpen(true)}
-                      >
-                        change username
-                      </Button>
-                      <Button
-                        class="h-8 px-3 text-xs"
-                        onClick={handleSignOut}
-                        disabled={isSigningOut()}
-                      >
-                        {isSigningOut() ? "signing out..." : "sign out"}
-                      </Button>
-                    </Show>
-                  </div>
-                </div>
-
-                {profileHero({
-                  username: data.user.username,
-                  image: data.user.image,
-                  joinedAt: data.user.createdAt,
-                })}
-              </section>
-
-              <section class="space-y-4">
-                <h2 class="text-2xl leading-tight font-bold capitalize">
-                  personal bests
-                </h2>
-                <PersonalBestsCards pbs={data.pbs} />
-              </section>
-
-              <Show when={canShowSelfActions()}>
-                <section class="space-y-4">
-                  <h2 class="text-2xl leading-tight font-bold capitalize">
-                    recent results
-                  </h2>
-                  <ResultsTableUi results={data.results} />
-                </section>
-
-                <Show when={statusMessage()}>
-                  {(message) => (
-                    <div>
-                      <p class="text-base leading-normal text-(--main)">
-                        {message()}
-                      </p>
-                    </div>
-                  )}
-                </Show>
-
-                <Show when={errorMessage()}>
-                  {(message) => (
-                    <div>
-                      <p class="text-base leading-normal text-(--error)">
-                        {message()}
-                      </p>
-                    </div>
-                  )}
-                </Show>
-
-                <ChangeUsernameModal
-                  isOpen={isUsernameModalOpen()}
-                  onClose={() => setIsUsernameModalOpen(false)}
-                  onSuccess={(username) =>
-                    navigate(`/profile/${username}`, { replace: true })
-                  }
+            <Show
+              when={canShowSelfActions()}
+              fallback={
+                <PublicProfileView
+                  data={data}
+                  onNavigateHome={() => navigate("/")}
                 />
-              </Show>
-            </div>
+              }
+            >
+              <OwnProfileView
+                data={data}
+                isSigningOut={isSigningOut()}
+                statusMessage={statusMessage()}
+                errorMessage={errorMessage()}
+                isUsernameModalOpen={isUsernameModalOpen()}
+                onNavigateHome={() => navigate("/")}
+                onOpenUsernameModal={() => setIsUsernameModalOpen(true)}
+                onCloseUsernameModal={() => setIsUsernameModalOpen(false)}
+                onSignOut={handleSignOut}
+                onUsernameChangeSuccess={(username) =>
+                  navigate(`/profile/${username}`, { replace: true })
+                }
+              />
+            </Show>
           )}
         </QueryState>
       </Show>

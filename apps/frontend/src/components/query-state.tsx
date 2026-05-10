@@ -12,6 +12,7 @@ interface QueryStateProps<T> {
   children: (data: T) => JSX.Element;
   emptyMessage?: string;
   loadingFallback?: JSX.Element;
+  errorFallback?: JSX.Element | ((error: unknown) => JSX.Element);
 }
 
 export function QueryState<T>(props: QueryStateProps<T>) {
@@ -31,9 +32,18 @@ export function QueryState<T>(props: QueryStateProps<T>) {
       </Match>
 
       <Match when={props.query.isError}>
-        <div class="rounded-lg bg-(--sub-alt) p-4 text-(--error)">
-          <p class="text-base">{getErrorMessage(props.query.error)}</p>
-        </div>
+        <Show
+          when={props.errorFallback}
+          fallback={
+            <div class="rounded-lg bg-(--sub-alt) p-4 text-(--error)">
+              <p class="text-base">{getErrorMessage(props.query.error)}</p>
+            </div>
+          }
+        >
+          {typeof props.errorFallback === "function"
+            ? props.errorFallback(props.query.error)
+            : props.errorFallback}
+        </Show>
       </Match>
 
       <Match when={props.query.data !== undefined}>

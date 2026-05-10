@@ -3,7 +3,7 @@ import { urls } from "@/lib/urls";
 
 export function Footer() {
   return (
-    <footer class="flex h-12 w-full items-center justify-between text-(--sub) sm:grid sm:grid-cols-[1fr_auto_1fr]">
+    <footer class="mt-8 flex h-12 w-full items-center justify-between text-(--sub) sm:grid sm:grid-cols-[1fr_auto_1fr]">
       <div class="flex items-center gap-6">
         <a
           href={urls.github}
