@@ -12,6 +12,6 @@ export const usePublicProfileQuery = (
   useQuery(() => ({
     queryKey: profileKeys.username(username()),
     queryFn: () => unwrap(api.users.profile({ username: username() }).get()),
-    enabled: options.enabled?.() ?? Boolean(username()),
+    enabled: (options.enabled?.() ?? true) && Boolean(username()),
     retry: false,
   }));
