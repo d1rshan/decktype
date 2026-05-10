@@ -6,10 +6,11 @@ import { Portal } from "solid-js/web";
 import { useAuthSession } from "@/features/auth/hooks";
 import { getFirstValidationMessage } from "@/features/auth/components/auth-forms/utils";
 import { api, toastApiError, unwrap } from "@/lib/api-client";
-import { authClient } from "@/lib/auth-client";
 import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+import { USERNAME_CHANGE_COOLDOWN_DAYS } from "../utils";
 
 const changeUsernameSchema = z.object({
   username: z
@@ -26,7 +27,6 @@ const changeUsernameSchema = z.object({
 type ChangeUsernameModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (username: string) => void;
 };
 
 export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
@@ -88,9 +88,9 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
       );
 
       toast.success("Username updated successfully.");
-      await authClient.getSession();
-      props.onSuccess?.(result.data.username);
-      props.onClose();
+      window.location.replace(
+        `/profile/${encodeURIComponent(result.data.username)}`,
+      );
     } catch (error) {
       toastApiError(error);
       props.onClose();
@@ -110,23 +110,19 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
             onClick={props.onClose}
           />
 
-          <div class="relative w-full max-w-sm overflow-hidden rounded-xl bg-(--sub-alt) p-5">
-            <div class="mb-4 flex items-center justify-between">
-              <h3 class="text-lg font-bold text-(--main) lowercase">
-                change username
-              </h3>
-              <Button
-                type="button"
-                onClick={props.onClose}
-                class="h-7 w-7 bg-transparent p-0 text-(--sub) hover:bg-(--sub-alt) hover:text-(--main)"
-              >
-                <X size={18} />
-              </Button>
-            </div>
+          <div class="relative w-full max-w-sm overflow-hidden rounded-xl bg-(--sub-alt) p-4">
+            <Button
+              type="button"
+              onClick={props.onClose}
+              class="absolute top-3 right-3 h-7 w-7 bg-transparent p-0 text-(--sub) hover:bg-transparent hover:text-(--main)"
+            >
+              <X size={18} />
+            </Button>
 
-            <form class="flex flex-col gap-3" onSubmit={handleSubmit}>
-              <p class="text-sm text-(--sub) opacity-70">
-                you can only change your username once every 7 days.
+            <form class="flex flex-col gap-2.5" onSubmit={handleSubmit}>
+              <p class="pr-8 text-sm leading-normal text-(--sub) opacity-70">
+                you can only change your username once every{" "}
+                {USERNAME_CHANGE_COOLDOWN_DAYS} days.
               </p>
 
               <div class="flex gap-2">
@@ -137,8 +133,8 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
                       setUsername(event.currentTarget.value);
                       setValidationMessage(null);
                     }}
-                    placeholder="change username..."
-                    class="h-11 border border-(--main)/30 bg-transparent px-4"
+                    placeholder="new username"
+                    class="h-10 border border-(--main)/30 bg-transparent px-4"
                     error={Boolean(validationMessage())}
                     disabled={isSubmitting()}
                   />
@@ -152,7 +148,7 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
                 <Button
                   type="submit"
                   disabled={isSubmitting()}
-                  class="h-11 px-5 bg-(--main) text-(--sub-alt) hover:opacity-90"
+                  class="h-10 px-4 bg-(--main) text-(--sub-alt) enabled:hover:opacity-90"
                 >
                   {isSubmitting() ? "..." : "save"}
                 </Button>
