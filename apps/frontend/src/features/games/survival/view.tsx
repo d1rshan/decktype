@@ -90,6 +90,7 @@ function SurvivalView(props: GameViewProps) {
           words={session.activeWords()}
           currentWordIndex={session.currentWordIndex()}
           currentInput={session.currentInput()}
+          pastInputs={session.pastInputs()}
           phase={session.phase()}
           wpm={session.wpm()}
           onFieldClick={session.focusInput}

@@ -3,7 +3,7 @@ import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 import type { DifficultyKey } from "@/features/games/falling-words/types";
 
-export type GamePhase = "idle" | "running" | "game-over";
+export type GamePhase = "idle" | "running" | "game-over" | "paused";
 
 export type UseSurvivalGameOptions = {
   onComplete?: (result: {
@@ -24,6 +24,7 @@ export function useSurvivalGame(
 
   const [health, setHealth] = createSignal(5);
   const [activeWords, setActiveWords] = createSignal<string[]>([]);
+  const [pastInputs, setPastInputs] = createSignal<string[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = createSignal(0);
   const [currentInput, setCurrentInput] = createSignal("");
   const [totalCorrectChars, setTotalCorrectChars] = createSignal(0);
@@ -68,6 +69,7 @@ export function useSurvivalGame(
   };
 
   const endGame = () => {
+    if (phase() === "game-over") return;
     setPhase("game-over");
     stopTimer();
     const finalElapsed = performance.now() - runStartTime;
@@ -85,11 +87,12 @@ export function useSurvivalGame(
     });
   };
 
-  const takeDamage = () => {
-    const dmg = getDamagePerTypo(difficulty());
+  const takeDamage = (count: number = 1) => {
+    if (count <= 0) return;
+    const dmg = getDamagePerTypo(difficulty()) * count;
     const newHealth = Math.max(0, health() - dmg);
     setHealth(newHealth);
-    if (newHealth <= 0) {
+    if (newHealth <= 0 && phase() !== "game-over") {
       endGame();
     }
   };
@@ -100,6 +103,7 @@ export function useSurvivalGame(
     setPhase("idle");
     setHealth(5);
     setActiveWords(generateWords(50));
+    setPastInputs([]);
     setCurrentWordIndex(0);
     setCurrentInput("");
     setTotalCorrectChars(0);
@@ -120,7 +124,7 @@ export function useSurvivalGame(
   };
 
   const handleInput = (e: InputEvent & { currentTarget: HTMLInputElement }) => {
-    if (phase() === "game-over") {
+    if (phase() === "game-over" || phase() === "paused") {
       e.currentTarget.value = "";
       return;
     }
@@ -140,7 +144,7 @@ export function useSurvivalGame(
       e.inputType === "deleteWordBackward" ||
       e.inputType === "deleteWordForward"
     ) {
-      e.currentTarget.value = currentInput();
+      setCurrentInput(value);
       return;
     }
 
@@ -152,7 +156,13 @@ export function useSurvivalGame(
         if (typedWord[i] === targetWord[i]) correctCount++;
       }
 
+      const missedCount = targetWord.length - typedWord.length;
+      if (missedCount > 0) {
+        takeDamage(missedCount);
+      }
+
       setTotalCorrectChars((c) => c + correctCount + 1);
+      setPastInputs((prev) => [...prev, typedWord]);
       setCurrentWordIndex((i) => i + 1);
       setCurrentInput("");
       e.currentTarget.value = "";
@@ -166,19 +176,14 @@ export function useSurvivalGame(
     const newChar = value[value.length - 1];
     const expectedChar = targetWord[value.length - 1];
 
-    if (newChar !== expectedChar) {
-      takeDamage();
+    if (newChar !== expectedChar && value.length > currentInput().length) {
+      takeDamage(1);
     }
 
     setCurrentInput(value);
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Backspace") {
-      e.preventDefault();
-      return;
-    }
-
     if (e.key === "Tab") {
       e.preventDefault();
       resetGame();
@@ -202,6 +207,7 @@ export function useSurvivalGame(
     health,
     wpm,
     activeWords,
+    pastInputs,
     currentWordIndex,
     currentInput,
     wordBank,

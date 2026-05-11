@@ -7,6 +7,7 @@ export type SurvivalFieldProps = {
   words: string[];
   currentWordIndex: number;
   currentInput: string;
+  pastInputs: string[];
   phase: GamePhase;
   wpm: number;
   onFieldClick: () => void;
@@ -47,7 +48,7 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
 
       <div
         ref={containerRef}
-        class="flex flex-wrap content-start gap-x-4 gap-y-3 text-3xl font-mono leading-relaxed text-(--sub)/50 overflow-hidden h-full w-full p-8 select-none scroll-smooth pb-32"
+        class="flex flex-wrap content-start gap-x-4 gap-y-3 text-2xl font-mono leading-tight tracking-tight text-(--sub)/50 overflow-hidden h-full w-full p-8 select-none scroll-smooth pb-32"
       >
         <Index each={props.words}>
           {(word, i) => {
@@ -58,7 +59,43 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
                 }`}
               >
                 <Show when={i < props.currentWordIndex}>
-                  <span class="text-(--text)">{word()}</span>
+                  <span class="text-(--text) inline-flex relative items-center">
+                    <Index each={word().split("")}>
+                      {(char, charIdx) => {
+                        return (
+                          <span
+                            class={(() => {
+                              const pastInput = props.pastInputs[i] || "";
+                              const inputChar = pastInput[charIdx];
+                              if (inputChar === undefined)
+                                return "text-(--error) opacity-70";
+                              if (inputChar === char()) return "text-(--text)";
+                              return "text-(--error)";
+                            })()}
+                          >
+                            {char()}
+                          </span>
+                        );
+                      }}
+                    </Index>
+                    <Show
+                      when={(props.pastInputs[i] || "").length > word().length}
+                    >
+                      <span class="flex items-center">
+                        <Index
+                          each={(props.pastInputs[i] || "")
+                            .slice(word().length)
+                            .split("")}
+                        >
+                          {(extraChar) => (
+                            <span class="text-(--error) opacity-80">
+                              {extraChar()}
+                            </span>
+                          )}
+                        </Index>
+                      </span>
+                    </Show>
+                  </span>
                 </Show>
 
                 <Show when={i > props.currentWordIndex}>
