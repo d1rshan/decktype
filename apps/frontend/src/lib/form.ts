@@ -28,6 +28,7 @@ export function createFormState<T extends Record<string, string>>(initial: T) {
 
   return {
     fields,
+    setFields,
     setField,
     error,
     setError,
