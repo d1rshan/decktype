@@ -67,7 +67,9 @@ function FallingWordsField(props: FallingWordsFieldProps) {
           props.currentInput.length > 0 &&
           word.text.startsWith(props.currentInput);
         const isExactMatch =
-          props.currentInput.length > 0 && word.text === props.currentInput;
+          props.currentInput.length > 0 &&
+          word.text === props.currentInput &&
+          isFocused;
         const typedLength = isFocused ? props.currentInput.length : 0;
         const characters = word.text.split("");
 

@@ -53,12 +53,20 @@ export function useFallingWordsGame(
   const selectedDifficulty = createMemo(() => getDifficulty(difficulty()));
   const score = createMemo(() => formatScore(elapsedMs()));
 
-  const focusedWordId = createMemo(() => {
+  const focusedWordId = createMemo((prevFocusedWordId?: number | null) => {
     const input = currentInput();
     const words = activeWords();
 
     if (input.length === 0) {
       return null;
+    }
+
+    // Keep focus sticky if the previously focused word is still a valid exact prefix match
+    if (prevFocusedWordId != null) {
+      const prevWord = words.find((w) => w.id === prevFocusedWordId);
+      if (prevWord && prevWord.text.startsWith(input)) {
+        return prevFocusedWordId;
+      }
     }
 
     // Try exact prefix match first
