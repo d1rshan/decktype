@@ -5,7 +5,7 @@ export type GameViewProps = {
   wordBankId?: WordBankId | null;
 };
 
-export type GameId = "falling-words";
+export type GameId = "falling-words" | "survival";
 
 export type GameModule = {
   id: GameId;
