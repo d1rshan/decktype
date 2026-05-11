@@ -1,7 +1,6 @@
 import { createStore } from "solid-js/store";
-import { createSignal, Show } from "solid-js";
+import { createSignal } from "solid-js";
 import type { ZodSchema } from "zod";
-import { cn } from "./cn";
 
 export function createFormState<T extends Record<string, string>>(initial: T) {
   const [fields, setFields] = createStore<T>(initial);
@@ -27,16 +26,6 @@ export function createFormState<T extends Record<string, string>>(initial: T) {
     return parsed.data as T;
   };
 
-  const FormError = (props: { class?: string }) => (
-    <Show when={error()}>
-      {(message) => (
-        <p class={cn("mt-1 text-sm text-(--error)", props.class)}>
-          {message()}
-        </p>
-      )}
-    </Show>
-  );
-
   return {
     fields,
     setFields,
@@ -46,6 +35,5 @@ export function createFormState<T extends Record<string, string>>(initial: T) {
     submitting,
     setSubmitting,
     validate,
-    FormError,
   };
 }

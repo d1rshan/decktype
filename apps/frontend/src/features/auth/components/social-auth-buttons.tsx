@@ -1,21 +1,24 @@
-import { createSignal, Show } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import { FaBrandsGoogle, FaBrandsGithub } from "solid-icons/fa";
 
 import Button from "@/components/ui/button";
+import FormError from "@/components/ui/form-error";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 import { urls } from "@/lib/urls";
 
-type OAuthProvider = "google" | "github";
+const PROVIDERS = [
+  { id: "google", icon: FaBrandsGoogle, label: "Google" },
+  { id: "github", icon: FaBrandsGithub, label: "GitHub" },
+] as const;
 
 export function SocialAuthButtons() {
-  const [pendingProvider, setPendingProvider] =
-    createSignal<OAuthProvider | null>(null);
-  const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
+  const [pending, setPending] = createSignal<string | null>(null);
+  const [error, setError] = createSignal<string | null>(null);
 
-  const signInWithProvider = async (provider: OAuthProvider) => {
-    setPendingProvider(provider);
-    setErrorMessage(null);
+  const handleSignIn = async (provider: (typeof PROVIDERS)[number]["id"]) => {
+    setPending(provider);
+    setError(null);
 
     try {
       const result = await authClient.signIn.social({
@@ -24,57 +27,37 @@ export function SocialAuthButtons() {
       });
 
       if (result.error) {
-        setErrorMessage(result.error.message ?? "Unable to sign in.");
+        setError(result.error.message ?? "Authentication failed.");
       }
-    } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+    } catch (e) {
+      setError(getErrorMessage(e));
     } finally {
-      setPendingProvider(null);
+      setPending(null);
     }
   };
 
   return (
     <div class="flex flex-col gap-3">
       <div class="grid grid-cols-2 gap-3">
-        <Button
-          type="button"
-          class="h-12"
-          disabled={Boolean(pendingProvider())}
-          onClick={() => void signInWithProvider("google")}
-          aria-label="Sign in with Google"
-          title="Sign in with Google"
-        >
-          <Show
-            when={pendingProvider() === "google"}
-            fallback={<FaBrandsGoogle size={18} />}
-          >
-            <span class="text-xs">opening...</span>
-          </Show>
-        </Button>
-        <Button
-          type="button"
-          class="h-12"
-          disabled={Boolean(pendingProvider())}
-          onClick={() => void signInWithProvider("github")}
-          aria-label="Sign in with GitHub"
-          title="Sign in with GitHub"
-        >
-          <Show
-            when={pendingProvider() === "github"}
-            fallback={<FaBrandsGithub size={18} />}
-          >
-            <span class="text-xs">opening...</span>
-          </Show>
-        </Button>
+        <For each={PROVIDERS}>
+          {(p) => (
+            <Button
+              type="button"
+              class="h-12"
+              disabled={Boolean(pending())}
+              onClick={() => void handleSignIn(p.id)}
+              aria-label={`Sign in with ${p.label}`}
+              title={`Sign in with ${p.label}`}
+            >
+              <Show when={pending() === p.id} fallback={<p.icon size={18} />}>
+                <span class="text-xs">opening...</span>
+              </Show>
+            </Button>
+          )}
+        </For>
       </div>
 
-      <Show when={errorMessage()}>
-        {(message) => (
-          <div class="text-(--error)">
-            <p class="text-sm leading-normal">{message()}</p>
-          </div>
-        )}
-      </Show>
+      <FormError message={error()} />
     </div>
   );
 }

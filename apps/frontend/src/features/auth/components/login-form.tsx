@@ -1,5 +1,6 @@
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import FormError from "@/components/ui/form-error";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 import { createFormState } from "@/lib/form";
@@ -11,11 +12,11 @@ export function LoginForm() {
   const {
     fields,
     setField,
+    error,
     setError,
     submitting,
     setSubmitting,
     validate,
-    FormError,
   } = createFormState({ usernameOrEmail: "", password: "" });
 
   const handleSubmit = async (e: Event) => {
@@ -83,7 +84,7 @@ export function LoginForm() {
         required
       />
 
-      <FormError />
+      <FormError message={error()} />
 
       <Button type="submit" class="h-12 w-full" disabled={submitting()}>
         {submitting() ? "signing in..." : "sign in"}

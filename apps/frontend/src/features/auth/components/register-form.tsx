@@ -1,5 +1,6 @@
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import FormError from "@/components/ui/form-error";
 import { getErrorMessage } from "@/lib/api-client";
 import { authClient } from "@/lib/auth-client";
 import { createFormState } from "@/lib/form";
@@ -10,11 +11,11 @@ export function RegisterForm() {
   const {
     fields,
     setField,
+    error,
     setError,
     submitting,
     setSubmitting,
     validate,
-    FormError,
   } = createFormState({
     username: "",
     email: "",
@@ -97,7 +98,7 @@ export function RegisterForm() {
         required
       />
 
-      <FormError />
+      <FormError message={error()} />
 
       <Button type="submit" class="mt-1 h-12 w-full" disabled={submitting()}>
         {submitting() ? "creating account..." : "sign up"}

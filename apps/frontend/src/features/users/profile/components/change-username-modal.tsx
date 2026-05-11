@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { createEffect, onCleanup } from "solid-js";
+import { X } from "lucide-solid";
+import { createEffect, onCleanup, Show } from "solid-js";
 import { Portal } from "solid-js/web";
-import { Show } from "solid-js";
 
 import { useAuthSession } from "@/features/auth/hooks";
 import { createFormState } from "@/lib/form";
@@ -9,6 +9,7 @@ import { api, toastApiError, unwrap } from "@/lib/api-client";
 import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import FormError from "@/components/ui/form-error";
 
 import { USERNAME_CHANGE_COOLDOWN_DAYS } from "../utils";
 
@@ -41,7 +42,6 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
     submitting,
     setSubmitting,
     validate,
-    FormError,
   } = createFormState({ username: "" });
 
   createEffect(() => {
@@ -113,6 +113,14 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
           />
 
           <div class="relative w-full max-w-sm overflow-hidden rounded-xl bg-(--sub-alt) p-4">
+            <Button
+              type="button"
+              onClick={props.onClose}
+              class="absolute top-3 right-3 h-7 w-7 bg-transparent p-0 text-(--sub) hover:bg-transparent hover:text-(--main)"
+            >
+              <X size={18} />
+            </Button>
+
             <form class="flex flex-col gap-2.5" onSubmit={handleSubmit}>
               <p class="pr-8 text-sm leading-normal text-(--sub) opacity-70">
                 you can only change your username once every{" "}
@@ -129,7 +137,7 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
                     error={Boolean(error())}
                     disabled={submitting()}
                   />
-                  <FormError class="text-xs" />
+                  <FormError message={error()} />
                 </div>
 
                 <Button
