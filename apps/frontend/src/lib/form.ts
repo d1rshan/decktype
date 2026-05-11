@@ -5,6 +5,7 @@ import type { ZodSchema } from "zod";
 export function createFormState<T extends Record<string, string>>(initial: T) {
   const [fields, setFields] = createStore<T>(initial);
   const [error, setError] = createSignal<string | null>(null);
+  const [success, setSuccess] = createSignal<string | null>(null);
   const [submitting, setSubmitting] = createSignal(false);
 
   const setField =
@@ -15,6 +16,7 @@ export function createFormState<T extends Record<string, string>>(initial: T) {
       // @ts-expect-error type variance in solid store
       setFields(key, e.currentTarget.value);
       setError(null);
+      setSuccess(null);
     };
 
   const validate = (schema: ZodSchema) => {
@@ -32,6 +34,8 @@ export function createFormState<T extends Record<string, string>>(initial: T) {
     setField,
     error,
     setError,
+    success,
+    setSuccess,
     submitting,
     setSubmitting,
     validate,

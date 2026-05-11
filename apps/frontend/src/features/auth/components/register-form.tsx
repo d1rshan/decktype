@@ -1,4 +1,4 @@
-import { Show, createSignal } from "solid-js";
+import { Show } from "solid-js";
 
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
@@ -14,13 +14,13 @@ type RegisterFormProps = {
 };
 
 export function RegisterForm(props: RegisterFormProps) {
-  const [statusMessage, setStatusMessage] = createSignal<string | null>(null);
-
   const {
     fields,
     setField,
     error,
     setError,
+    success,
+    setSuccess,
     submitting,
     setSubmitting,
     validate,
@@ -32,18 +32,13 @@ export function RegisterForm(props: RegisterFormProps) {
     confirmPassword: "",
   });
 
-  const clearMessages = () => {
-    setStatusMessage(null);
-    setError(null);
-  };
-
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     const data = validate(registerSchema);
     if (!data) return;
 
     setSubmitting(true);
-    setStatusMessage(null);
+    setSuccess(null);
 
     try {
       const result = await authClient.signUp.email({
@@ -58,7 +53,7 @@ export function RegisterForm(props: RegisterFormProps) {
         return;
       }
 
-      setStatusMessage("Account created.");
+      setSuccess("Account created.");
       props.onSuccess?.();
     } catch (err) {
       setError(getErrorMessage(err));
@@ -78,10 +73,7 @@ export function RegisterForm(props: RegisterFormProps) {
 
       <Input
         value={fields.username}
-        onInput={(e) => {
-          clearMessages();
-          setField("username")(e);
-        }}
+        onInput={setField("username")}
         placeholder="username"
         required
       />
@@ -89,10 +81,7 @@ export function RegisterForm(props: RegisterFormProps) {
       <Input
         type="email"
         value={fields.email}
-        onInput={(e) => {
-          clearMessages();
-          setField("email")(e);
-        }}
+        onInput={setField("email")}
         placeholder="email"
         required
       />
@@ -100,10 +89,7 @@ export function RegisterForm(props: RegisterFormProps) {
       <Input
         type="email"
         value={fields.confirmEmail}
-        onInput={(e) => {
-          clearMessages();
-          setField("confirmEmail")(e);
-        }}
+        onInput={setField("confirmEmail")}
         placeholder="verify email"
         required
       />
@@ -111,10 +97,7 @@ export function RegisterForm(props: RegisterFormProps) {
       <Input
         type="password"
         value={fields.password}
-        onInput={(e) => {
-          clearMessages();
-          setField("password")(e);
-        }}
+        onInput={setField("password")}
         placeholder="password"
         required
       />
@@ -122,15 +105,12 @@ export function RegisterForm(props: RegisterFormProps) {
       <Input
         type="password"
         value={fields.confirmPassword}
-        onInput={(e) => {
-          clearMessages();
-          setField("confirmPassword")(e);
-        }}
+        onInput={setField("confirmPassword")}
         placeholder="verify password"
         required
       />
 
-      <Show when={statusMessage()}>
+      <Show when={success()}>
         {(message) => (
           <div class="pt-1 text-(--main)">
             <p class="text-base leading-normal">{message()}</p>

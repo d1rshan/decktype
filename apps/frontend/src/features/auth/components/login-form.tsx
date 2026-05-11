@@ -1,4 +1,4 @@
-import { Show, createSignal } from "solid-js";
+import { Show } from "solid-js";
 
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
@@ -15,22 +15,17 @@ type LoginFormProps = {
 };
 
 export function LoginForm(props: LoginFormProps) {
-  const [statusMessage, setStatusMessage] = createSignal<string | null>(null);
-
   const {
     fields,
     setField,
     error,
     setError,
+    success,
+    setSuccess,
     submitting,
     setSubmitting,
     validate,
   } = createFormState({ usernameOrEmail: "", password: "" });
-
-  const clearMessages = () => {
-    setStatusMessage(null);
-    setError(null);
-  };
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
@@ -38,7 +33,7 @@ export function LoginForm(props: LoginFormProps) {
     if (!data) return;
 
     setSubmitting(true);
-    setStatusMessage(null);
+    setSuccess(null);
 
     try {
       const identifier = data.usernameOrEmail.trim();
@@ -59,7 +54,7 @@ export function LoginForm(props: LoginFormProps) {
         return;
       }
 
-      setStatusMessage("Signed in.");
+      setSuccess("Signed in.");
       props.onSuccess?.();
     } catch (err) {
       setError(getErrorMessage(err));
@@ -88,10 +83,7 @@ export function LoginForm(props: LoginFormProps) {
       <Input
         type="text"
         value={fields.usernameOrEmail}
-        onInput={(e) => {
-          clearMessages();
-          setField("usernameOrEmail")(e);
-        }}
+        onInput={setField("usernameOrEmail")}
         placeholder="username or email"
         required
       />
@@ -99,15 +91,12 @@ export function LoginForm(props: LoginFormProps) {
       <Input
         type="password"
         value={fields.password}
-        onInput={(e) => {
-          clearMessages();
-          setField("password")(e);
-        }}
+        onInput={setField("password")}
         placeholder="password"
         required
       />
 
-      <Show when={statusMessage()}>
+      <Show when={success()}>
         {(message) => (
           <div class="pt-1 text-(--main)">
             <p class="text-base leading-normal">{message()}</p>

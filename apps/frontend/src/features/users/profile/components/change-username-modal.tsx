@@ -130,10 +130,7 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
                 <div class="flex-1">
                   <Input
                     value={fields.username}
-                    onInput={(event) => {
-                      setError(null);
-                      setField("username")(event);
-                    }}
+                    onInput={setField("username")}
                     placeholder="new username"
                     class="h-10 border border-(--main)/30 bg-transparent px-4"
                     error={Boolean(error())}
