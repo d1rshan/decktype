@@ -4,7 +4,6 @@ import { Show, createEffect, createSignal, onCleanup } from "solid-js";
 import { Portal } from "solid-js/web";
 
 import { useAuthSession } from "@/features/auth/hooks";
-import { getFirstValidationMessage } from "@/features/auth/components/auth-forms/utils";
 import { api, toastApiError, unwrap } from "@/lib/api-client";
 import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
@@ -68,7 +67,7 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
     });
 
     if (!result.success) {
-      setValidationMessage(getFirstValidationMessage(result.error.issues));
+      setValidationMessage(result.error.issues[0]?.message ?? null);
       return;
     }
 

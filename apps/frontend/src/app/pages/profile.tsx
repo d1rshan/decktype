@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Show, createEffect, createMemo } from "solid-js";
 
-import AuthForms from "@/features/auth/components/auth-forms";
+import AuthForms from "@/features/auth/components";
 import { useAuthSession } from "@/features/auth/hooks";
 import { usePublicProfileQuery } from "@/features/users/profile/api/hooks";
 import { ProfileView } from "@/features/users/profile/components/profile-view";
