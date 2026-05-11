@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { X } from "lucide-solid";
 import { createEffect, onCleanup, Show } from "solid-js";
 import { Portal } from "solid-js/web";
@@ -10,20 +9,9 @@ import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import FormError from "@/components/ui/form-error";
+import { usernameSchema } from "@/features/auth/components/schemas";
 
 import { USERNAME_CHANGE_COOLDOWN_DAYS } from "../utils";
-
-const changeUsernameSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(3, "Username must be at least 3 characters.")
-    .max(30, "Username must be at most 30 characters.")
-    .regex(
-      /^[A-Za-z0-9_]+$/,
-      "Username can only contain letters, numbers, and underscores.",
-    ),
-});
 
 type ChangeUsernameModalProps = {
   isOpen: boolean;
@@ -70,7 +58,7 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
     event.preventDefault();
 
     const currentUsername = auth.username();
-    const data = validate(changeUsernameSchema);
+    const data = validate(usernameSchema);
 
     if (!data) {
       return;
@@ -137,7 +125,7 @@ export function ChangeUsernameModal(props: ChangeUsernameModalProps) {
                     error={Boolean(error())}
                     disabled={submitting()}
                   />
-                  <FormError message={error()} />
+                  <FormError message={error()} class="text-xs" />
                 </div>
 
                 <Button
