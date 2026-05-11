@@ -1,5 +1,3 @@
-import { Show } from "solid-js";
-
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import { getErrorMessage } from "@/lib/api-client";
@@ -8,22 +6,15 @@ import { createFormState } from "@/lib/form";
 
 import { registerSchema } from "./schemas";
 
-type RegisterFormProps = {
-  onSuccess?: () => void;
-  disabled?: boolean;
-};
-
-export function RegisterForm(props: RegisterFormProps) {
+export function RegisterForm() {
   const {
     fields,
     setField,
-    error,
     setError,
-    success,
-    setSuccess,
     submitting,
     setSubmitting,
     validate,
+    FormError,
   } = createFormState({
     username: "",
     email: "",
@@ -38,7 +29,6 @@ export function RegisterForm(props: RegisterFormProps) {
     if (!data) return;
 
     setSubmitting(true);
-    setSuccess(null);
 
     try {
       const result = await authClient.signUp.email({
@@ -52,9 +42,6 @@ export function RegisterForm(props: RegisterFormProps) {
         setError(result.error.message ?? "Unable to create account.");
         return;
       }
-
-      setSuccess("Account created.");
-      props.onSuccess?.();
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -110,27 +97,9 @@ export function RegisterForm(props: RegisterFormProps) {
         required
       />
 
-      <Show when={success()}>
-        {(message) => (
-          <div class="pt-1 text-(--main)">
-            <p class="text-base leading-normal">{message()}</p>
-          </div>
-        )}
-      </Show>
+      <FormError />
 
-      <Show when={error()}>
-        {(message) => (
-          <div class="pt-1 text-(--error)">
-            <p class="text-base leading-normal">{message()}</p>
-          </div>
-        )}
-      </Show>
-
-      <Button
-        type="submit"
-        class="mt-1 h-12 w-full"
-        disabled={props.disabled || submitting()}
-      >
+      <Button type="submit" class="mt-1 h-12 w-full" disabled={submitting()}>
         {submitting() ? "creating account..." : "sign up"}
       </Button>
     </form>

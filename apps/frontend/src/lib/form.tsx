@@ -1,11 +1,11 @@
 import { createStore } from "solid-js/store";
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import type { ZodSchema } from "zod";
+import { cn } from "./cn";
 
 export function createFormState<T extends Record<string, string>>(initial: T) {
   const [fields, setFields] = createStore<T>(initial);
   const [error, setError] = createSignal<string | null>(null);
-  const [success, setSuccess] = createSignal<string | null>(null);
   const [submitting, setSubmitting] = createSignal(false);
 
   const setField =
@@ -16,7 +16,6 @@ export function createFormState<T extends Record<string, string>>(initial: T) {
       // @ts-expect-error type variance in solid store
       setFields(key, e.currentTarget.value);
       setError(null);
-      setSuccess(null);
     };
 
   const validate = (schema: ZodSchema) => {
@@ -28,16 +27,25 @@ export function createFormState<T extends Record<string, string>>(initial: T) {
     return parsed.data as T;
   };
 
+  const FormError = (props: { class?: string }) => (
+    <Show when={error()}>
+      {(message) => (
+        <p class={cn("mt-1 text-sm text-(--error)", props.class)}>
+          {message()}
+        </p>
+      )}
+    </Show>
+  );
+
   return {
     fields,
     setFields,
     setField,
     error,
     setError,
-    success,
-    setSuccess,
     submitting,
     setSubmitting,
     validate,
+    FormError,
   };
 }

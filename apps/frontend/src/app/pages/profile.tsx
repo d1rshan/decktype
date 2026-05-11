@@ -45,14 +45,7 @@ function ProfilePage() {
               </div>
             }
           >
-            <Show
-              when={auth.isAuthenticated()}
-              fallback={
-                <AuthForms
-                  onSuccess={() => navigate("/profile", { replace: true })}
-                />
-              }
-            >
+            <Show when={auth.isAuthenticated()} fallback={<AuthForms />}>
               <div class="flex w-full items-center justify-center py-20">
                 <Spinner />
               </div>
