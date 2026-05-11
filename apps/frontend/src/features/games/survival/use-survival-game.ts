@@ -23,6 +23,7 @@ export function useSurvivalGame(
   const [difficulty, setDifficulty] = createSignal<DifficultyKey>("easy");
 
   const [health, setHealth] = createSignal(5);
+  const [isShaking, setIsShaking] = createSignal(false);
   const [activeWords, setActiveWords] = createSignal<string[]>([]);
   const [pastInputs, setPastInputs] = createSignal<string[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = createSignal(0);
@@ -32,6 +33,7 @@ export function useSurvivalGame(
 
   let runStartTime = 0;
   let timerInterval: number | undefined;
+  let shakeTimeout: number | undefined;
   let inputRef: HTMLInputElement | undefined;
 
   const getDamagePerTypo = (diff: DifficultyKey) => {
@@ -87,10 +89,21 @@ export function useSurvivalGame(
     });
   };
 
+  const triggerShake = () => {
+    setIsShaking(true);
+    if (shakeTimeout !== undefined) clearTimeout(shakeTimeout);
+    shakeTimeout = window.setTimeout(() => setIsShaking(false), 300);
+  };
+
   const takeDamage = (count: number = 1) => {
     if (count <= 0) return;
     const dmg = getDamagePerTypo(difficulty()) * count;
     const newHealth = Math.max(0, health() - dmg);
+
+    if (phase() !== "game-over") {
+      triggerShake();
+    }
+
     setHealth(newHealth);
     if (newHealth <= 0 && phase() !== "game-over") {
       endGame();
@@ -206,6 +219,7 @@ export function useSurvivalGame(
     difficulty,
     health,
     wpm,
+    isShaking,
     activeWords,
     pastInputs,
     currentWordIndex,

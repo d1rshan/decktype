@@ -85,7 +85,13 @@ function SurvivalView(props: GameViewProps) {
         </div>
       </div>
 
-      <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20">
+      <div
+        class={`relative min-h-[60vh] overflow-hidden rounded-2xl transition-colors hover:bg-(--sub-alt)/20 ${
+          session.isShaking()
+            ? "animate-shake bg-(--error)/10"
+            : "bg-(--sub-alt)/10"
+        }`}
+      >
         <SurvivalField
           words={session.activeWords()}
           currentWordIndex={session.currentWordIndex()}
