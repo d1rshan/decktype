@@ -46,114 +46,120 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
         </div>
       )}
 
-      <div
-        ref={containerRef}
-        class="flex flex-wrap content-start gap-x-4 gap-y-3 text-2xl font-mono leading-tight tracking-tight text-(--sub)/50 overflow-hidden h-full w-full p-8 select-none scroll-smooth pb-32"
-      >
-        <Index each={props.words}>
-          {(word, i) => {
-            return (
-              <div
-                class={`relative ${
-                  i === props.currentWordIndex ? "active-word" : ""
-                }`}
-              >
-                <Show when={i < props.currentWordIndex}>
-                  <span class="text-(--text) inline-flex relative items-center">
-                    <Index each={word().split("")}>
-                      {(char, charIdx) => {
-                        return (
-                          <span
-                            class={(() => {
-                              const pastInput = props.pastInputs[i] || "";
-                              const inputChar = pastInput[charIdx];
-                              if (inputChar === undefined)
-                                return "text-(--error) opacity-70";
-                              if (inputChar === char()) return "text-(--text)";
-                              return "text-(--error)";
-                            })()}
-                          >
-                            {char()}
-                          </span>
-                        );
-                      }}
-                    </Index>
-                    <Show
-                      when={(props.pastInputs[i] || "").length > word().length}
-                    >
-                      <span class="flex items-center">
-                        <Index
-                          each={(props.pastInputs[i] || "")
-                            .slice(word().length)
-                            .split("")}
-                        >
-                          {(extraChar) => (
-                            <span class="text-(--error) opacity-80">
-                              {extraChar()}
-                            </span>
-                          )}
-                        </Index>
-                      </span>
-                    </Show>
-                  </span>
-                </Show>
-
-                <Show when={i > props.currentWordIndex}>
-                  <span>{word()}</span>
-                </Show>
-
-                <Show when={i === props.currentWordIndex}>
-                  <span class="text-(--text) inline-flex relative items-center">
-                    <Index each={word().split("")}>
-                      {(char, charIdx) => {
-                        return (
-                          <span class="relative">
+      <div class="absolute inset-0 flex items-center justify-center px-10">
+        <div
+          ref={containerRef}
+          class="flex flex-wrap content-start gap-x-4 gap-y-3 text-2xl font-mono leading-tight tracking-tight text-(--sub)/50 overflow-hidden w-full max-w-5xl select-none scroll-smooth"
+          style={{ height: "114px" }}
+        >
+          <Index each={props.words}>
+            {(word, i) => {
+              return (
+                <div
+                  class={`relative ${
+                    i === props.currentWordIndex ? "active-word" : ""
+                  }`}
+                >
+                  <Show when={i < props.currentWordIndex}>
+                    <span class="text-(--text) inline-flex relative items-center">
+                      <Index each={word().split("")}>
+                        {(char, charIdx) => {
+                          return (
                             <span
                               class={(() => {
-                                const inputChar = props.currentInput[charIdx];
+                                const pastInput = props.pastInputs[i] || "";
+                                const inputChar = pastInput[charIdx];
                                 if (inputChar === undefined)
-                                  return "text-(--sub)/50";
+                                  return "text-(--error) opacity-70";
                                 if (inputChar === char())
                                   return "text-(--text)";
                                 return "text-(--error)";
                               })()}
                             >
-                              {props.currentInput.length === charIdx && (
-                                <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
-                              )}
                               {char()}
                             </span>
-                          </span>
-                        );
-                      }}
-                    </Index>
+                          );
+                        }}
+                      </Index>
+                      <Show
+                        when={
+                          (props.pastInputs[i] || "").length > word().length
+                        }
+                      >
+                        <span class="flex items-center">
+                          <Index
+                            each={(props.pastInputs[i] || "")
+                              .slice(word().length)
+                              .split("")}
+                          >
+                            {(extraChar) => (
+                              <span class="text-(--error) opacity-80">
+                                {extraChar()}
+                              </span>
+                            )}
+                          </Index>
+                        </span>
+                      </Show>
+                    </span>
+                  </Show>
 
-                    <Show when={props.currentInput.length === word().length}>
-                      <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
-                    </Show>
+                  <Show when={i > props.currentWordIndex}>
+                    <span>{word()}</span>
+                  </Show>
 
-                    <Show when={props.currentInput.length > word().length}>
-                      <span class="flex items-center">
-                        <Index
-                          each={props.currentInput
-                            .slice(word().length)
-                            .split("")}
-                        >
-                          {(extraChar) => (
-                            <span class="text-(--error) opacity-80">
-                              {extraChar()}
+                  <Show when={i === props.currentWordIndex}>
+                    <span class="text-(--text) inline-flex relative items-center">
+                      <Index each={word().split("")}>
+                        {(char, charIdx) => {
+                          return (
+                            <span class="relative">
+                              <span
+                                class={(() => {
+                                  const inputChar = props.currentInput[charIdx];
+                                  if (inputChar === undefined)
+                                    return "text-(--sub)/50";
+                                  if (inputChar === char())
+                                    return "text-(--text)";
+                                  return "text-(--error)";
+                                })()}
+                              >
+                                {props.currentInput.length === charIdx && (
+                                  <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
+                                )}
+                                {char()}
+                              </span>
                             </span>
-                          )}
-                        </Index>
+                          );
+                        }}
+                      </Index>
+
+                      <Show when={props.currentInput.length === word().length}>
                         <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
-                      </span>
-                    </Show>
-                  </span>
-                </Show>
-              </div>
-            );
-          }}
-        </Index>
+                      </Show>
+
+                      <Show when={props.currentInput.length > word().length}>
+                        <span class="flex items-center">
+                          <Index
+                            each={props.currentInput
+                              .slice(word().length)
+                              .split("")}
+                          >
+                            {(extraChar) => (
+                              <span class="text-(--error) opacity-80">
+                                {extraChar()}
+                              </span>
+                            )}
+                          </Index>
+                          <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
+                        </span>
+                      </Show>
+                    </span>
+                  </Show>
+                </div>
+              );
+            }}
+          </Index>
+        </div>
       </div>
     </div>
   );
