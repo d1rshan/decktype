@@ -1,11 +1,9 @@
 import { Show } from "solid-js";
-import { useAuthSession } from "@/features/auth/hooks";
 import type { GameViewProps } from "@/features/games/types";
-import { useCreateResultMutation } from "@/features/users/results/api";
-import { toast } from "@/lib/toast";
-import { DifficultySelector } from "../components/difficulty-selector";
 import { meta } from ".";
 import { useEngine } from "./engine";
+import { useSubmitGameResult } from "@/features/games/hooks";
+import { DifficultySelector } from "../components/difficulty-selector";
 import { Hud } from "./components/hud";
 import { Words } from "./components/words";
 import { GameOver } from "@/features/games/components/game-over";
@@ -15,25 +13,11 @@ import { GameMeta } from "../components/game-meta";
 import "./animations.css";
 
 function View(props: GameViewProps) {
-  const auth = useAuthSession();
-  const createResultMutation = useCreateResultMutation();
+  const saveResult = useSubmitGameResult(meta.minScores);
 
   const { game, metrics, words, actions, wordBank } = useEngine(
     props.wordBankId ?? meta.defaultWordBankId,
-    {
-      onComplete: (result) => {
-        if (!auth.isAuthenticated()) return;
-
-        if (result.score < meta.minScores[result.difficulty]) {
-          toast.info(
-            `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${meta.minScores[result.difficulty]}.`,
-          );
-          return;
-        }
-
-        createResultMutation.mutate(result);
-      },
-    },
+    { onComplete: saveResult },
   );
 
   return (
