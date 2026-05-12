@@ -1,4 +1,3 @@
-import type { Component } from "solid-js";
 import { For } from "solid-js";
 
 export type HeartProps = {
@@ -77,7 +76,7 @@ const lightFills: Pixel[] = [
   { x: 36, y: 12 },
 ];
 
-export const Heart: Component<HeartProps> = (props) => {
+export function Heart(props: HeartProps) {
   const getFillColor = (x: number, originalColor: string) => {
     if (props.state === "full") return originalColor;
     if (props.state === "empty") return "#333333";
@@ -157,4 +156,4 @@ export const Heart: Component<HeartProps> = (props) => {
       </For>
     </svg>
   );
-};
+}

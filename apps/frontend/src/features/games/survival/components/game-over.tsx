@@ -1,11 +1,10 @@
-import type { Component } from "solid-js";
 import { Kbd } from "@/components/ui/kbd";
 
 export type GameOverProps = {
   score: number;
 };
 
-export const GameOver: Component<GameOverProps> = (props) => {
+export function GameOver(props: GameOverProps) {
   return (
     <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/90 backdrop-blur-sm">
       <div class="text-center">
@@ -21,4 +20,4 @@ export const GameOver: Component<GameOverProps> = (props) => {
       </div>
     </div>
   );
-};
+}

@@ -1,4 +1,3 @@
-import type { Component } from "solid-js";
 import { Index, createEffect, Show } from "solid-js";
 
 export type WordsProps = {
@@ -9,7 +8,7 @@ export type WordsProps = {
   onFieldClick: () => void;
 };
 
-const PastWord: Component<{ word: string; pastInput: string }> = (props) => {
+function PastWord(props: { word: string; pastInput: string }) {
   return (
     <span class="inline-flex relative items-center text-(--text)">
       <Index each={props.word.split("")}>
@@ -39,11 +38,9 @@ const PastWord: Component<{ word: string; pastInput: string }> = (props) => {
       </Show>
     </span>
   );
-};
+}
 
-const ActiveWord: Component<{ word: string; currentInput: string }> = (
-  props,
-) => {
+function ActiveWord(props: { word: string; currentInput: string }) {
   return (
     <span class="inline-flex relative items-center text-(--text)">
       <Index each={props.word.split("")}>
@@ -84,9 +81,9 @@ const ActiveWord: Component<{ word: string; currentInput: string }> = (
       </Show>
     </span>
   );
-};
+}
 
-export const Words: Component<WordsProps> = (props) => {
+export function Words(props: WordsProps) {
   let containerRef: HTMLDivElement | undefined;
 
   createEffect(() => {
@@ -143,4 +140,4 @@ export const Words: Component<WordsProps> = (props) => {
       </div>
     </div>
   );
-};
+}

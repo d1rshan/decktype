@@ -12,7 +12,7 @@ import { Hud } from "./components/hud";
 import { Words } from "./components/words";
 import { GameOver } from "./components/game-over";
 
-import "./styles.css";
+import "./animations.css";
 
 const MINIMUM_SCORES_BY_DIFFICULTY = {
   easy: 15,

@@ -1,4 +1,3 @@
-import type { Component } from "solid-js";
 import { Index } from "solid-js";
 import { Heart } from "./heart";
 
@@ -29,7 +28,7 @@ function Stat(props: {
   );
 }
 
-export const Hud: Component<HudProps> = (props) => {
+export function Hud(props: HudProps) {
   return (
     <div class="flex items-center gap-12 font-mono">
       <Stat label="score" value={props.score.toLocaleString()} highlight />
@@ -62,4 +61,4 @@ export const Hud: Component<HudProps> = (props) => {
       </div>
     </div>
   );
-};
+}
