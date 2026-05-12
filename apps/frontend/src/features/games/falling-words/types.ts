@@ -1,4 +1,5 @@
-export type DifficultyKey = "easy" | "medium" | "hard";
+import type { DifficultyKey, GamePhase } from "@/features/games/types";
+export type { DifficultyKey, GamePhase };
 
 export type DifficultyConfig = {
   key: DifficultyKey;
@@ -18,8 +19,6 @@ export type FallingWord = {
   rotation: number;
   angularVelocity: number;
 };
-
-export type GamePhase = "idle" | "running" | "paused" | "game-over";
 
 type CompletedGameResult = {
   gameId: "falling-words";

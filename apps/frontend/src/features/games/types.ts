@@ -7,6 +7,10 @@ export type GameViewProps = {
 
 export type GameId = "falling-words" | "survival";
 
+export type DifficultyKey = "easy" | "medium" | "hard";
+
+export type GamePhase = "idle" | "running" | "paused" | "game-over";
+
 export type GameModule = {
   id: GameId;
   name: string;

@@ -15,45 +15,30 @@ import { GameMeta } from "../components/game-meta";
 
 import "./animations.css";
 
-const MINIMUM_SCORES_BY_DIFFICULTY = {
-  easy: 15,
-  medium: 10,
-  hard: 5,
-} as const;
-
-const getShortResultMessage = (
-  difficulty: keyof typeof MINIMUM_SCORES_BY_DIFFICULTY,
-) =>
-  `Result not saved. Test too short. Minimum score for ${difficulty} is ${MINIMUM_SCORES_BY_DIFFICULTY[difficulty]}.`;
+const MIN_SCORE = { easy: 15, medium: 10, hard: 5 } as const;
 
 function View(props: GameViewProps) {
   const auth = useAuthSession();
   const createResultMutation = useCreateResultMutation();
+  const handleComplete: NonNullable<
+    Parameters<typeof useEngine>[1]
+  >["onComplete"] = (result) => {
+    if (!auth.isAuthenticated()) return;
+
+    if (result.score < MIN_SCORE[result.difficulty]) {
+      toast.info(
+        `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${MIN_SCORE[result.difficulty]}.`,
+      );
+      return;
+    }
+
+    createResultMutation.mutate(result);
+  };
+
   const session = useEngine(props.wordBankId ?? meta.defaultWordBankId, {
-    onComplete: (result: {
-      gameId: string;
-      score: number;
-      difficulty: keyof typeof MINIMUM_SCORES_BY_DIFFICULTY;
-    }) => {
-      if (!auth.isAuthenticated()) {
-        return;
-      }
-
-      const minimumScore = MINIMUM_SCORES_BY_DIFFICULTY[result.difficulty];
-
-      if (result.score < minimumScore) {
-        toast.info(getShortResultMessage(result.difficulty));
-        return;
-      }
-
-      createResultMutation.mutate({
-        gameId: result.gameId,
-        score: result.score,
-        difficulty: result.difficulty,
-      });
-    },
+    onComplete: handleComplete,
   });
-  // TODO: remove this, ie make default wordBank required and as fallback ig
+
   if (!session.wordBank) {
     return (
       <div class="rounded-[2rem] border border-(--sub-alt) bg-(--sub-alt)/40 p-8 text-(--sub) backdrop-blur-xl">
@@ -70,7 +55,6 @@ function View(props: GameViewProps) {
           activeDifficulty={session.difficulty()}
           onChange={session.handleDifficultyChange}
         />
-
         <GameMeta wordBankLabel={session.wordBank.label} gameName={meta.name} />
       </div>
       <div
@@ -92,7 +76,7 @@ function View(props: GameViewProps) {
           onFieldClick={session.focusInput}
         />
 
-        <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-between px-10 pt-10 pb-6">
+        <div class="pointer-events-none relative z-10 flex h-full flex-col items-center justify-between px-10 pt-10 pb-6">
           <div />
           <Hud
             health={session.health()}

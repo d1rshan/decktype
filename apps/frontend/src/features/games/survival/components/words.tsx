@@ -12,22 +12,21 @@ function WordChars(props: { word: string; input: string; isActive: boolean }) {
   return (
     <Index each={props.word.split("")}>
       {(char, i) => {
-        const hasInput = () => props.input[i] !== undefined;
-        const isCorrect = () => props.input[i] === char();
+        const typed = () => props.input[i];
+        const isCorrect = () => typed() === char();
+
+        let cls = "";
+        if (!typed()) {
+          cls = props.isActive
+            ? "text-(--sub)/50"
+            : "text-(--error) opacity-70";
+        } else {
+          cls = isCorrect() ? "text-(--text)" : "text-(--error)";
+        }
 
         return (
           <span class="relative">
-            <span
-              class={
-                !hasInput()
-                  ? props.isActive
-                    ? "text-(--sub)/50"
-                    : "text-(--error) opacity-70"
-                  : isCorrect()
-                    ? "text-(--text)"
-                    : "text-(--error)"
-              }
-            >
+            <span class={cls}>
               <Show when={props.isActive && props.input.length === i}>
                 <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
               </Show>
@@ -77,15 +76,11 @@ export function Words(props: WordsProps) {
 
   createEffect(() => {
     if (containerRef && props.currentWordIndex >= 0) {
-      const activeWordEl = containerRef.querySelector(
-        ".active-word",
-      ) as HTMLElement;
-      if (activeWordEl) {
-        const targetScrollTop =
-          activeWordEl.offsetTop -
-          containerRef.offsetHeight / 2 +
-          activeWordEl.offsetHeight / 2;
-        containerRef.scrollTo({ top: targetScrollTop, behavior: "smooth" });
+      const el = containerRef.querySelector(".active-word") as HTMLElement;
+      if (el) {
+        const scrollTo =
+          el.offsetTop - containerRef.offsetHeight / 2 + el.offsetHeight / 2;
+        containerRef.scrollTo({ top: scrollTo, behavior: "smooth" });
       }
     }
   });
@@ -114,11 +109,9 @@ export function Words(props: WordsProps) {
                     pastInput={props.pastInputs[i] || ""}
                   />
                 </Show>
-
                 <Show when={i === props.currentWordIndex}>
                   <ActiveWord word={word()} currentInput={props.currentInput} />
                 </Show>
-
                 <Show when={i > props.currentWordIndex}>
                   <span>{word()}</span>
                 </Show>

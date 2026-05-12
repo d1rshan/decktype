@@ -2,10 +2,19 @@ import { createMemo, onCleanup, createEffect } from "solid-js";
 import { createStore } from "solid-js/store";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
-import type { DifficultyKey } from "@/features/games/falling-words/types";
+import type { DifficultyKey, GamePhase } from "@/features/games/types";
 import { calculateWpm, calculateAccuracy } from "@/features/games/metrics";
 
-export type GamePhase = "idle" | "running" | "game-over" | "paused";
+const WORD_BATCH = 50;
+const WORD_REFILL_THRESHOLD = 20;
+const TIMER_INTERVAL = 250;
+const SHAKE_DURATION = 300;
+const INITIAL_HEALTH = 5;
+const DAMAGE: Record<DifficultyKey, number> = {
+  easy: 0.5,
+  medium: 1,
+  hard: 2.5,
+};
 
 export type UseGameOptions = {
   onComplete?: (result: {
@@ -33,7 +42,7 @@ type GameState = {
 const INITIAL_STATE: GameState = {
   phase: "idle",
   difficulty: "easy",
-  health: 5,
+  health: INITIAL_HEALTH,
   isShaking: false,
   activeWords: [],
   pastInputs: [],
@@ -44,14 +53,6 @@ const INITIAL_STATE: GameState = {
   totalErrors: 0,
   elapsedMs: 0,
 };
-
-function calculatePowerScore(
-  totalCorrectChars: number,
-  wpm: number,
-  accuracy: number,
-): number {
-  return Math.floor((totalCorrectChars * wpm * accuracy) / 100);
-}
 
 export function useEngine(
   wordBankId: WordBankId,
@@ -66,38 +67,24 @@ export function useEngine(
   let shakeTimeout: number | undefined;
   let inputRef: HTMLInputElement | undefined;
 
-  const getDamagePerTypo = (diff: DifficultyKey) => {
-    switch (diff) {
-      case "easy":
-        return 0.5;
-      case "medium":
-        return 1.0;
-      case "hard":
-        return 2.5;
-      default:
-        return 1.0;
-    }
-  };
-
   const generateWords = (count: number) => {
-    if (!wordBank || wordBank.words.length === 0) return [];
-    return Array.from({ length: count }, () => {
-      const idx = Math.floor(Math.random() * wordBank.words.length);
-      return wordBank.words[idx] || "error";
-    });
+    if (!wordBank || !wordBank.words.length) return [];
+    const pool = wordBank.words;
+    return Array.from(
+      { length: count },
+      () => pool[Math.floor(Math.random() * pool.length)]!,
+    );
   };
 
-  const wpm = createMemo(() => {
-    return calculateWpm(state.totalCorrectChars, state.elapsedMs);
-  });
-
-  const accuracy = createMemo(() => {
-    return calculateAccuracy(state.totalTypedChars, state.totalErrors);
-  });
-
-  const score = createMemo(() => {
-    return calculatePowerScore(state.totalCorrectChars, wpm(), accuracy());
-  });
+  const wpm = createMemo(() =>
+    calculateWpm(state.totalCorrectChars, state.elapsedMs),
+  );
+  const accuracy = createMemo(() =>
+    calculateAccuracy(state.totalTypedChars, state.totalErrors),
+  );
+  const score = createMemo(() =>
+    Math.floor((state.totalCorrectChars * wpm() * accuracy()) / 100),
+  );
 
   const stopTimer = () => {
     if (timerInterval !== undefined) {
@@ -106,52 +93,36 @@ export function useEngine(
     }
   };
 
-  const endGame = () => {
-    if (state.phase === "game-over") return;
-    setState("phase", "game-over");
-    stopTimer();
-    const finalElapsed = performance.now() - runStartTime;
-    setState("elapsedMs", finalElapsed);
-
-    const finalWpm = calculateWpm(state.totalCorrectChars, finalElapsed);
-    const finalAccuracy = calculateAccuracy(
-      state.totalTypedChars,
-      state.totalErrors,
-    );
-    const finalScore = calculatePowerScore(
-      state.totalCorrectChars,
-      finalWpm,
-      finalAccuracy,
-    );
-
-    options.onComplete?.({
-      gameId: "survival",
-      score: finalScore,
-      difficulty: state.difficulty,
-    });
-  };
-
   const triggerShake = () => {
     setState("isShaking", true);
     if (shakeTimeout !== undefined) clearTimeout(shakeTimeout);
-    shakeTimeout = window.setTimeout(() => setState("isShaking", false), 300);
+    shakeTimeout = window.setTimeout(
+      () => setState("isShaking", false),
+      SHAKE_DURATION,
+    );
   };
 
   const takeDamage = (count: number = 1) => {
     if (count <= 0) return;
-    const dmg = getDamagePerTypo(state.difficulty) * count;
-    const newHealth = Math.max(0, state.health - dmg);
+    const newHealth = Math.max(
+      0,
+      state.health - DAMAGE[state.difficulty] * count,
+    );
+    setState({ totalErrors: state.totalErrors + count, health: newHealth });
+    if (state.phase !== "game-over") triggerShake();
+    if (newHealth <= 0 && state.phase !== "game-over") endGame();
+  };
 
-    setState("totalErrors", (e) => e + count);
-
-    if (state.phase !== "game-over") {
-      triggerShake();
-    }
-
-    setState("health", newHealth);
-    if (newHealth <= 0 && state.phase !== "game-over") {
-      endGame();
-    }
+  const endGame = () => {
+    if (state.phase === "game-over") return;
+    stopTimer();
+    const elapsed = performance.now() - runStartTime;
+    setState({ phase: "game-over" as const, elapsedMs: elapsed });
+    options.onComplete?.({
+      gameId: "survival",
+      score: score(),
+      difficulty: state.difficulty,
+    });
   };
 
   const resetGame = (nextDiff = state.difficulty) => {
@@ -160,7 +131,7 @@ export function useEngine(
     setState({
       ...INITIAL_STATE,
       difficulty: nextDiff,
-      activeWords: generateWords(50),
+      activeWords: generateWords(WORD_BATCH),
     });
     if (inputRef) {
       inputRef.value = "";
@@ -173,7 +144,7 @@ export function useEngine(
     runStartTime = performance.now();
     timerInterval = window.setInterval(() => {
       setState("elapsedMs", performance.now() - runStartTime);
-    }, 250);
+    }, TIMER_INTERVAL);
   };
 
   const handleInput = (e: InputEvent & { currentTarget: HTMLInputElement }) => {
@@ -182,13 +153,10 @@ export function useEngine(
       return;
     }
 
-    if (state.phase === "idle") {
-      startGame();
-    }
+    if (state.phase === "idle") startGame();
 
     const value = e.currentTarget.value;
     const targetWord = state.activeWords[state.currentWordIndex];
-
     if (!targetWord) return;
 
     if (
@@ -201,38 +169,42 @@ export function useEngine(
       return;
     }
 
-    // Every other input counts as a typed char
     setState("totalTypedChars", (t) => t + 1);
 
     if (value.endsWith(" ")) {
-      const typedWord = value.trim();
-
-      let correctCount = 0;
+      const input = value.trim();
+      let correct = 0;
       for (let i = 0; i < targetWord.length; i++) {
-        if (typedWord[i] === targetWord[i]) correctCount++;
+        if (input[i] === targetWord[i]) correct++;
       }
+      const missed = targetWord.length - input.length;
+      if (missed > 0) takeDamage(missed);
 
-      const missedCount = targetWord.length - typedWord.length;
-      if (missedCount > 0) {
-        takeDamage(missedCount);
-      }
-
-      setState("totalCorrectChars", (c) => c + correctCount + 1);
-      setState("pastInputs", (prev) => [...prev, typedWord]);
-      setState("currentWordIndex", (i) => i + 1);
-      setState("currentInput", "");
+      setState({
+        totalCorrectChars: state.totalCorrectChars + correct + 1,
+        pastInputs: [...state.pastInputs, input],
+        currentWordIndex: state.currentWordIndex + 1,
+        currentInput: "",
+      });
       e.currentTarget.value = "";
 
-      if (state.currentWordIndex > state.activeWords.length - 20) {
-        setState("activeWords", (prev) => [...prev, ...generateWords(50)]);
+      if (
+        state.currentWordIndex >
+        state.activeWords.length - WORD_REFILL_THRESHOLD
+      ) {
+        setState("activeWords", (prev) => [
+          ...prev,
+          ...generateWords(WORD_BATCH),
+        ]);
       }
       return;
     }
 
     const newChar = value[value.length - 1];
-    const expectedChar = targetWord[value.length - 1];
-
-    if (newChar !== expectedChar && value.length > state.currentInput.length) {
+    if (
+      newChar !== targetWord[value.length - 1] &&
+      value.length > state.currentInput.length
+    ) {
       takeDamage(1);
     }
 
@@ -240,10 +212,7 @@ export function useEngine(
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Tab") {
-      e.preventDefault();
-      resetGame();
-    } else if (e.key === "Escape") {
+    if (e.key === "Tab" || e.key === "Escape") {
       e.preventDefault();
       resetGame();
     }
@@ -253,22 +222,27 @@ export function useEngine(
 
   createEffect(() => {
     if (state.activeWords.length === 0 && wordBank) {
-      setState("activeWords", generateWords(50));
+      setState("activeWords", generateWords(WORD_BATCH));
     }
   });
 
+  const get =
+    <K extends keyof GameState>(key: K) =>
+    () =>
+      state[key];
+
   return {
-    phase: () => state.phase,
-    difficulty: () => state.difficulty,
-    health: () => state.health,
+    phase: get("phase"),
+    difficulty: get("difficulty"),
+    health: get("health"),
     wpm,
     accuracy,
     score,
-    isShaking: () => state.isShaking,
-    activeWords: () => state.activeWords,
-    pastInputs: () => state.pastInputs,
-    currentWordIndex: () => state.currentWordIndex,
-    currentInput: () => state.currentInput,
+    isShaking: get("isShaking"),
+    activeWords: get("activeWords"),
+    pastInputs: get("pastInputs"),
+    currentWordIndex: get("currentWordIndex"),
+    currentInput: get("currentInput"),
     wordBank,
     handleDifficultyChange: (diff: DifficultyKey) => resetGame(diff),
     handleInput,
