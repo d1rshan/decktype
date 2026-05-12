@@ -3,7 +3,7 @@ import type { WordBankId } from "@/features/content/word-banks/types";
 import { games } from "./registry";
 import type { GameId } from "./types";
 
-export function pickRandom<T>(arr: T[]): T {
+export function randomWord<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!;
 }
 

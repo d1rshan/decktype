@@ -4,7 +4,7 @@ import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 import type { DifficultyKey, GamePhase } from "@/features/games/types";
 import { getMetrics } from "@/features/games/metrics";
-import { pickRandom } from "@/features/games/utils";
+import { randomWord } from "@/features/games/utils";
 
 const WORD_BATCH = 50;
 const WORD_REFILL_THRESHOLD = 20;
@@ -70,7 +70,7 @@ export function useEngine(
 
   const generateWords = (count: number) => {
     if (!wordBank || !wordBank.words.length) return [];
-    return Array.from({ length: count }, () => pickRandom(wordBank.words));
+    return Array.from({ length: count }, () => randomWord(wordBank.words));
   };
 
   const metrics = createMemo(() =>
