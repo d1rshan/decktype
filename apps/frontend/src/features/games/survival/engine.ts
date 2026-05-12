@@ -229,25 +229,33 @@ export function useEngine(
   });
 
   return {
-    phase: () => state.phase,
-    difficulty: () => state.difficulty,
-    health: () => state.health,
-    wpm: () => metrics().wpm,
-    accuracy: () => metrics().accuracy,
-    score,
-    isShaking: () => state.isShaking,
-    activeWords: () => state.activeWords,
-    pastInputs: () => state.pastInputs,
-    currentWordIndex: () => state.currentWordIndex,
-    currentInput: () => state.currentInput,
-    wordBank,
-    handleDifficultyChange: (diff: DifficultyKey) => resetGame(diff),
-    handleInput,
-    handleKeyDown,
-    setInputRef: (el: HTMLInputElement) => {
-      inputRef = el;
+    game: {
+      phase: () => state.phase,
+      difficulty: () => state.difficulty,
+      health: () => state.health,
+      isShaking: () => state.isShaking,
     },
-    focusInput: () => inputRef?.focus(),
-    resetGame,
+    metrics: {
+      wpm: () => metrics().wpm,
+      accuracy: () => metrics().accuracy,
+      score,
+    },
+    words: {
+      activeWords: () => state.activeWords,
+      pastInputs: () => state.pastInputs,
+      currentWordIndex: () => state.currentWordIndex,
+      currentInput: () => state.currentInput,
+    },
+    wordBank,
+    actions: {
+      handleInput,
+      handleKeyDown,
+      handleDifficultyChange: (diff: DifficultyKey) => resetGame(diff),
+      setInputRef: (el: HTMLInputElement) => {
+        inputRef = el;
+      },
+      focusInput: () => inputRef?.focus(),
+      resetGame,
+    },
   };
 }

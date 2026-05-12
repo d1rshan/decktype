@@ -18,68 +18,71 @@ function View(props: GameViewProps) {
   const auth = useAuthSession();
   const createResultMutation = useCreateResultMutation();
 
-  const session = useEngine(props.wordBankId ?? meta.defaultWordBankId, {
-    onComplete: (result) => {
-      if (!auth.isAuthenticated()) return;
+  const { game, metrics, words, actions, wordBank } = useEngine(
+    props.wordBankId ?? meta.defaultWordBankId,
+    {
+      onComplete: (result) => {
+        if (!auth.isAuthenticated()) return;
 
-      if (result.score < meta.minScores[result.difficulty]) {
-        toast.info(
-          `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${meta.minScores[result.difficulty]}.`,
-        );
-        return;
-      }
+        if (result.score < meta.minScores[result.difficulty]) {
+          toast.info(
+            `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${meta.minScores[result.difficulty]}.`,
+          );
+          return;
+        }
 
-      createResultMutation.mutate(result);
+        createResultMutation.mutate(result);
+      },
     },
-  });
+  );
 
   return (
     <div class="flex flex-col gap-8">
       <div class="flex flex-col items-center gap-6">
         <DifficultySelector
           options={meta.difficultyKeys}
-          activeDifficulty={session.difficulty()}
-          onChange={session.handleDifficultyChange}
+          activeDifficulty={game.difficulty()}
+          onChange={actions.handleDifficultyChange}
         />
         <GameMeta
-          wordBankLabel={session.wordBank?.label ?? meta.defaultWordBankId}
+          wordBankLabel={wordBank?.label ?? meta.defaultWordBankId}
           gameName={meta.name}
         />
       </div>
       <div
         class={`relative min-h-[60vh] overflow-hidden rounded-2xl transition-colors hover:bg-(--sub-alt)/20 ${
-          session.isShaking()
+          game.isShaking()
             ? "animate-damage bg-(--error)/10"
             : "bg-(--sub-alt)/10"
         }`}
       >
-        <Show when={session.phase() === "game-over"}>
-          <GameOver score={session.score()} />
+        <Show when={game.phase() === "game-over"}>
+          <GameOver score={metrics.score()} />
         </Show>
 
         <Words
-          words={session.activeWords()}
-          currentWordIndex={session.currentWordIndex()}
-          currentInput={session.currentInput()}
-          pastInputs={session.pastInputs()}
-          onFieldClick={session.focusInput}
+          words={words.activeWords()}
+          currentWordIndex={words.currentWordIndex()}
+          currentInput={words.currentInput()}
+          pastInputs={words.pastInputs()}
+          onFieldClick={actions.focusInput}
         />
 
         <div class="pointer-events-none relative z-10 flex h-full flex-col items-center justify-between px-10 pt-10 pb-6">
           <div />
           <Hud
-            health={session.health()}
-            score={session.score()}
-            wpm={session.wpm()}
-            accuracy={session.accuracy()}
-            isTakingDamage={session.isShaking()}
+            health={game.health()}
+            score={metrics.score()}
+            wpm={metrics.wpm()}
+            accuracy={metrics.accuracy()}
+            isTakingDamage={game.isShaking()}
           />
         </div>
         <GameInput
-          ref={session.setInputRef}
-          value={session.currentInput()}
-          onInput={session.handleInput}
-          onKeyDown={session.handleKeyDown}
+          ref={actions.setInputRef}
+          value={words.currentInput()}
+          onInput={actions.handleInput}
+          onKeyDown={actions.handleKeyDown}
         />
       </div>
     </div>
