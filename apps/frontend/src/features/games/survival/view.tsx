@@ -1,16 +1,17 @@
-import { Globe, Keyboard } from "lucide-solid";
 import { Show } from "solid-js";
 import { useAuthSession } from "@/features/auth/hooks";
 import type { GameViewProps } from "@/features/games/types";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
 import { DifficultySelector } from "../components/difficulty-selector";
-import { meta } from "./meta";
+import { meta } from ".";
 import { useEngine } from "./engine";
 import { difficultyKeys } from "@/features/games/falling-words/difficulty";
 import { Hud } from "./components/hud";
 import { Words } from "./components/words";
 import { GameOver } from "./components/game-over";
+import { GameInput } from "../components/game-input";
+import { GameMeta } from "../components/game-meta";
 
 import "./animations.css";
 
@@ -52,7 +53,7 @@ function View(props: GameViewProps) {
       });
     },
   });
-
+  // TODO: remove this, ie make default wordBank required and as fallback ig
   if (!session.wordBank) {
     return (
       <div class="rounded-[2rem] border border-(--sub-alt) bg-(--sub-alt)/40 p-8 text-(--sub) backdrop-blur-xl">
@@ -70,20 +71,7 @@ function View(props: GameViewProps) {
           onChange={session.handleDifficultyChange}
         />
 
-        <div class="flex items-center gap-6 text-(--sub)">
-          <div class="flex items-center gap-2">
-            <Globe size={14} strokeWidth={2.5} class="opacity-50" />
-            <span class="text-xs leading-none font-semibold tracking-widest uppercase">
-              {session.wordBank.label}
-            </span>
-          </div>
-          <div class="flex items-center gap-2">
-            <Keyboard size={14} strokeWidth={2.5} class="opacity-50" />
-            <span class="text-xs leading-none font-semibold tracking-widest uppercase">
-              {meta.name.toLowerCase()}
-            </span>
-          </div>
-        </div>
+        <GameMeta wordBankLabel={session.wordBank.label} gameName={meta.name} />
       </div>
       <div
         class={`relative min-h-[60vh] overflow-hidden rounded-2xl transition-colors hover:bg-(--sub-alt)/20 ${
@@ -114,14 +102,9 @@ function View(props: GameViewProps) {
             isTakingDamage={session.isShaking()}
           />
         </div>
-        <input
+        <GameInput
           ref={session.setInputRef}
           value={session.currentInput()}
-          class="absolute -left-[9999px] top-0 opacity-0"
-          autocapitalize="off"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck={false}
           onInput={session.handleInput}
           onKeyDown={session.handleKeyDown}
         />

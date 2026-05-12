@@ -6,8 +6,7 @@ export type HeartProps = {
   class?: string;
 };
 
-// Extracted from the user's custom Inkscape SVG
-const PIXEL_SIZE = 6;
+const size = 6;
 
 type Pixel = { x: number; y: number };
 
@@ -35,7 +34,9 @@ const outlines: Pixel[] = [
   { x: 42, y: 36 },
   { x: 48, y: 30 },
 ];
+
 const highlights: Pixel[] = [{ x: 12, y: 18 }];
+
 const shadowFills: Pixel[] = [
   { x: 6, y: 12 },
   { x: 6, y: 18 },
@@ -44,6 +45,7 @@ const shadowFills: Pixel[] = [
   { x: 18, y: 36 },
   { x: 24, y: 42 },
 ];
+
 const normalFills: Pixel[] = [
   { x: 12, y: 12 },
   { x: 18, y: 12 },
@@ -68,6 +70,7 @@ const normalFills: Pixel[] = [
   { x: 36, y: 18 },
   { x: 42, y: 18 },
 ];
+
 const lightFills: Pixel[] = [
   { x: 48, y: 24 },
   { x: 48, y: 18 },
@@ -76,13 +79,35 @@ const lightFills: Pixel[] = [
   { x: 36, y: 12 },
 ];
 
+const fillGroups = [
+  { pixels: highlights, color: "#ffffff" },
+  { pixels: shadowFills, color: "#9d0000" },
+  { pixels: normalFills, color: "#ff0000" },
+  { pixels: lightFills, color: "#ff5757" },
+];
+
+function PixelRects(props: { pixels: Pixel[]; fill: (x: number) => string }) {
+  return (
+    <For each={props.pixels}>
+      {(p) => (
+        <rect
+          x={p.x}
+          y={p.y}
+          width={size}
+          height={size}
+          fill={props.fill(p.x)}
+        />
+      )}
+    </For>
+  );
+}
+
 export function Heart(props: HeartProps) {
-  const getFillColor = (x: number, originalColor: string) => {
-    if (props.state === "full") return originalColor;
+  const getFillColor = (x: number, color: string) => {
+    if (props.state === "full") return color;
     if (props.state === "empty") return "#333333";
 
-    // For half state, right side (x >= 30) is empty
-    return x < 30 ? originalColor : "#333333";
+    return x < 30 ? color : "#333333";
   };
 
   return (
@@ -95,62 +120,16 @@ export function Heart(props: HeartProps) {
         "shape-rendering": "crispEdges",
       }}
     >
-      <For each={outlines}>
-        {(p) => (
-          <rect
-            x={p.x}
-            y={p.y}
-            width={PIXEL_SIZE}
-            height={PIXEL_SIZE}
-            fill={props.isDamaged ? "#ffffff" : "#000000"}
-          />
-        )}
-      </For>
+      <PixelRects
+        pixels={outlines}
+        fill={() => (props.isDamaged ? "#ffffff" : "#000000")}
+      />
 
-      <For each={highlights}>
-        {(p) => (
-          <rect
-            x={p.x}
-            y={p.y}
-            width={PIXEL_SIZE}
-            height={PIXEL_SIZE}
-            fill={getFillColor(p.x, "#ffffff")}
-          />
-        )}
-      </For>
-
-      <For each={shadowFills}>
-        {(p) => (
-          <rect
-            x={p.x}
-            y={p.y}
-            width={PIXEL_SIZE}
-            height={PIXEL_SIZE}
-            fill={getFillColor(p.x, "#9d0000")}
-          />
-        )}
-      </For>
-
-      <For each={normalFills}>
-        {(p) => (
-          <rect
-            x={p.x}
-            y={p.y}
-            width={PIXEL_SIZE}
-            height={PIXEL_SIZE}
-            fill={getFillColor(p.x, "#ff0000")}
-          />
-        )}
-      </For>
-
-      <For each={lightFills}>
-        {(p) => (
-          <rect
-            x={p.x}
-            y={p.y}
-            width={PIXEL_SIZE}
-            height={PIXEL_SIZE}
-            fill={getFillColor(p.x, "#ff5757")}
+      <For each={fillGroups}>
+        {(group) => (
+          <PixelRects
+            pixels={group.pixels}
+            fill={(x) => getFillColor(x, group.color)}
           />
         )}
       </For>

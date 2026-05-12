@@ -8,29 +8,42 @@ export type WordsProps = {
   onFieldClick: () => void;
 };
 
-function PastWord(props: { word: string; pastInput: string }) {
+function WordChars(props: { word: string; input: string; isActive: boolean }) {
   return (
-    <span class="inline-flex relative items-center text-(--text)">
-      <Index each={props.word.split("")}>
-        {(char, charIdx) => {
-          const isCorrect = () => props.pastInput[charIdx] === char();
-          const hasInput = () => props.pastInput[charIdx] !== undefined;
+    <Index each={props.word.split("")}>
+      {(char, i) => {
+        const hasInput = () => props.input[i] !== undefined;
+        const isCorrect = () => props.input[i] === char();
 
-          return (
+        return (
+          <span class="relative">
             <span
               class={
                 !hasInput()
-                  ? "text-(--error) opacity-70"
+                  ? props.isActive
+                    ? "text-(--sub)/50"
+                    : "text-(--error) opacity-70"
                   : isCorrect()
                     ? "text-(--text)"
                     : "text-(--error)"
               }
             >
+              <Show when={props.isActive && props.input.length === i}>
+                <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
+              </Show>
               {char()}
             </span>
-          );
-        }}
-      </Index>
+          </span>
+        );
+      }}
+    </Index>
+  );
+}
+
+function PastWord(props: { word: string; pastInput: string }) {
+  return (
+    <span class="inline-flex relative items-center text-(--text)">
+      <WordChars word={props.word} input={props.pastInput} isActive={false} />
       <Show when={props.pastInput.length > props.word.length}>
         <span class="flex items-center text-(--error) opacity-80">
           {props.pastInput.slice(props.word.length)}
@@ -43,31 +56,7 @@ function PastWord(props: { word: string; pastInput: string }) {
 function ActiveWord(props: { word: string; currentInput: string }) {
   return (
     <span class="inline-flex relative items-center text-(--text)">
-      <Index each={props.word.split("")}>
-        {(char, charIdx) => {
-          const isCorrect = () => props.currentInput[charIdx] === char();
-          const hasInput = () => props.currentInput[charIdx] !== undefined;
-
-          return (
-            <span class="relative">
-              <span
-                class={
-                  !hasInput()
-                    ? "text-(--sub)/50"
-                    : isCorrect()
-                      ? "text-(--text)"
-                      : "text-(--error)"
-                }
-              >
-                <Show when={props.currentInput.length === charIdx}>
-                  <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
-                </Show>
-                {char()}
-              </span>
-            </span>
-          );
-        }}
-      </Index>
+      <WordChars word={props.word} input={props.currentInput} isActive={true} />
 
       <Show when={props.currentInput.length === props.word.length}>
         <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />

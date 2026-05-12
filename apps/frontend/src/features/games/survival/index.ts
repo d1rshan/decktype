@@ -6,5 +6,5 @@ export const meta: GameModule = {
   name: "Survival",
   description: "Type as fast as you can to survive without making mistakes.",
   defaultWordBankId: "english/core-1k",
-  View: View,
+  View,
 };
