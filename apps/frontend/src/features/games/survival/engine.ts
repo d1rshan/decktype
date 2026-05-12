@@ -6,7 +6,7 @@ import { calculateWpm, calculateAccuracy } from "@/features/games/metrics";
 
 export type GamePhase = "idle" | "running" | "game-over" | "paused";
 
-export type UseSurvivalGameOptions = {
+export type UseGameOptions = {
   onComplete?: (result: {
     gameId: string;
     score: number;
@@ -25,9 +25,9 @@ function calculatePowerScore(
   return Math.floor((totalCorrectChars * wpm * accuracy) / 100);
 }
 
-export function useSurvivalGame(
+export function useEngine(
   wordBankId: WordBankId,
-  options: UseSurvivalGameOptions = {},
+  options: UseGameOptions = {},
 ) {
   const wordBank = getWordBank(wordBankId);
 

@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 import { For } from "solid-js";
 
-export type PixelHeartProps = {
+export type HeartProps = {
   state: "full" | "half" | "empty";
   isDamaged?: boolean;
   class?: string;
@@ -77,7 +77,7 @@ const lightFills: Pixel[] = [
   { x: 36, y: 12 },
 ];
 
-export const PixelHeart: Component<PixelHeartProps> = (props) => {
+export const Heart: Component<HeartProps> = (props) => {
   const getFillColor = (x: number, originalColor: string) => {
     if (props.state === "full") return originalColor;
     if (props.state === "empty") return "#333333";

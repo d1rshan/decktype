@@ -1,15 +1,11 @@
 import type { Component } from "solid-js";
 import { Index, createEffect, Show } from "solid-js";
-import { Kbd } from "@/components/ui/kbd";
-import type { GamePhase } from "../use-survival-game";
 
-export type SurvivalFieldProps = {
+export type WordsProps = {
   words: string[];
   currentWordIndex: number;
   currentInput: string;
   pastInputs: string[];
-  phase: GamePhase;
-  score: number;
   onFieldClick: () => void;
 };
 
@@ -90,7 +86,7 @@ const ActiveWord: Component<{ word: string; currentInput: string }> = (
   );
 };
 
-export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
+export const Words: Component<WordsProps> = (props) => {
   let containerRef: HTMLDivElement | undefined;
 
   createEffect(() => {
@@ -113,22 +109,6 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
       class="absolute inset-0 z-0 h-full w-full cursor-text overflow-hidden bg-(--bg)"
       onClick={props.onFieldClick}
     >
-      <Show when={props.phase === "game-over"}>
-        <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/90 backdrop-blur-sm">
-          <div class="text-center">
-            <p class="text-6xl leading-none font-bold tracking-tighter text-(--main) sm:text-8xl">
-              {props.score.toLocaleString()}
-            </p>
-            <div class="mt-12 flex flex-col items-center gap-4">
-              <div class="flex items-center gap-2">
-                <Kbd>tab</Kbd>
-                <p class="text-base leading-normal">to restart</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Show>
-
       <div class="absolute inset-0 flex items-center justify-center px-10">
         <div
           ref={containerRef}

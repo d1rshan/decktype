@@ -1,14 +1,18 @@
 import { Globe, Keyboard } from "lucide-solid";
+import { Show } from "solid-js";
 import { useAuthSession } from "@/features/auth/hooks";
 import type { GameViewProps } from "@/features/games/types";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
 import { DifficultySelector } from "../components/difficulty-selector";
-import { survivalGameMeta } from "./meta";
-import { useSurvivalGame } from "./use-survival-game";
+import { meta } from "./meta";
+import { useEngine } from "./engine";
 import { difficultyKeys } from "@/features/games/falling-words/difficulty";
-import { SurvivalHud } from "./components/survival-hud";
-import { SurvivalField } from "./components/survival-field";
+import { Hud } from "./components/hud";
+import { Words } from "./components/words";
+import { GameOver } from "./components/game-over";
+
+import "./styles.css";
 
 const MINIMUM_SCORES_BY_DIFFICULTY = {
   easy: 15,
@@ -21,36 +25,33 @@ const getShortResultMessage = (
 ) =>
   `Result not saved. Test too short. Minimum score for ${difficulty} is ${MINIMUM_SCORES_BY_DIFFICULTY[difficulty]}.`;
 
-function SurvivalView(props: GameViewProps) {
+function View(props: GameViewProps) {
   const auth = useAuthSession();
   const createResultMutation = useCreateResultMutation();
-  const session = useSurvivalGame(
-    props.wordBankId ?? survivalGameMeta.defaultWordBankId,
-    {
-      onComplete: (result: {
-        gameId: string;
-        score: number;
-        difficulty: keyof typeof MINIMUM_SCORES_BY_DIFFICULTY;
-      }) => {
-        if (!auth.isAuthenticated()) {
-          return;
-        }
+  const session = useEngine(props.wordBankId ?? meta.defaultWordBankId, {
+    onComplete: (result: {
+      gameId: string;
+      score: number;
+      difficulty: keyof typeof MINIMUM_SCORES_BY_DIFFICULTY;
+    }) => {
+      if (!auth.isAuthenticated()) {
+        return;
+      }
 
-        const minimumScore = MINIMUM_SCORES_BY_DIFFICULTY[result.difficulty];
+      const minimumScore = MINIMUM_SCORES_BY_DIFFICULTY[result.difficulty];
 
-        if (result.score < minimumScore) {
-          toast.info(getShortResultMessage(result.difficulty));
-          return;
-        }
+      if (result.score < minimumScore) {
+        toast.info(getShortResultMessage(result.difficulty));
+        return;
+      }
 
-        createResultMutation.mutate({
-          gameId: result.gameId,
-          score: result.score,
-          difficulty: result.difficulty,
-        });
-      },
+      createResultMutation.mutate({
+        gameId: result.gameId,
+        score: result.score,
+        difficulty: result.difficulty,
+      });
     },
-  );
+  });
 
   if (!session.wordBank) {
     return (
@@ -79,7 +80,7 @@ function SurvivalView(props: GameViewProps) {
           <div class="flex items-center gap-2">
             <Keyboard size={14} strokeWidth={2.5} class="opacity-50" />
             <span class="text-xs leading-none font-semibold tracking-widest uppercase">
-              {survivalGameMeta.name.toLowerCase()}
+              {meta.name.toLowerCase()}
             </span>
           </div>
         </div>
@@ -87,23 +88,25 @@ function SurvivalView(props: GameViewProps) {
       <div
         class={`relative min-h-[60vh] overflow-hidden rounded-2xl transition-colors hover:bg-(--sub-alt)/20 ${
           session.isShaking()
-            ? "animate-shake bg-(--error)/10"
+            ? "animate-damage bg-(--error)/10"
             : "bg-(--sub-alt)/10"
         }`}
       >
-        <SurvivalField
+        <Show when={session.phase() === "game-over"}>
+          <GameOver score={session.score()} />
+        </Show>
+
+        <Words
           words={session.activeWords()}
           currentWordIndex={session.currentWordIndex()}
           currentInput={session.currentInput()}
           pastInputs={session.pastInputs()}
-          phase={session.phase()}
-          score={session.score()}
           onFieldClick={session.focusInput}
         />
 
         <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-between px-10 pt-10 pb-6">
           <div />
-          <SurvivalHud
+          <Hud
             health={session.health()}
             score={session.score()}
             wpm={session.wpm()}
@@ -127,4 +130,4 @@ function SurvivalView(props: GameViewProps) {
   );
 }
 
-export default SurvivalView;
+export default View;

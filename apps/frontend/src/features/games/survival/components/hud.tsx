@@ -1,8 +1,8 @@
 import type { Component } from "solid-js";
 import { Index } from "solid-js";
-import { PixelHeart } from "./pixel-heart";
+import { Heart } from "./heart";
 
-export type SurvivalHudProps = {
+export type HudProps = {
   health: number; // 0 to 5
   score: number;
   wpm: number;
@@ -29,7 +29,7 @@ function Stat(props: {
   );
 }
 
-export const SurvivalHud: Component<SurvivalHudProps> = (props) => {
+export const Hud: Component<HudProps> = (props) => {
   return (
     <div class="flex items-center gap-12 font-mono">
       <Stat label="score" value={props.score.toLocaleString()} highlight />
@@ -45,7 +45,7 @@ export const SurvivalHud: Component<SurvivalHudProps> = (props) => {
         <div class="flex items-center gap-1">
           <Index each={Array.from({ length: 5 })}>
             {(_, i) => (
-              <PixelHeart
+              <Heart
                 state={
                   props.health - i >= 1
                     ? "full"
