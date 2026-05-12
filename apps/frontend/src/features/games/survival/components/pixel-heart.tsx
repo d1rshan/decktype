@@ -36,10 +36,7 @@ const outlines: Pixel[] = [
   { x: 42, y: 36 },
   { x: 48, y: 30 },
 ];
-
-// Highlight white pixel
 const highlights: Pixel[] = [{ x: 12, y: 18 }];
-
 const shadowFills: Pixel[] = [
   { x: 6, y: 12 },
   { x: 6, y: 18 },
@@ -48,7 +45,6 @@ const shadowFills: Pixel[] = [
   { x: 18, y: 36 },
   { x: 24, y: 42 },
 ];
-
 const normalFills: Pixel[] = [
   { x: 12, y: 12 },
   { x: 18, y: 12 },
@@ -73,7 +69,6 @@ const normalFills: Pixel[] = [
   { x: 36, y: 18 },
   { x: 42, y: 18 },
 ];
-
 const lightFills: Pixel[] = [
   { x: 48, y: 24 },
   { x: 48, y: 18 },
