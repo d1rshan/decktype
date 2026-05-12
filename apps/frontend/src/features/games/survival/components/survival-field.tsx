@@ -9,7 +9,7 @@ export type SurvivalFieldProps = {
   currentInput: string;
   pastInputs: string[];
   phase: GamePhase;
-  wpm: number;
+  score: number;
   onFieldClick: () => void;
 };
 
@@ -17,10 +17,21 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
   let containerRef: HTMLDivElement | undefined;
 
   createEffect(() => {
-    if (props.currentWordIndex > 0 && containerRef) {
-      const activeWordEl = containerRef.querySelector(".active-word");
+    if (containerRef && props.currentWordIndex >= 0) {
+      const activeWordEl = containerRef.querySelector(
+        ".active-word",
+      ) as HTMLElement;
       if (activeWordEl) {
-        activeWordEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        const containerHeight = containerRef.offsetHeight;
+        const targetScrollTop =
+          activeWordEl.offsetTop -
+          containerHeight / 2 +
+          activeWordEl.offsetHeight / 2;
+
+        containerRef.scrollTo({
+          top: targetScrollTop,
+          behavior: "smooth",
+        });
       }
     }
   });
@@ -34,7 +45,7 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
         <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/90 backdrop-blur-sm">
           <div class="text-center">
             <p class="text-6xl leading-none font-bold tracking-tighter text-(--main) sm:text-8xl">
-              {props.wpm}
+              {props.score.toLocaleString()}
             </p>
             <div class="mt-12 flex flex-col items-center gap-4">
               <div class="flex items-center gap-2">
@@ -49,7 +60,7 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
       <div class="absolute inset-0 flex items-center justify-center px-10">
         <div
           ref={containerRef}
-          class="flex flex-wrap content-start gap-x-4 gap-y-3 text-2xl font-mono leading-tight tracking-tight text-(--sub)/50 overflow-hidden w-full max-w-5xl select-none scroll-smooth"
+          class="relative flex flex-wrap content-start gap-x-4 gap-y-3 text-2xl font-mono leading-tight tracking-tight text-(--sub)/50 overflow-hidden w-full max-w-5xl select-none scroll-smooth"
           style={{ height: "114px" }}
         >
           <Index each={props.words}>

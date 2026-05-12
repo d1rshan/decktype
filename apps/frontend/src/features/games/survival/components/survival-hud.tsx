@@ -4,7 +4,10 @@ import { PixelHeart } from "./pixel-heart";
 
 export type SurvivalHudProps = {
   health: number; // 0 to 5
+  score: number;
   wpm: number;
+  accuracy: number;
+  isTakingDamage?: boolean;
 };
 
 export const SurvivalHud: Component<SurvivalHudProps> = (props) => {
@@ -13,10 +16,36 @@ export const SurvivalHud: Component<SurvivalHudProps> = (props) => {
       <div class="flex flex-col gap-1">
         <div class="opacity-50">
           <span class="text-xs leading-none font-semibold tracking-widest uppercase">
-            wpm
+            score
           </span>
         </div>
         <div class="text-(--main)">
+          <h2 class="text-2xl leading-tight font-bold">
+            {props.score.toLocaleString()}
+          </h2>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <div class="opacity-50">
+          <span class="text-xs leading-none font-semibold tracking-widest uppercase">
+            acc
+          </span>
+        </div>
+        <div class="text-(--text)">
+          <h2 class="text-2xl leading-tight font-bold">
+            {Math.round(props.accuracy * 100)}%
+          </h2>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <div class="opacity-50">
+          <span class="text-xs leading-none font-semibold tracking-widest uppercase">
+            wpm
+          </span>
+        </div>
+        <div class="text-(--text)">
           <h2 class="text-2xl leading-tight font-bold">{props.wpm}</h2>
         </div>
       </div>
@@ -38,6 +67,7 @@ export const SurvivalHud: Component<SurvivalHudProps> = (props) => {
                       ? "half"
                       : "empty"
                 }
+                isDamaged={props.isTakingDamage}
                 class="h-6 w-6"
               />
             )}

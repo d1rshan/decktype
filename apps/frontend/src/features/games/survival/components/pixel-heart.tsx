@@ -3,6 +3,7 @@ import { For } from "solid-js";
 
 export type PixelHeartProps = {
   state: "full" | "half" | "empty";
+  isDamaged?: boolean;
   class?: string;
 };
 
@@ -107,7 +108,7 @@ export const PixelHeart: Component<PixelHeartProps> = (props) => {
             y={p.y}
             width={PIXEL_SIZE}
             height={PIXEL_SIZE}
-            fill="#000000"
+            fill={props.isDamaged ? "#ffffff" : "#000000"}
           />
         )}
       </For>

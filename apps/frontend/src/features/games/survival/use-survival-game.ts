@@ -28,7 +28,10 @@ export function useSurvivalGame(
   const [pastInputs, setPastInputs] = createSignal<string[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = createSignal(0);
   const [currentInput, setCurrentInput] = createSignal("");
+
   const [totalCorrectChars, setTotalCorrectChars] = createSignal(0);
+  const [totalTypedChars, setTotalTypedChars] = createSignal(0);
+  const [totalErrors, setTotalErrors] = createSignal(0);
   const [elapsedMs, setElapsedMs] = createSignal(0);
 
   let runStartTime = 0;
@@ -63,6 +66,15 @@ export function useSurvivalGame(
     return Math.round(totalCorrectChars() / 5 / elapsedMinutes);
   });
 
+  const accuracy = createMemo(() => {
+    if (totalTypedChars() === 0) return 1;
+    return Math.max(0, (totalTypedChars() - totalErrors()) / totalTypedChars());
+  });
+
+  const score = createMemo(() => {
+    return Math.floor(totalCorrectChars() * wpm() * accuracy());
+  });
+
   const stopTimer = () => {
     if (timerInterval !== undefined) {
       clearInterval(timerInterval);
@@ -82,9 +94,18 @@ export function useSurvivalGame(
         ? Math.round(totalCorrectChars() / 5 / (finalElapsed / 60000))
         : 0;
 
+    const finalAccuracy =
+      totalTypedChars() > 0
+        ? Math.max(0, (totalTypedChars() - totalErrors()) / totalTypedChars())
+        : 1;
+
+    const finalScore = Math.floor(
+      totalCorrectChars() * finalWpm * finalAccuracy,
+    );
+
     options.onComplete?.({
       gameId: "survival",
-      score: finalWpm,
+      score: finalScore,
       difficulty: difficulty(),
     });
   };
@@ -99,6 +120,8 @@ export function useSurvivalGame(
     if (count <= 0) return;
     const dmg = getDamagePerTypo(difficulty()) * count;
     const newHealth = Math.max(0, health() - dmg);
+
+    setTotalErrors((e) => e + count);
 
     if (phase() !== "game-over") {
       triggerShake();
@@ -120,6 +143,8 @@ export function useSurvivalGame(
     setCurrentWordIndex(0);
     setCurrentInput("");
     setTotalCorrectChars(0);
+    setTotalTypedChars(0);
+    setTotalErrors(0);
     setElapsedMs(0);
     runStartTime = 0;
     if (inputRef) {
@@ -160,6 +185,9 @@ export function useSurvivalGame(
       setCurrentInput(value);
       return;
     }
+
+    // Every other input counts as a typed char
+    setTotalTypedChars((t) => t + 1);
 
     if (value.endsWith(" ")) {
       const typedWord = value.trim();
@@ -219,6 +247,8 @@ export function useSurvivalGame(
     difficulty,
     health,
     wpm,
+    accuracy,
+    score,
     isShaking,
     activeWords,
     pastInputs,

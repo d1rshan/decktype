@@ -84,7 +84,6 @@ function SurvivalView(props: GameViewProps) {
           </div>
         </div>
       </div>
-
       <div
         class={`relative min-h-[60vh] overflow-hidden rounded-2xl transition-colors hover:bg-(--sub-alt)/20 ${
           session.isShaking()
@@ -98,15 +97,20 @@ function SurvivalView(props: GameViewProps) {
           currentInput={session.currentInput()}
           pastInputs={session.pastInputs()}
           phase={session.phase()}
-          wpm={session.wpm()}
+          score={session.score()}
           onFieldClick={session.focusInput}
         />
 
         <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-between px-10 pt-10 pb-6">
           <div />
-          <SurvivalHud health={session.health()} wpm={session.wpm()} />
+          <SurvivalHud
+            health={session.health()}
+            score={session.score()}
+            wpm={session.wpm()}
+            accuracy={session.accuracy()}
+            isTakingDamage={session.isShaking()}
+          />
         </div>
-
         <input
           ref={session.setInputRef}
           value={session.currentInput()}
