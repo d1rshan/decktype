@@ -1,3 +1,4 @@
+import { Globe, Keyboard } from "lucide-solid";
 import { useAuthSession } from "@/features/auth/hooks";
 import type { GameViewProps, DifficultyKey } from "@/features/games/types";
 import { useCreateResultMutation } from "@/features/users/results/api";
@@ -8,8 +9,6 @@ import GameHud from "./components/game-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";
 import { fallingWordsGameMeta } from "./meta";
 import { difficultyKeys } from "./difficulty";
-import { GameInput } from "../components/game-input";
-import { GameMeta } from "../components/game-meta";
 
 const MINIMUM_SCORES_BY_DIFFICULTY: Record<DifficultyKey, number> = {
   easy: 20,
@@ -66,10 +65,20 @@ function FallingWordsView(props: GameViewProps) {
           onChange={session.handleDifficultyChange}
         />
 
-        <GameMeta
-          wordBankLabel={session.wordBank.label}
-          gameName={fallingWordsGameMeta.name}
-        />
+        <div class="flex items-center gap-6 text-(--sub)">
+          <div class="flex items-center gap-2">
+            <Globe size={14} strokeWidth={2.5} class="opacity-50" />
+            <span class="text-xs leading-none font-semibold tracking-widest uppercase">
+              {session.wordBank.label}
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <Keyboard size={14} strokeWidth={2.5} class="opacity-50" />
+            <span class="text-xs leading-none font-semibold tracking-widest uppercase">
+              {fallingWordsGameMeta.name.toLowerCase()}
+            </span>
+          </div>
+        </div>
       </div>
 
       <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20">
@@ -91,9 +100,14 @@ function FallingWordsView(props: GameViewProps) {
           />
         </div>
 
-        <GameInput
+        <input
           ref={session.setInputRef}
           value={session.currentInput()}
+          class="absolute -left-[9999px] top-0 opacity-0"
+          autocapitalize="off"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck={false}
           onInput={session.handleInput}
           onKeyDown={session.handleKeyDown}
         />

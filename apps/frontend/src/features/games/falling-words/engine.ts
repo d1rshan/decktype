@@ -1,5 +1,4 @@
 import type { DifficultyConfig, FallingWord } from "./types";
-import { pickRandom } from "@/features/games/utils";
 
 function randomBetween(min: number, max: number) {
   return Math.random() * (max - min) + min;
@@ -15,7 +14,7 @@ export function createFallingWord(
   words: string[],
   difficulty: DifficultyConfig,
 ) {
-  const text = pickRandom(words);
+  const text = words[Math.floor(Math.random() * words.length)];
   if (!text) {
     throw new Error("createFallingWord requires at least one word");
   }
