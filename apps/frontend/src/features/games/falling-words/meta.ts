@@ -8,5 +8,7 @@ export const fallingWordsGameMeta: GameModule = {
   description: "Catch words before they hit the bottom of the screen.",
   defaultWordBankId: "english/core-1k",
   difficulties: difficultyKeys,
+  difficultyKeys: ["easy", "medium", "hard"] as const,
+  minScores: { easy: 20, medium: 15, hard: 10 },
   View: FallingWordsView,
 };

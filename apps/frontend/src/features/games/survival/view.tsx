@@ -6,56 +6,45 @@ import { toast } from "@/lib/toast";
 import { DifficultySelector } from "../components/difficulty-selector";
 import { meta } from ".";
 import { useEngine } from "./engine";
-import { difficultyKeys } from "@/features/games/falling-words/difficulty";
 import { Hud } from "./components/hud";
 import { Words } from "./components/words";
-import { GameOver } from "./components/game-over";
+import { GameOver } from "@/features/games/components/game-over";
 import { GameInput } from "../components/game-input";
 import { GameMeta } from "../components/game-meta";
 
 import "./animations.css";
 
-const MIN_SCORE = { easy: 15, medium: 10, hard: 5 } as const;
-
 function View(props: GameViewProps) {
   const auth = useAuthSession();
   const createResultMutation = useCreateResultMutation();
-  const handleComplete: NonNullable<
-    Parameters<typeof useEngine>[1]
-  >["onComplete"] = (result) => {
-    if (!auth.isAuthenticated()) return;
-
-    if (result.score < MIN_SCORE[result.difficulty]) {
-      toast.info(
-        `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${MIN_SCORE[result.difficulty]}.`,
-      );
-      return;
-    }
-
-    createResultMutation.mutate(result);
-  };
 
   const session = useEngine(props.wordBankId ?? meta.defaultWordBankId, {
-    onComplete: handleComplete,
-  });
+    onComplete: (result) => {
+      if (!auth.isAuthenticated()) return;
 
-  if (!session.wordBank) {
-    return (
-      <div class="rounded-[2rem] border border-(--sub-alt) bg-(--sub-alt)/40 p-8 text-(--sub) backdrop-blur-xl">
-        Missing word bank for this game.
-      </div>
-    );
-  }
+      if (result.score < meta.minScores[result.difficulty]) {
+        toast.info(
+          `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${meta.minScores[result.difficulty]}.`,
+        );
+        return;
+      }
+
+      createResultMutation.mutate(result);
+    },
+  });
 
   return (
     <div class="flex flex-col gap-8">
       <div class="flex flex-col items-center gap-6">
         <DifficultySelector
-          options={difficultyKeys}
+          options={meta.difficultyKeys}
           activeDifficulty={session.difficulty()}
           onChange={session.handleDifficultyChange}
         />
-        <GameMeta wordBankLabel={session.wordBank.label} gameName={meta.name} />
+        <GameMeta
+          wordBankLabel={session.wordBank?.label ?? meta.defaultWordBankId}
+          gameName={meta.name}
+        />
       </div>
       <div
         class={`relative min-h-[60vh] overflow-hidden rounded-2xl transition-colors hover:bg-(--sub-alt)/20 ${

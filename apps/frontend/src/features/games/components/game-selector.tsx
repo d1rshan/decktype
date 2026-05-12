@@ -26,3 +26,4 @@ function GameSelector(props: GameSelectorProps) {
 }
 
 export default GameSelector;
+// TODO: merge game card and game selector to one Game Cards ig
