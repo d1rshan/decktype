@@ -1,10 +1,10 @@
-export type StatProps = {
+export type GameStatProps = {
   label: string;
   value: string | number;
   highlight?: boolean;
 };
 
-export function Stat(props: StatProps) {
+export function GameStat(props: GameStatProps) {
   return (
     <div class="flex flex-col gap-1">
       <div class="opacity-50">

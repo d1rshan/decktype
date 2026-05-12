@@ -1,7 +1,6 @@
 import { Index } from "solid-js";
 import { Heart } from "./heart";
-import { Stat } from "@/features/games/components/stat";
-import { GameHud } from "@/features/games/components/game-hud";
+import { GameStat } from "@/features/games/components/game-stat";
 
 export type HudProps = {
   health: number;
@@ -13,10 +12,10 @@ export type HudProps = {
 
 export function Hud(props: HudProps) {
   return (
-    <GameHud>
-      <Stat label="score" value={props.score.toLocaleString()} highlight />
-      <Stat label="acc" value={`${Math.round(props.accuracy * 100)}%`} />
-      <Stat label="wpm" value={props.wpm} />
+    <div class="flex items-center gap-12 font-mono">
+      <GameStat label="score" value={props.score.toLocaleString()} highlight />
+      <GameStat label="acc" value={`${Math.round(props.accuracy * 100)}%`} />
+      <GameStat label="wpm" value={props.wpm} />
 
       <div class="flex flex-col gap-1">
         <div class="opacity-50">
@@ -42,6 +41,6 @@ export function Hud(props: HudProps) {
           </Index>
         </div>
       </div>
-    </GameHud>
+    </div>
   );
 }
