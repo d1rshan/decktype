@@ -3,6 +3,10 @@ import type { WordBankId } from "@/features/content/word-banks/types";
 import { games } from "./registry";
 import type { GameId } from "./types";
 
+export function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]!;
+}
+
 export function getGameName(gameId: string) {
   const game = games[gameId as keyof typeof games];
 

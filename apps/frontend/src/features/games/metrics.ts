@@ -14,3 +14,17 @@ export function calculateAccuracy(
   if (totalTypedChars === 0) return 1;
   return Math.max(0, (totalTypedChars - totalErrors) / totalTypedChars);
 }
+
+export type GameMetrics = { wpm: number; accuracy: number };
+
+export function getMetrics(
+  totalCorrectChars: number,
+  totalTypedChars: number,
+  totalErrors: number,
+  elapsedMs: number,
+): GameMetrics {
+  return {
+    wpm: calculateWpm(totalCorrectChars, elapsedMs),
+    accuracy: calculateAccuracy(totalTypedChars, totalErrors),
+  };
+}

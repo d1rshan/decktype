@@ -3,7 +3,8 @@ import { createStore } from "solid-js/store";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 import type { DifficultyKey, GamePhase } from "@/features/games/types";
-import { calculateWpm, calculateAccuracy } from "@/features/games/metrics";
+import { getMetrics } from "@/features/games/metrics";
+import { pickRandom } from "@/features/games/utils";
 
 const WORD_BATCH = 50;
 const WORD_REFILL_THRESHOLD = 20;
@@ -69,21 +70,22 @@ export function useEngine(
 
   const generateWords = (count: number) => {
     if (!wordBank || !wordBank.words.length) return [];
-    const pool = wordBank.words;
-    return Array.from(
-      { length: count },
-      () => pool[Math.floor(Math.random() * pool.length)]!,
-    );
+    return Array.from({ length: count }, () => pickRandom(wordBank.words));
   };
 
-  const wpm = createMemo(() =>
-    calculateWpm(state.totalCorrectChars, state.elapsedMs),
+  const metrics = createMemo(() =>
+    getMetrics(
+      state.totalCorrectChars,
+      state.totalTypedChars,
+      state.totalErrors,
+      state.elapsedMs,
+    ),
   );
-  const accuracy = createMemo(() =>
-    calculateAccuracy(state.totalTypedChars, state.totalErrors),
-  );
+
   const score = createMemo(() =>
-    Math.floor((state.totalCorrectChars * wpm() * accuracy()) / 100),
+    Math.floor(
+      (state.totalCorrectChars * metrics().wpm * metrics().accuracy) / 100,
+    ),
   );
 
   const stopTimer = () => {
@@ -226,23 +228,18 @@ export function useEngine(
     }
   });
 
-  const get =
-    <K extends keyof GameState>(key: K) =>
-    () =>
-      state[key];
-
   return {
-    phase: get("phase"),
-    difficulty: get("difficulty"),
-    health: get("health"),
-    wpm,
-    accuracy,
+    phase: () => state.phase,
+    difficulty: () => state.difficulty,
+    health: () => state.health,
+    wpm: () => metrics().wpm,
+    accuracy: () => metrics().accuracy,
     score,
-    isShaking: get("isShaking"),
-    activeWords: get("activeWords"),
-    pastInputs: get("pastInputs"),
-    currentWordIndex: get("currentWordIndex"),
-    currentInput: get("currentInput"),
+    isShaking: () => state.isShaking,
+    activeWords: () => state.activeWords,
+    pastInputs: () => state.pastInputs,
+    currentWordIndex: () => state.currentWordIndex,
+    currentInput: () => state.currentInput,
     wordBank,
     handleDifficultyChange: (diff: DifficultyKey) => resetGame(diff),
     handleInput,
