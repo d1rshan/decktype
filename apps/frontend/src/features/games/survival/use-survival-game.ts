@@ -2,6 +2,7 @@ import { createSignal, createMemo, onCleanup, createEffect } from "solid-js";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 import type { DifficultyKey } from "@/features/games/falling-words/types";
+import { calculateWpm, calculateAccuracy } from "@/features/games/metrics";
 
 export type GamePhase = "idle" | "running" | "game-over" | "paused";
 
@@ -12,6 +13,17 @@ export type UseSurvivalGameOptions = {
     difficulty: DifficultyKey;
   }) => void;
 };
+
+/**
+ * Calculates the Power-Weighted Score for the survival game.
+ */
+function calculatePowerScore(
+  totalCorrectChars: number,
+  wpm: number,
+  accuracy: number,
+): number {
+  return Math.floor((totalCorrectChars * wpm * accuracy) / 100);
+}
 
 export function useSurvivalGame(
   wordBankId: WordBankId,
@@ -61,18 +73,15 @@ export function useSurvivalGame(
   };
 
   const wpm = createMemo(() => {
-    const elapsedMinutes = elapsedMs() / 60000;
-    if (elapsedMinutes === 0) return 0;
-    return Math.round(totalCorrectChars() / 5 / elapsedMinutes);
+    return calculateWpm(totalCorrectChars(), elapsedMs());
   });
 
   const accuracy = createMemo(() => {
-    if (totalTypedChars() === 0) return 1;
-    return Math.max(0, (totalTypedChars() - totalErrors()) / totalTypedChars());
+    return calculateAccuracy(totalTypedChars(), totalErrors());
   });
 
   const score = createMemo(() => {
-    return Math.floor((totalCorrectChars() * wpm() * accuracy()) / 100);
+    return calculatePowerScore(totalCorrectChars(), wpm(), accuracy());
   });
 
   const stopTimer = () => {
@@ -89,18 +98,12 @@ export function useSurvivalGame(
     const finalElapsed = performance.now() - runStartTime;
     setElapsedMs(finalElapsed);
 
-    const finalWpm =
-      finalElapsed > 0
-        ? Math.round(totalCorrectChars() / 5 / (finalElapsed / 60000))
-        : 0;
-
-    const finalAccuracy =
-      totalTypedChars() > 0
-        ? Math.max(0, (totalTypedChars() - totalErrors()) / totalTypedChars())
-        : 1;
-
-    const finalScore = Math.floor(
-      (totalCorrectChars() * finalWpm * finalAccuracy) / 100,
+    const finalWpm = calculateWpm(totalCorrectChars(), finalElapsed);
+    const finalAccuracy = calculateAccuracy(totalTypedChars(), totalErrors());
+    const finalScore = calculatePowerScore(
+      totalCorrectChars(),
+      finalWpm,
+      finalAccuracy,
     );
 
     options.onComplete?.({
