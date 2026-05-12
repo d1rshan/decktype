@@ -13,6 +13,83 @@ export type SurvivalFieldProps = {
   onFieldClick: () => void;
 };
 
+const PastWord: Component<{ word: string; pastInput: string }> = (props) => {
+  return (
+    <span class="inline-flex relative items-center text-(--text)">
+      <Index each={props.word.split("")}>
+        {(char, charIdx) => {
+          const isCorrect = () => props.pastInput[charIdx] === char();
+          const hasInput = () => props.pastInput[charIdx] !== undefined;
+
+          return (
+            <span
+              class={
+                !hasInput()
+                  ? "text-(--error) opacity-70"
+                  : isCorrect()
+                    ? "text-(--text)"
+                    : "text-(--error)"
+              }
+            >
+              {char()}
+            </span>
+          );
+        }}
+      </Index>
+      <Show when={props.pastInput.length > props.word.length}>
+        <span class="flex items-center text-(--error) opacity-80">
+          {props.pastInput.slice(props.word.length)}
+        </span>
+      </Show>
+    </span>
+  );
+};
+
+const ActiveWord: Component<{ word: string; currentInput: string }> = (
+  props,
+) => {
+  return (
+    <span class="inline-flex relative items-center text-(--text)">
+      <Index each={props.word.split("")}>
+        {(char, charIdx) => {
+          const isCorrect = () => props.currentInput[charIdx] === char();
+          const hasInput = () => props.currentInput[charIdx] !== undefined;
+
+          return (
+            <span class="relative">
+              <span
+                class={
+                  !hasInput()
+                    ? "text-(--sub)/50"
+                    : isCorrect()
+                      ? "text-(--text)"
+                      : "text-(--error)"
+                }
+              >
+                <Show when={props.currentInput.length === charIdx}>
+                  <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
+                </Show>
+                {char()}
+              </span>
+            </span>
+          );
+        }}
+      </Index>
+
+      <Show when={props.currentInput.length === props.word.length}>
+        <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
+      </Show>
+
+      <Show when={props.currentInput.length > props.word.length}>
+        <span class="flex items-center text-(--error) opacity-80">
+          {props.currentInput.slice(props.word.length)}
+          <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
+        </span>
+      </Show>
+    </span>
+  );
+};
+
 export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
   let containerRef: HTMLDivElement | undefined;
 
@@ -22,16 +99,11 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
         ".active-word",
       ) as HTMLElement;
       if (activeWordEl) {
-        const containerHeight = containerRef.offsetHeight;
         const targetScrollTop =
           activeWordEl.offsetTop -
-          containerHeight / 2 +
+          containerRef.offsetHeight / 2 +
           activeWordEl.offsetHeight / 2;
-
-        containerRef.scrollTo({
-          top: targetScrollTop,
-          behavior: "smooth",
-        });
+        containerRef.scrollTo({ top: targetScrollTop, behavior: "smooth" });
       }
     }
   });
@@ -41,7 +113,7 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
       class="absolute inset-0 z-0 h-full w-full cursor-text overflow-hidden bg-(--bg)"
       onClick={props.onFieldClick}
     >
-      {props.phase === "game-over" && (
+      <Show when={props.phase === "game-over"}>
         <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/90 backdrop-blur-sm">
           <div class="text-center">
             <p class="text-6xl leading-none font-bold tracking-tighter text-(--main) sm:text-8xl">
@@ -55,7 +127,7 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
             </div>
           </div>
         </div>
-      )}
+      </Show>
 
       <div class="absolute inset-0 flex items-center justify-center px-10">
         <div
@@ -64,111 +136,28 @@ export const SurvivalField: Component<SurvivalFieldProps> = (props) => {
           style={{ height: "114px" }}
         >
           <Index each={props.words}>
-            {(word, i) => {
-              return (
-                <div
-                  class={`relative ${
-                    i === props.currentWordIndex ? "active-word" : ""
-                  }`}
-                >
-                  <Show when={i < props.currentWordIndex}>
-                    <span class="text-(--text) inline-flex relative items-center">
-                      <Index each={word().split("")}>
-                        {(char, charIdx) => {
-                          return (
-                            <span
-                              class={(() => {
-                                const pastInput = props.pastInputs[i] || "";
-                                const inputChar = pastInput[charIdx];
-                                if (inputChar === undefined)
-                                  return "text-(--error) opacity-70";
-                                if (inputChar === char())
-                                  return "text-(--text)";
-                                return "text-(--error)";
-                              })()}
-                            >
-                              {char()}
-                            </span>
-                          );
-                        }}
-                      </Index>
-                      <Show
-                        when={
-                          (props.pastInputs[i] || "").length > word().length
-                        }
-                      >
-                        <span class="flex items-center">
-                          <Index
-                            each={(props.pastInputs[i] || "")
-                              .slice(word().length)
-                              .split("")}
-                          >
-                            {(extraChar) => (
-                              <span class="text-(--error) opacity-80">
-                                {extraChar()}
-                              </span>
-                            )}
-                          </Index>
-                        </span>
-                      </Show>
-                    </span>
-                  </Show>
+            {(word, i) => (
+              <div
+                class={`relative ${
+                  i === props.currentWordIndex ? "active-word" : ""
+                }`}
+              >
+                <Show when={i < props.currentWordIndex}>
+                  <PastWord
+                    word={word()}
+                    pastInput={props.pastInputs[i] || ""}
+                  />
+                </Show>
 
-                  <Show when={i > props.currentWordIndex}>
-                    <span>{word()}</span>
-                  </Show>
+                <Show when={i === props.currentWordIndex}>
+                  <ActiveWord word={word()} currentInput={props.currentInput} />
+                </Show>
 
-                  <Show when={i === props.currentWordIndex}>
-                    <span class="text-(--text) inline-flex relative items-center">
-                      <Index each={word().split("")}>
-                        {(char, charIdx) => {
-                          return (
-                            <span class="relative">
-                              <span
-                                class={(() => {
-                                  const inputChar = props.currentInput[charIdx];
-                                  if (inputChar === undefined)
-                                    return "text-(--sub)/50";
-                                  if (inputChar === char())
-                                    return "text-(--text)";
-                                  return "text-(--error)";
-                                })()}
-                              >
-                                {props.currentInput.length === charIdx && (
-                                  <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
-                                )}
-                                {char()}
-                              </span>
-                            </span>
-                          );
-                        }}
-                      </Index>
-
-                      <Show when={props.currentInput.length === word().length}>
-                        <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
-                      </Show>
-
-                      <Show when={props.currentInput.length > word().length}>
-                        <span class="flex items-center">
-                          <Index
-                            each={props.currentInput
-                              .slice(word().length)
-                              .split("")}
-                          >
-                            {(extraChar) => (
-                              <span class="text-(--error) opacity-80">
-                                {extraChar()}
-                              </span>
-                            )}
-                          </Index>
-                          <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
-                        </span>
-                      </Show>
-                    </span>
-                  </Show>
-                </div>
-              );
-            }}
+                <Show when={i > props.currentWordIndex}>
+                  <span>{word()}</span>
+                </Show>
+              </div>
+            )}
           </Index>
         </div>
       </div>
