@@ -72,7 +72,7 @@ export function useSurvivalGame(
   });
 
   const score = createMemo(() => {
-    return Math.floor(totalCorrectChars() * wpm() * accuracy());
+    return Math.floor((totalCorrectChars() * wpm() * accuracy()) / 100);
   });
 
   const stopTimer = () => {
@@ -100,7 +100,7 @@ export function useSurvivalGame(
         : 1;
 
     const finalScore = Math.floor(
-      totalCorrectChars() * finalWpm * finalAccuracy,
+      (totalCorrectChars() * finalWpm * finalAccuracy) / 100,
     );
 
     options.onComplete?.({
