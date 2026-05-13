@@ -16,7 +16,6 @@ export type GameModule = {
   name: string;
   description: string;
   defaultWordBankId: WordBankId;
-  difficulties: string[];
   difficultyKeys: readonly DifficultyKey[];
   minScores: Record<DifficultyKey, number>;
   View: Component<GameViewProps>;

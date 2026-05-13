@@ -1,12 +1,13 @@
 import { For } from "solid-js";
 
 import { gameRegistry } from "@/features/games/registry";
+import type { DifficultyKey } from "@/features/games/types";
 import { formatDateTime } from "@/lib/utils";
 import type { UserPBs } from "../types";
 
 type PersonalBestCardProps = {
   name: string;
-  difficulties: string[];
+  difficultyKeys: readonly DifficultyKey[];
   pbs: Record<string, { bestScore: number; createdAt: Date }>;
 };
 
@@ -21,10 +22,10 @@ export function PersonalBestCard(props: PersonalBestCardProps) {
         <div
           class="grid gap-y-6"
           style={{
-            "grid-template-columns": `repeat(${props.difficulties.length}, minmax(0, 1fr))`,
+            "grid-template-columns": `repeat(${props.difficultyKeys.length}, minmax(0, 1fr))`,
           }}
         >
-          <For each={props.difficulties}>
+          <For each={props.difficultyKeys}>
             {(difficulty) => (
               <div class="flex flex-col items-center gap-1 text-center">
                 <div class="text-[10px] font-bold uppercase tracking-widest text-(--sub) opacity-60">
@@ -66,7 +67,7 @@ export function PersonalBestsCards(props: { pbs: UserPBs }) {
         {(game) => (
           <PersonalBestCard
             name={game.name}
-            difficulties={game.difficulties}
+            difficultyKeys={game.difficultyKeys}
             pbs={props.pbs[game.id] || {}}
           />
         )}
