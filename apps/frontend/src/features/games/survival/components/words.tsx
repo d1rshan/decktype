@@ -12,9 +12,6 @@ function WordChars(props: { word: string; input: string; isActive: boolean }) {
   return (
     <Index each={props.word.split("")}>
       {(char, i) => {
-        const typed = () => props.input[i];
-        const isCorrect = () => typed() === char();
-
         return (
           <span class="relative">
             <span
