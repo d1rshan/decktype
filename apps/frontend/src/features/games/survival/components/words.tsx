@@ -15,18 +15,19 @@ function WordChars(props: { word: string; input: string; isActive: boolean }) {
         const typed = () => props.input[i];
         const isCorrect = () => typed() === char();
 
-        let cls = "";
-        if (!typed()) {
-          cls = props.isActive
-            ? "text-(--sub)/50"
-            : "text-(--error) opacity-70";
-        } else {
-          cls = isCorrect() ? "text-(--text)" : "text-(--error)";
-        }
-
         return (
           <span class="relative">
-            <span class={cls}>
+            <span
+              class={
+                !props.input[i]
+                  ? props.isActive
+                    ? "text-(--sub)/50"
+                    : "text-(--error) opacity-70"
+                  : props.input[i] === char()
+                    ? "text-(--text)"
+                    : "text-(--error)"
+              }
+            >
               <Show when={props.isActive && props.input.length === i}>
                 <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
               </Show>
