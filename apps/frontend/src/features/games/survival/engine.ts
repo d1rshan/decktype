@@ -180,14 +180,13 @@ export function useEngine(
         if (input[i] === targetWord[i]) correct++;
       }
       const missed = targetWord.length - input.length;
-      if (missed > 0) takeDamage(missed);
-
       setState({
         totalCorrectChars: state.totalCorrectChars + correct + 1,
         pastInputs: [...state.pastInputs, input],
         currentWordIndex: state.currentWordIndex + 1,
         currentInput: "",
       });
+      if (missed > 0) takeDamage(missed);
       e.currentTarget.value = "";
 
       if (
