@@ -1,4 +1,6 @@
+import { For } from "solid-js";
 import { ArrowRight } from "lucide-solid";
+import { gameRegistry } from "@/features/games/registry";
 import type { GameId } from "@/features/games/types";
 
 type GameCardProps = {
@@ -8,7 +10,7 @@ type GameCardProps = {
   onClick: () => void;
 };
 
-export function GameCard(props: GameCardProps) {
+function GameCard(props: GameCardProps) {
   return (
     <button
       type="button"
@@ -28,5 +30,27 @@ export function GameCard(props: GameCardProps) {
         <ArrowRight size={20} strokeWidth={3} class="text-(--main)" />
       </div>
     </button>
+  );
+}
+
+type GameCardsProps = {
+  activeGameId?: GameId | null;
+  onSelectGame: (gameId: GameId) => void;
+};
+
+export function GameCards(props: GameCardsProps) {
+  return (
+    <div class="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <For each={gameRegistry}>
+        {(game) => (
+          <GameCard
+            id={game.id}
+            name={game.name}
+            description={game.description}
+            onClick={() => props.onSelectGame(game.id)}
+          />
+        )}
+      </For>
+    </div>
   );
 }

@@ -9,7 +9,7 @@ import { GameInput } from "../components/GameInput";
 import meta from ".";
 import { useEngine } from "./engine";
 import { Words } from "./components/Words";
-import { Hud } from "./components/Hud";
+import { FallingWordsHud } from "./components/FallingWordsHud";
 
 export function View(props: GameViewProps) {
   const saveResult = useSubmitGameResult(meta.minScores);
@@ -79,7 +79,10 @@ export function View(props: GameViewProps) {
 
         <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-between px-10 pt-10 pb-6">
           <div />
-          <Hud score={metrics.score()} typedValue={words.currentInput()} />
+          <FallingWordsHud
+            score={metrics.score()}
+            typedValue={words.currentInput()}
+          />
         </div>
 
         <GameInput

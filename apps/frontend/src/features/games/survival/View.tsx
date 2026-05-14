@@ -5,6 +5,8 @@ import { DifficultySelector } from "../components/DifficultySelector";
 import { GameMeta } from "../components/GameMeta";
 import { GameOver } from "@/features/games/components/GameOver";
 import { GameInput } from "../components/GameInput";
+import { SurvivalHud } from "./components/SurvivalHud";
+import { Words } from "./components/Words";
 import meta from ".";
 import { useEngine } from "./engine";
 
@@ -52,7 +54,7 @@ export function View(props: GameViewProps) {
 
         <div class="pointer-events-none relative z-10 flex h-full flex-col items-center justify-between px-10 pt-10 pb-6">
           <div />
-          <Hud
+          <SurvivalHud
             health={game.health()}
             score={metrics.score()}
             wpm={metrics.wpm()}
