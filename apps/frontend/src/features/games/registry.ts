@@ -1,5 +1,5 @@
 import fallingWordsGame from "@/features/games/falling-words";
-import { meta as survivalGame } from "@/features/games/survival";
+import survivalGame from "@/features/games/survival";
 import type { GameId, GameModule } from "@/features/games/types";
 
 export const games: Record<GameId, GameModule> = {

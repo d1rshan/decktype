@@ -1,7 +1,7 @@
 import { createMemo } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-import GameSelector from "@/features/games/components/game-selector";
+import { GameSelector } from "@/features/games/components/GameSelector";
 import { FeedbackFeed } from "@/features/feedback/components/feedback-feed";
 import { games } from "@/features/games/registry";
 import type { GameId } from "@/features/games/types";

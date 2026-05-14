@@ -1,6 +1,6 @@
 import { Index } from "solid-js";
-import { Heart } from "./heart";
-import { GameStat } from "@/features/games/components/game-stat";
+import { Heart } from "./Heart";
+import { GameStat } from "@/features/games/components/GameStat";
 
 export type HudProps = {
   health: number;

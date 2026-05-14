@@ -1,4 +1,4 @@
-import { GameStat } from "@/features/games/components/game-stat";
+import { GameStat } from "@/features/games/components/GameStat";
 
 export type HudProps = {
   score: number;

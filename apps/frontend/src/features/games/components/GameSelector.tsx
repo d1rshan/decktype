@@ -1,14 +1,14 @@
 import { For } from "solid-js";
 import { gameRegistry } from "@/features/games/registry";
 import type { GameId } from "@/features/games/types";
-import { GameCard } from "./game-card";
+import { GameCard } from "./GameCard";
 
 type GameSelectorProps = {
   activeGameId?: GameId | null;
   onSelectGame: (gameId: GameId) => void;
 };
 
-function GameSelector(props: GameSelectorProps) {
+export function GameSelector(props: GameSelectorProps) {
   return (
     <div class="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <For each={gameRegistry}>
@@ -24,6 +24,4 @@ function GameSelector(props: GameSelectorProps) {
     </div>
   );
 }
-
-export default GameSelector;
 // TODO: merge game card and game selector to one Game Cards ig

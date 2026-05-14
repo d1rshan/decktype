@@ -2,16 +2,16 @@ import { Show } from "solid-js";
 import type { GameViewProps } from "@/features/games/types";
 import { useSubmitGameResult } from "@/features/games/hooks";
 import { Kbd } from "@/components/ui/kbd";
-import { DifficultySelector } from "../components/difficulty-selector";
-import { GameMeta } from "../components/game-meta";
-import { GameOver } from "../components/game-over";
-import { GameInput } from "../components/game-input";
-import { meta } from ".";
+import { DifficultySelector } from "../components/DifficultySelector";
+import { GameMeta } from "../components/GameMeta";
+import { GameOver } from "../components/GameOver";
+import { GameInput } from "../components/GameInput";
+import meta from ".";
 import { useEngine } from "./engine";
-import { Words } from "./components/words";
-import { Hud } from "./components/hud";
+import { Words } from "./components/Words";
+import { Hud } from "./components/Hud";
 
-function FallingWordsView(props: GameViewProps) {
+export function View(props: GameViewProps) {
   const saveResult = useSubmitGameResult(meta.minScores);
 
   const { game, metrics, words, actions, wordBank } = useEngine(
@@ -92,5 +92,3 @@ function FallingWordsView(props: GameViewProps) {
     </div>
   );
 }
-
-export default FallingWordsView;

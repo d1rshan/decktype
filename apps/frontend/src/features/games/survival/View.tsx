@@ -1,18 +1,16 @@
 import { Show } from "solid-js";
 import type { GameViewProps } from "@/features/games/types";
-import { meta } from ".";
-import { useEngine } from "./engine";
 import { useSubmitGameResult } from "@/features/games/hooks";
-import { DifficultySelector } from "../components/difficulty-selector";
-import { Hud } from "./components/hud";
-import { Words } from "./components/words";
-import { GameOver } from "@/features/games/components/game-over";
-import { GameInput } from "../components/game-input";
-import { GameMeta } from "../components/game-meta";
+import { DifficultySelector } from "../components/DifficultySelector";
+import { GameMeta } from "../components/GameMeta";
+import { GameOver } from "@/features/games/components/GameOver";
+import { GameInput } from "../components/GameInput";
+import meta from ".";
+import { useEngine } from "./engine";
 
 import "./animations.css";
 
-function View(props: GameViewProps) {
+export function View(props: GameViewProps) {
   const saveResult = useSubmitGameResult(meta.minScores);
 
   const { game, metrics, words, actions, wordBank } = useEngine(
@@ -72,5 +70,3 @@ function View(props: GameViewProps) {
     </div>
   );
 }
-
-export default View;

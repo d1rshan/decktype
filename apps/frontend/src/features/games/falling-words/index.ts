@@ -1,7 +1,7 @@
 import type { GameModule } from "@/features/games/types";
-import View from "./view";
+import { View } from "./View";
 
-export const meta: GameModule = {
+const meta: GameModule = {
   id: "falling-words",
   name: "Falling Words",
   description: "Catch words before they hit the bottom of the screen.",
