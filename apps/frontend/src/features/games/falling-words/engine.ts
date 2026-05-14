@@ -3,14 +3,13 @@ import { createStore } from "solid-js/store";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 import type { DifficultyKey, GamePhase } from "@/features/games/types";
-
-export type DifficultyConfig = {
-  key: DifficultyKey;
-  spawnIntervalMs: number;
-  baseSpeed: number;
-  speedJitter: number;
-  gravity: number;
-};
+import {
+  difficultyOptions,
+  CHAR_WIDTH,
+  BOTTOM_THRESHOLD,
+  MAX_DELTA,
+} from "./constants";
+import type { DifficultyConfig } from "./constants";
 
 export type FallingWord = {
   id: number;
@@ -33,30 +32,6 @@ export type UseEngineOptions = {
   onComplete?: (result: CompletedGameResult) => void | Promise<void>;
 };
 
-const difficultyOptions: DifficultyConfig[] = [
-  {
-    key: "easy",
-    spawnIntervalMs: 1800,
-    baseSpeed: 68,
-    speedJitter: 20,
-    gravity: 6,
-  },
-  {
-    key: "medium",
-    spawnIntervalMs: 1250,
-    baseSpeed: 94,
-    speedJitter: 28,
-    gravity: 9,
-  },
-  {
-    key: "hard",
-    spawnIntervalMs: 900,
-    baseSpeed: 124,
-    speedJitter: 36,
-    gravity: 12,
-  },
-];
-
 function getDifficulty(key: DifficultyKey): DifficultyConfig {
   return difficultyOptions.find((o) => o.key === key) ?? difficultyOptions[0]!;
 }
@@ -66,7 +41,7 @@ function randomBetween(min: number, max: number) {
 }
 
 function estimateWordWidth(text: string) {
-  return Math.max(96, text.length * 18);
+  return Math.max(96, text.length * CHAR_WIDTH);
 }
 
 function createFallingWord(
@@ -389,7 +364,10 @@ export function useEngine(
     }
 
     const tick = (timestamp: number) => {
-      const deltaSeconds = Math.min((timestamp - lastFrameTime) / 1000, 0.032);
+      const deltaSeconds = Math.min(
+        (timestamp - lastFrameTime) / 1000,
+        MAX_DELTA,
+      );
       lastFrameTime = timestamp;
       setState("elapsedMs", elapsedBeforeRun + (timestamp - runStartTime));
 
@@ -407,7 +385,7 @@ export function useEngine(
           const nextVY = word.velocityY + config.gravity * deltaSeconds;
           const nextX = word.x + word.velocityX * deltaSeconds;
           const maxX = Math.max(
-            state.fieldWidth - word.text.length * 18 - 36,
+            state.fieldWidth - word.text.length * CHAR_WIDTH - 36,
             24,
           );
           const bouncedX =
@@ -417,7 +395,10 @@ export function useEngine(
           const nextRotation =
             word.rotation + word.angularVelocity * deltaSeconds;
 
-          if (state.fieldHeight > 0 && nextY >= state.fieldHeight - 40) {
+          if (
+            state.fieldHeight > 0 &&
+            nextY >= state.fieldHeight - BOTTOM_THRESHOLD
+          ) {
             hitBottom = true;
           }
 

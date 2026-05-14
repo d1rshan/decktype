@@ -5,17 +5,14 @@ import type { WordBankId } from "@/features/content/word-banks/types";
 import type { DifficultyKey, GamePhase } from "@/features/games/types";
 import { getMetrics } from "@/features/games/metrics";
 import { randomWord } from "@/features/games/utils";
-
-const WORD_BATCH = 50;
-const WORD_REFILL_THRESHOLD = 20;
-const TIMER_INTERVAL = 250;
-const SHAKE_DURATION = 300;
-const INITIAL_HEALTH = 5;
-const DAMAGE: Record<DifficultyKey, number> = {
-  easy: 0.5,
-  medium: 1,
-  hard: 2.5,
-};
+import {
+  WORD_BATCH,
+  WORD_REFILL_THRESHOLD,
+  TIMER_INTERVAL,
+  SHAKE_DURATION,
+  INITIAL_HEALTH,
+  DAMAGE,
+} from "./constants";
 
 export type UseGameOptions = {
   onComplete?: (result: {
