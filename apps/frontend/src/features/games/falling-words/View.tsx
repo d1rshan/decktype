@@ -19,14 +19,6 @@ export function View(props: GameViewProps) {
     { onComplete: saveResult },
   );
 
-  if (!wordBank) {
-    return (
-      <div class="rounded-[2rem] border border-(--sub-alt) bg-(--sub-alt)/40 p-8 text-(--sub) backdrop-blur-xl">
-        Missing word bank for this game.
-      </div>
-    );
-  }
-
   return (
     <div class="flex flex-col gap-8">
       <div class="flex flex-col items-center gap-6">

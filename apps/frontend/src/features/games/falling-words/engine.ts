@@ -233,15 +233,15 @@ export function useEngine(
     stopLoop();
   };
 
-  const resumeGame = () => {
-    if (state.phase !== "paused") return;
-
-    runStartTime = performance.now();
-    lastFrameTime = runStartTime;
-    lastSpawnTime = runStartTime;
-    setState("phase", "running");
-    focusInput();
-  };
+  // const resumeGame = () => {
+  //   if (state.phase !== "paused") return;
+  //
+  //   runStartTime = performance.now();
+  //   lastFrameTime = runStartTime;
+  //   lastSpawnTime = runStartTime;
+  //   setState("phase", "running");
+  //   focusInput();
+  // };
 
   const endGame = () => {
     const finalElapsedMs = getElapsedMsNow();
