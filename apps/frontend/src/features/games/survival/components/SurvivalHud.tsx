@@ -1,6 +1,6 @@
 import { Index } from "solid-js";
 import { Heart } from "./Heart";
-import { GameStat } from "@/features/games/components/GameStat";
+import { GameStat } from "@/features/games/shared/components/GameStat";
 
 export type SurvivalHudProps = {
   health: number;

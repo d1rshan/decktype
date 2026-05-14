@@ -1,7 +1,7 @@
 import { For } from "solid-js";
 
-import { gameRegistry } from "@/features/games/registry";
-import type { DifficultyKey } from "@/features/games/types";
+import { gameRegistry } from "@/features/games/shared/registry";
+import type { DifficultyKey } from "@/features/games/shared/types";
 import { formatDateTime } from "@/lib/utils";
 import type { UserPBs } from "../types";
 

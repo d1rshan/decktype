@@ -1,10 +1,10 @@
 import { createMemo } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-import { GameCards } from "@/features/games/components/GameCards";
+import { GameCards } from "@/features/games/shared/components/GameCards";
 import { FeedbackFeed } from "@/features/feedback/components/feedback-feed";
-import { games } from "@/features/games/registry";
-import type { GameId } from "@/features/games/types";
+import { games } from "@/features/games/shared/registry";
+import type { GameId } from "@/features/games/shared/types";
 import type { WordBankId } from "@/features/content/word-banks/types";
 
 type HomeProps = {

@@ -1,11 +1,11 @@
 import { Show } from "solid-js";
-import type { GameViewProps } from "@/features/games/types";
-import { useSubmitGameResult } from "@/features/games/hooks";
+import type { GameViewProps } from "@/features/games/shared/types";
+import { useSubmitGameResult } from "@/features/games/shared/hooks";
 import { Kbd } from "@/components/ui/kbd";
-import { DifficultySelector } from "../components/DifficultySelector";
-import { GameMeta } from "../components/GameMeta";
-import { GameOver } from "../components/GameOver";
-import { GameInput } from "../components/GameInput";
+import { DifficultySelector } from "../shared/components/DifficultySelector";
+import { GameMeta } from "../shared/components/GameMeta";
+import { GameOver } from "../shared/components/GameOver";
+import { GameInput } from "../shared/components/GameInput";
 import meta from ".";
 import { useEngine } from "./engine";
 import { Words } from "./components/Words";

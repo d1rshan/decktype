@@ -1,5 +1,5 @@
 import { Index, createEffect, Show } from "solid-js";
-import { Word } from "@/features/games/components/Word";
+import { Word } from "@/features/games/shared/components/Word";
 
 export type WordsProps = {
   words: string[];

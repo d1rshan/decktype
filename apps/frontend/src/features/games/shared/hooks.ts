@@ -2,7 +2,7 @@ import { onMount, onCleanup } from "solid-js";
 import { useAuthSession } from "@/features/auth/hooks";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
-import type { DifficultyKey } from "@/features/games/types";
+import type { DifficultyKey } from "@/features/games/shared/types";
 
 export function useAutoPause(onPause: () => void) {
   onMount(() => {

@@ -1,4 +1,4 @@
-import { GameStat } from "@/features/games/components/GameStat";
+import { GameStat } from "@/features/games/shared/components/GameStat";
 
 export type FallingWordsHudProps = {
   score: number;

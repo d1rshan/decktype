@@ -1,10 +1,10 @@
 import { For, createSignal } from "solid-js";
 
-import { gameRegistry } from "@/features/games/registry";
+import { gameRegistry } from "@/features/games/shared/registry";
 import type { LeaderboardDifficulty } from "@/features/leaderboard/types";
 import { LeaderboardTable } from "@/features/leaderboard/components/leaderboard-table";
-import { getGameName } from "@/features/games/utils";
-import type { GameId } from "@/features/games/types";
+import { getGameName } from "@/features/games/shared/utils";
+import type { GameId } from "@/features/games/shared/types";
 
 const difficulties: LeaderboardDifficulty[] = ["easy", "medium", "hard"];
 

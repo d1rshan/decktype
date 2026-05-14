@@ -1,9 +1,9 @@
 import { createEffect, createMemo, onCleanup, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
-import { useAutoPause } from "@/features/games/hooks";
+import { useAutoPause } from "@/features/games/shared/hooks";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
-import type { DifficultyKey, GamePhase } from "@/features/games/types";
+import type { DifficultyKey, GamePhase } from "@/features/games/shared/types";
 import {
   difficultyOptions,
   CHAR_WIDTH,

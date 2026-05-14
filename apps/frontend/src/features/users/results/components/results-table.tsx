@@ -1,5 +1,5 @@
 import { Table, type TableColumn } from "@/components/table";
-import { getGameName } from "@/features/games/utils";
+import { getGameName } from "@/features/games/shared/utils";
 import type { Result } from "../types";
 
 function formatResultsDateTime(value: string | Date) {

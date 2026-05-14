@@ -1,14 +1,14 @@
 import { createEffect, createMemo } from "solid-js";
 import { Router, Route, useNavigate, useSearchParams } from "@solidjs/router";
-import { games } from "@/features/games/registry";
-import { getHomeGamePath } from "@/features/games/utils";
+import { games } from "@/features/games/shared/registry";
+import { getHomeGamePath } from "@/features/games/shared/utils";
 import AboutPage from "@/app/pages/about";
 import AdminPage from "@/app/pages/admin";
 import HomePage from "@/app/pages/home";
 import Layout from "@/app/layout";
 import LeaderboardPage from "@/app/pages/leaderboard";
 import ProfilePage from "@/app/pages/profile";
-import type { GameId } from "@/features/games/types";
+import type { GameId } from "@/features/games/shared/types";
 import type { WordBankId } from "@/features/content/word-banks/types";
 
 function App() {

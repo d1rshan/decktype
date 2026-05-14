@@ -1,6 +1,6 @@
 import fallingWordsGame from "@/features/games/falling-words";
 import survivalGame from "@/features/games/survival";
-import type { GameId, GameModule } from "@/features/games/types";
+import type { GameId, GameModule } from "@/features/games/shared/types";
 
 export const games: Record<GameId, GameModule> = {
   "falling-words": fallingWordsGame,

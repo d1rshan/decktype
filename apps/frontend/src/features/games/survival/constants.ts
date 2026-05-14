@@ -1,4 +1,4 @@
-import type { DifficultyKey } from "@/features/games/types";
+import type { DifficultyKey } from "@/features/games/shared/types";
 
 export const WORD_BATCH = 50;
 export const WORD_REFILL_THRESHOLD = 20;

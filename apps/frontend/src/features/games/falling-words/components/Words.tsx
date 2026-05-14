@@ -1,4 +1,4 @@
-import { Word } from "@/features/games/components/Word";
+import { Word } from "@/features/games/shared/components/Word";
 import type { FallingWord } from "../engine";
 
 export type WordsProps = {

@@ -1,4 +1,4 @@
-import type { GameModule } from "@/features/games/types";
+import type { GameModule } from "@/features/games/shared/types";
 import { View } from "./View";
 
 const meta: GameModule = {

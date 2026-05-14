@@ -1,7 +1,7 @@
 import { For } from "solid-js";
 import { ArrowRight } from "lucide-solid";
-import { gameRegistry } from "@/features/games/registry";
-import type { GameId } from "@/features/games/types";
+import { gameRegistry } from "@/features/games/shared/registry";
+import type { GameId } from "@/features/games/shared/types";
 
 type GameCardProps = {
   name: string;

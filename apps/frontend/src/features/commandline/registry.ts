@@ -2,14 +2,14 @@ import { useNavigate, useLocation, useSearchParams } from "@solidjs/router";
 import { themes } from "@/features/content/themes/registry";
 import { wordBanks } from "@/features/content/word-banks/registry";
 import type { WordBankId } from "@/features/content/word-banks/types";
-import { gameRegistry } from "@/features/games/registry";
-import { getHomeGamePath } from "@/features/games/utils";
+import { gameRegistry } from "@/features/games/shared/registry";
+import { getHomeGamePath } from "@/features/games/shared/utils";
 import type { ThemeName } from "@/features/content/themes/types";
 import type {
   CommandlineItem,
   CommandlineScope,
 } from "@/features/commandline/types";
-import type { GameId } from "@/features/games/types";
+import type { GameId } from "@/features/games/shared/types";
 import { themeManager } from "@/features/content/themes/manager";
 import { useAuthSession } from "@/features/auth/hooks";
 
