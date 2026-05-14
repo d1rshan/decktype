@@ -42,7 +42,7 @@ function FallingWordsView(props: GameViewProps) {
         <Show when={game.phase() === "idle"}>
           <div class="absolute inset-0 z-20 flex items-center justify-center p-6 text-center">
             <div class="flex items-center gap-2">
-              <Kbd>enter</Kbd>
+              <Kbd>escape</Kbd>
               <p class="text-base leading-normal">to start</p>
             </div>
           </div>
@@ -58,7 +58,7 @@ function FallingWordsView(props: GameViewProps) {
                 {metrics.score()}
               </p>
               <div class="mt-10 flex items-center justify-center gap-2">
-                <Kbd>enter</Kbd>
+                <Kbd>escape</Kbd>
                 <p class="text-base leading-normal">to resume</p>
               </div>
             </div>
@@ -66,7 +66,7 @@ function FallingWordsView(props: GameViewProps) {
         </Show>
 
         <Show when={game.phase() === "game-over"}>
-          <GameOver score={metrics.score()} restartKey="enter" />
+          <GameOver score={metrics.score()} />
         </Show>
 
         <Words

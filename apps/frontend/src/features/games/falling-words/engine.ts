@@ -82,7 +82,6 @@ type GameState = {
   activeWords: FallingWord[];
   currentInput: string;
   elapsedMs: number;
-  isTabPressed: boolean;
 };
 
 const INITIAL_STATE: GameState = {
@@ -93,7 +92,6 @@ const INITIAL_STATE: GameState = {
   activeWords: [],
   currentInput: "",
   elapsedMs: 0,
-  isTabPressed: false,
 };
 
 export function useEngine(
@@ -230,11 +228,7 @@ export function useEngine(
     if (state.phase !== "running") return;
 
     elapsedBeforeRun = getElapsedMsNow();
-    setState({
-      elapsedMs: elapsedBeforeRun,
-      phase: "paused",
-      isTabPressed: false,
-    });
+    setState({ elapsedMs: elapsedBeforeRun, phase: "paused" });
     stopLoop();
   };
 
@@ -304,49 +298,10 @@ export function useEngine(
   const handleKeyDown = (
     e: KeyboardEvent & { currentTarget: HTMLInputElement },
   ) => {
-    if (e.key === "Tab") {
-      e.preventDefault();
-      setState("isTabPressed", true);
-      return;
-    }
-
-    if (e.key === "Enter") {
-      if (state.isTabPressed) {
-        e.preventDefault();
-        resetGame();
-        return;
-      }
-
-      if (state.phase === "idle" || state.phase === "game-over") {
-        e.preventDefault();
-        startGame();
-        return;
-      }
-
-      if (state.phase === "paused") {
-        e.preventDefault();
-        resumeGame();
-        return;
-      }
-
-      e.preventDefault();
-      submitExactMatch(state.currentInput, false);
-    }
-
     if (e.key === "Escape") {
       e.preventDefault();
       resetGame();
-      return;
     }
-
-    if (e.key === " ") {
-      e.preventDefault();
-      submitExactMatch(state.currentInput, false);
-    }
-  };
-
-  const handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "Tab") setState("isTabPressed", false);
   };
 
   const handleVisibilityChange = () => {
@@ -438,13 +393,11 @@ export function useEngine(
 
     if (fieldRef) observer.observe(fieldRef);
 
-    window.addEventListener("keyup", handleKeyUp);
     window.addEventListener("blur", handleWindowBlur);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     onCleanup(() => {
       observer.disconnect();
-      window.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("blur", handleWindowBlur);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     });

@@ -2,7 +2,6 @@ import { Kbd } from "@/components/ui/kbd";
 
 export type GameOverProps = {
   score: number;
-  restartKey?: string;
 };
 
 export function GameOver(props: GameOverProps) {
@@ -14,7 +13,7 @@ export function GameOver(props: GameOverProps) {
         </p>
         <div class="mt-12 flex flex-col items-center gap-4">
           <div class="flex items-center gap-2">
-            <Kbd>{props.restartKey ?? "tab"}</Kbd>
+            <Kbd>escape</Kbd>
             <p class="text-base leading-normal">to restart</p>
           </div>
         </div>
