@@ -1,4 +1,5 @@
 import { For } from "solid-js";
+import { Caret } from "./Caret";
 
 export type WordProps = {
   word: string;
@@ -24,9 +25,7 @@ export function Word(props: WordProps) {
                 : (props.untypedClass ?? "text-inherit")
             }`}
           >
-            {isCaretHere && (
-              <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
-            )}
+            {isCaretHere && <Caret inline />}
             {char}
           </span>
         );
@@ -37,15 +36,11 @@ export function Word(props: WordProps) {
           <For each={props.input.slice(props.word.length).split("")}>
             {(char) => <span class="text-(--error) opacity-80">{char}</span>}
           </For>
-          {props.isActive && (
-            <span class="ml-[1px] h-[2px] w-[0.6em] self-end bg-(--caret) animate-pulse mb-[2px]" />
-          )}
+          {props.isActive && <Caret />}
         </span>
       )}
 
-      {props.isActive && props.input.length === props.word.length && (
-        <span class="ml-[1px] h-[2px] w-[0.6em] self-end bg-(--caret) animate-pulse mb-[2px]" />
-      )}
+      {props.isActive && props.input.length === props.word.length && <Caret />}
     </span>
   );
 }
