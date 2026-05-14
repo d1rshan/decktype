@@ -1,7 +1,25 @@
+import { onMount, onCleanup } from "solid-js";
 import { useAuthSession } from "@/features/auth/hooks";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
 import type { DifficultyKey } from "@/features/games/types";
+
+export function useAutoPause(onPause: () => void) {
+  onMount(() => {
+    const onBlur = () => onPause();
+    const onVisibilityChange = () => {
+      if (document.hidden) onPause();
+    };
+
+    window.addEventListener("blur", onBlur);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    onCleanup(() => {
+      window.removeEventListener("blur", onBlur);
+      window.removeEventListener("visibilitychange", onVisibilityChange);
+    });
+  });
+}
 
 export function useSubmitGameResult(minScores: Record<DifficultyKey, number>) {
   const auth = useAuthSession();

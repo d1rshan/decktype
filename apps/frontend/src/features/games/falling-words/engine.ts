@@ -1,5 +1,6 @@
 import { createEffect, createMemo, onCleanup, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
+import { useAutoPause } from "@/features/games/hooks";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 import type { DifficultyKey, GamePhase } from "@/features/games/types";
@@ -304,14 +305,6 @@ export function useEngine(
     }
   };
 
-  const handleVisibilityChange = () => {
-    if (document.hidden && state.phase === "running") pauseGame();
-  };
-
-  const handleWindowBlur = () => {
-    if (state.phase === "running") pauseGame();
-  };
-
   createEffect(() => {
     if (state.phase !== "running") {
       stopLoop();
@@ -393,15 +386,10 @@ export function useEngine(
 
     if (fieldRef) observer.observe(fieldRef);
 
-    window.addEventListener("blur", handleWindowBlur);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    onCleanup(() => {
-      observer.disconnect();
-      window.removeEventListener("blur", handleWindowBlur);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    });
+    onCleanup(() => observer.disconnect());
   });
+
+  useAutoPause(pauseGame);
 
   onCleanup(stopLoop);
 
