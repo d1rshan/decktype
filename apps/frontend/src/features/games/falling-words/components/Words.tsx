@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { Word } from "@/features/games/components/Word";
 import type { FallingWord } from "../engine";
 
 export type WordsProps = {
@@ -25,7 +25,6 @@ export function Words(props: WordsProps) {
           props.currentInput.length > 0 &&
           word.text === props.currentInput &&
           isFocused;
-        const typedLength = isFocused ? props.currentInput.length : 0;
 
         return (
           <div
@@ -42,46 +41,11 @@ export function Words(props: WordsProps) {
               transform: `translate(${word.x}px, ${word.y}px) rotate(${word.rotation}deg)`,
             }}
           >
-            <span class="relative inline-flex items-center">
-              {word.text.split("").map((character, index) => {
-                const isTyped = isFocused && index < typedLength;
-                const isCaretSlot = isFocused && index === typedLength;
-
-                return (
-                  <span
-                    class={`relative transition-colors duration-200 ${
-                      isTyped
-                        ? props.currentInput.charAt(index) === character
-                          ? "text-(--text)"
-                          : "text-(--error)"
-                        : "text-inherit"
-                    }`}
-                  >
-                    {isCaretSlot && (
-                      <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
-                    )}
-                    {character}
-                  </span>
-                );
-              })}
-
-              {isFocused && typedLength > word.text.length && (
-                <span class="flex items-center">
-                  <For
-                    each={props.currentInput.slice(word.text.length).split("")}
-                  >
-                    {(char) => (
-                      <span class="text-(--error) opacity-80">{char}</span>
-                    )}
-                  </For>
-                  <span class="ml-[1px] h-[2px] w-[0.6em] self-end bg-(--caret) animate-pulse mb-[2px]" />
-                </span>
-              )}
-
-              {isFocused && typedLength === word.text.length && (
-                <span class="ml-[1px] h-[2px] w-[0.6em] self-end bg-(--caret) animate-pulse mb-[2px]" />
-              )}
-            </span>
+            <Word
+              word={word.text}
+              input={isFocused ? props.currentInput : ""}
+              isActive={isFocused}
+            />
           </div>
         );
       })}

@@ -1,4 +1,5 @@
 import { Index, createEffect, Show } from "solid-js";
+import { Word } from "@/features/games/components/Word";
 
 export type WordsProps = {
   words: string[];
@@ -8,39 +9,15 @@ export type WordsProps = {
   onFieldClick: () => void;
 };
 
-function WordChars(props: { word: string; input: string; isActive: boolean }) {
-  return (
-    <Index each={props.word.split("")}>
-      {(char, i) => {
-        return (
-          <span class="relative">
-            <span
-              class={
-                !props.input[i]
-                  ? props.isActive
-                    ? "text-(--sub)/50"
-                    : "text-(--error) opacity-70"
-                  : props.input[i] === char()
-                    ? "text-(--text)"
-                    : "text-(--error)"
-              }
-            >
-              <Show when={props.isActive && props.input.length === i}>
-                <span class="absolute bottom-[-2px] left-0 h-[2px] w-full bg-(--caret) animate-pulse" />
-              </Show>
-              {char()}
-            </span>
-          </span>
-        );
-      }}
-    </Index>
-  );
-}
-
 function PastWord(props: { word: string; pastInput: string }) {
   return (
     <span class="inline-flex relative items-center text-(--text)">
-      <WordChars word={props.word} input={props.pastInput} isActive={false} />
+      <Word
+        word={props.word}
+        input={props.pastInput}
+        isActive={false}
+        untypedClass="text-(--error) opacity-70"
+      />
       <Show when={props.pastInput.length > props.word.length}>
         <span class="flex items-center text-(--error) opacity-80">
           {props.pastInput.slice(props.word.length)}
@@ -53,18 +30,7 @@ function PastWord(props: { word: string; pastInput: string }) {
 function ActiveWord(props: { word: string; currentInput: string }) {
   return (
     <span class="inline-flex relative items-center text-(--text)">
-      <WordChars word={props.word} input={props.currentInput} isActive={true} />
-
-      <Show when={props.currentInput.length === props.word.length}>
-        <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
-      </Show>
-
-      <Show when={props.currentInput.length > props.word.length}>
-        <span class="flex items-center text-(--error) opacity-80">
-          {props.currentInput.slice(props.word.length)}
-          <span class="absolute bottom-[-2px] right-[-0.6em] h-[2px] w-[0.6em] bg-(--caret) animate-pulse" />
-        </span>
-      </Show>
+      <Word word={props.word} input={props.currentInput} isActive={true} />
     </span>
   );
 }
