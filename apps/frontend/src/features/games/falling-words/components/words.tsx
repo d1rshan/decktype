@@ -1,66 +1,21 @@
 import { For } from "solid-js";
-import { Kbd } from "@/components/ui/kbd";
-import type { FallingWord, GamePhase } from "../types";
+import type { FallingWord } from "../engine";
 
-type FallingWordsFieldProps = {
+export type WordsProps = {
   ref?: (el: HTMLDivElement) => void;
   words: FallingWord[];
   currentInput: string;
   focusedWordId: number | null;
-  phase: GamePhase;
-  score: number;
   onFieldClick: () => void;
 };
 
-function FallingWordsField(props: FallingWordsFieldProps) {
+export function Words(props: WordsProps) {
   return (
     <div
       ref={props.ref}
       class="absolute inset-0 z-0 h-full w-full cursor-text overflow-hidden bg-(--bg)"
       onClick={props.onFieldClick}
     >
-      {props.phase === "idle" && (
-        <div class="absolute inset-0 flex items-center justify-center p-6 text-center">
-          <div class="flex items-center gap-2">
-            <Kbd>enter</Kbd>
-            <p class="text-base leading-normal">to start</p>
-          </div>
-        </div>
-      )}
-
-      {props.phase === "game-over" && (
-        <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/90 backdrop-blur-sm">
-          <div class="text-center">
-            <p class="text-6xl leading-none font-bold tracking-tighter text-(--main) sm:text-8xl">
-              {props.score}
-            </p>
-            <div class="mt-12 flex flex-col items-center gap-4">
-              <div class="flex items-center gap-2">
-                <Kbd>enter</Kbd>
-                <p class="text-base leading-normal">to restart</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {props.phase === "paused" && (
-        <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/30 backdrop-blur-[2px]">
-          <div class="text-center">
-            <p class="text-xs leading-none font-bold uppercase tracking-widest text-(--sub)">
-              paused
-            </p>
-            <p class="mt-4 text-6xl leading-none font-bold tracking-tighter text-(--main) sm:text-8xl">
-              {props.score}
-            </p>
-            <div class="mt-10 flex items-center justify-center gap-2">
-              <Kbd>enter</Kbd>
-              <p class="text-base leading-normal">to resume</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {props.words.map((word) => {
         const isFocused = word.id === props.focusedWordId;
         const isPrefixMatch =
@@ -71,7 +26,6 @@ function FallingWordsField(props: FallingWordsFieldProps) {
           word.text === props.currentInput &&
           isFocused;
         const typedLength = isFocused ? props.currentInput.length : 0;
-        const characters = word.text.split("");
 
         return (
           <div
@@ -89,7 +43,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
             }}
           >
             <span class="relative inline-flex items-center">
-              {characters.map((character, index) => {
+              {word.text.split("").map((character, index) => {
                 const isTyped = isFocused && index < typedLength;
                 const isCaretSlot = isFocused && index === typedLength;
 
@@ -111,10 +65,10 @@ function FallingWordsField(props: FallingWordsFieldProps) {
                 );
               })}
 
-              {isFocused && typedLength > characters.length && (
+              {isFocused && typedLength > word.text.length && (
                 <span class="flex items-center">
                   <For
-                    each={props.currentInput.slice(characters.length).split("")}
+                    each={props.currentInput.slice(word.text.length).split("")}
                   >
                     {(char) => (
                       <span class="text-(--error) opacity-80">{char}</span>
@@ -124,7 +78,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
                 </span>
               )}
 
-              {isFocused && typedLength === characters.length && (
+              {isFocused && typedLength === word.text.length && (
                 <span class="ml-[1px] h-[2px] w-[0.6em] self-end bg-(--caret) animate-pulse mb-[2px]" />
               )}
             </span>
@@ -134,5 +88,3 @@ function FallingWordsField(props: FallingWordsFieldProps) {
     </div>
   );
 }
-
-export default FallingWordsField;
