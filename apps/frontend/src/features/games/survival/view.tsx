@@ -1,6 +1,6 @@
 import { Show } from "solid-js";
 import type { GameViewProps } from "@/features/games/types";
-import { meta } from ".";
+import { meta } from "./meta";
 import { useEngine } from "./engine";
 import { useSubmitGameResult } from "@/features/games/hooks";
 import { DifficultySelector } from "../components/difficulty-selector";

@@ -7,7 +7,7 @@ import { DifficultySelector } from "../components/difficulty-selector";
 import FallingWordsField from "./components/falling-words-field";
 import { FallingWordsHud as Hud } from "./components/falling-words-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";
-import { meta } from "./index";
+import { meta } from "./meta";
 import { difficultyKeys } from "./difficulty";
 
 const MINIMUM_SCORES_BY_DIFFICULTY: Record<DifficultyKey, number> = {
