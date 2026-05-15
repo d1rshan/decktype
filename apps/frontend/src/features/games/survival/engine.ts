@@ -150,7 +150,7 @@ export function useEngine(
   };
 
   const handleInput = (e: InputEvent & { currentTarget: HTMLInputElement }) => {
-    if (state.phase === "game-over" || state.phase === "paused") {
+    if (state.phase === "game-over") {
       e.currentTarget.value = "";
       return;
     }

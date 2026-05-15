@@ -21,10 +21,7 @@ function FallingWordsField(props: FallingWordsFieldProps) {
     >
       {props.phase === "idle" && (
         <div class="absolute inset-0 flex items-center justify-center p-6 text-center">
-          <div class="flex items-center gap-2">
-            <Kbd>enter</Kbd>
-            <p class="text-base leading-normal">to start</p>
-          </div>
+          <p class="text-base leading-normal text-(--sub)">type to start</p>
         </div>
       )}
 
@@ -34,28 +31,11 @@ function FallingWordsField(props: FallingWordsFieldProps) {
             <p class="text-6xl leading-none font-bold tracking-tighter text-(--main) sm:text-8xl">
               {props.score}
             </p>
-            <div class="mt-12 flex flex-col items-center gap-4">
-              <div class="flex items-center gap-2">
-                <Kbd>enter</Kbd>
-                <p class="text-base leading-normal">to restart</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {props.phase === "paused" && (
-        <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/30 backdrop-blur-[2px]">
-          <div class="text-center">
-            <p class="text-xs leading-none font-bold uppercase tracking-widest text-(--sub)">
-              paused
-            </p>
-            <p class="mt-4 text-6xl leading-none font-bold tracking-tighter text-(--main) sm:text-8xl">
-              {props.score}
-            </p>
-            <div class="mt-10 flex items-center justify-center gap-2">
-              <Kbd>enter</Kbd>
-              <p class="text-base leading-normal">to resume</p>
+            <div class="mt-12 flex items-center justify-center gap-2">
+              <Kbd>Tab</Kbd>
+              <span class="text-(--sub)">or</span>
+              <Kbd>Esc</Kbd>
+              <p class="text-base leading-normal">to reset</p>
             </div>
           </div>
         </div>

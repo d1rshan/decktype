@@ -48,7 +48,6 @@ export function useFallingWordsGame(
   const [activeWords, setActiveWords] = createSignal<FallingWord[]>([]);
   const [currentInput, setCurrentInput] = createSignal("");
   const [elapsedMs, setElapsedMs] = createSignal(0);
-  const [isTabPressed, setIsTabPressed] = createSignal(false);
 
   const selectedDifficulty = createMemo(() => getDifficulty(difficulty()));
   const score = createMemo(() => formatScore(elapsedMs()));
@@ -166,7 +165,6 @@ export function useFallingWordsGame(
     lastSpawnTime = 0;
     runStartTime = 0;
     elapsedBeforeRun = 0;
-    setIsTabPressed(false);
   };
 
   const startGame = () => {
@@ -178,30 +176,6 @@ export function useFallingWordsGame(
     lastFrameTime = runStartTime;
     lastSpawnTime = runStartTime;
     spawnWord();
-  };
-
-  const pauseGame = () => {
-    if (phase() !== "running") {
-      return;
-    }
-
-    elapsedBeforeRun = getElapsedMsNow();
-    setElapsedMs(elapsedBeforeRun);
-    stopLoop();
-    setPhase("paused");
-    setIsTabPressed(false);
-  };
-
-  const resumeGame = () => {
-    if (phase() !== "paused") {
-      return;
-    }
-
-    runStartTime = performance.now();
-    lastFrameTime = runStartTime;
-    lastSpawnTime = runStartTime;
-    setPhase("running");
-    focusInput();
   };
 
   const endGame = () => {
@@ -238,7 +212,7 @@ export function useFallingWordsGame(
   };
 
   const handleDifficultyChange = (nextDifficulty: DifficultyKey) => {
-    if (phase() === "running" || phase() === "paused") {
+    if (phase() === "running") {
       resetGame(nextDifficulty);
       return;
     }
@@ -270,67 +244,22 @@ export function useFallingWordsGame(
   const handleKeyDown = (
     event: KeyboardEvent & { currentTarget: HTMLInputElement },
   ) => {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setIsTabPressed(true);
-      return;
-    }
-
-    if (event.key === "Enter") {
-      if (isTabPressed()) {
-        event.preventDefault();
-        resetGame();
-        return;
-      }
-
-      if (phase() === "idle" || phase() === "game-over") {
-        event.preventDefault();
-        startGame();
-        return;
-      }
-
-      if (phase() === "paused") {
-        event.preventDefault();
-        resumeGame();
-        return;
-      }
-
-      event.preventDefault();
-      submitExactMatch(currentInput(), false);
-    }
-
-    if (event.key === "Escape") {
+    if (event.key === "Tab" || event.key === "Escape") {
       event.preventDefault();
       resetGame();
-      return;
-    }
-
-    if (event.key === " ") {
-      event.preventDefault();
-      submitExactMatch(currentInput(), false);
-    }
-  };
-
-  const handleKeyUp = (event: KeyboardEvent) => {
-    if (event.key === "Tab") {
-      setIsTabPressed(false);
     }
   };
 
   const handleVisibilityChange = () => {
-    if (!document.hidden || phase() !== "running") {
-      return;
+    if (document.hidden && phase() === "running") {
+      endGame();
     }
-
-    pauseGame();
   };
 
   const handleWindowBlur = () => {
-    if (phase() !== "running") {
-      return;
+    if (phase() === "running") {
+      endGame();
     }
-
-    pauseGame();
   };
 
   createEffect(() => {
@@ -410,13 +339,11 @@ export function useFallingWordsGame(
       observer.observe(fieldRef);
     }
 
-    window.addEventListener("keyup", handleKeyUp);
     window.addEventListener("blur", handleWindowBlur);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     onCleanup(() => {
       observer.disconnect();
-      window.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("blur", handleWindowBlur);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     });
