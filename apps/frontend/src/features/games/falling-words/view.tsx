@@ -5,7 +5,7 @@ import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
 import { DifficultySelector } from "../components/difficulty-selector";
 import FallingWordsField from "./components/falling-words-field";
-import { Hud } from "./components/game-hud";
+import { FallingWordsHud as Hud } from "./components/falling-words-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";
 import { meta } from "./index";
 import { difficultyKeys } from "./difficulty";

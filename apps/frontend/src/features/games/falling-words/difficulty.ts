@@ -34,3 +34,4 @@ export function getDifficulty(key: DifficultyKey): DifficultyConfig {
     difficultyOptions[0]!
   );
 }
+// TODO: clean up all this stuff bruhhhhh, ie use difficulty keys from our meta file
