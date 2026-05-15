@@ -1,4 +1,4 @@
-import fallingWordsGame from "@/features/games/falling-words";
+import { meta as fallingWordsGame } from "@/features/games/falling-words";
 import { meta as survivalGame } from "@/features/games/survival";
 import type { GameId, GameModule } from "@/features/games/types";
 

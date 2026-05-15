@@ -5,9 +5,9 @@ import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
 import { DifficultySelector } from "../components/difficulty-selector";
 import FallingWordsField from "./components/falling-words-field";
-import GameHud from "./components/game-hud";
+import { Hud } from "./components/game-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";
-import { fallingWordsGameMeta } from "./meta";
+import { meta } from "./index";
 import { difficultyKeys } from "./difficulty";
 
 const MINIMUM_SCORES_BY_DIFFICULTY: Record<DifficultyKey, number> = {
@@ -25,7 +25,7 @@ function FallingWordsView(props: GameViewProps) {
   const auth = useAuthSession();
   const createResultMutation = useCreateResultMutation();
   const session = useFallingWordsGame(
-    props.wordBankId ?? fallingWordsGameMeta.defaultWordBankId,
+    props.wordBankId ?? meta.defaultWordBankId,
     {
       onComplete: (result) => {
         if (!auth.isAuthenticated()) {
@@ -75,7 +75,7 @@ function FallingWordsView(props: GameViewProps) {
           <div class="flex items-center gap-2">
             <Keyboard size={14} strokeWidth={2.5} class="opacity-50" />
             <span class="text-xs leading-none font-semibold tracking-widest uppercase">
-              {fallingWordsGameMeta.name.toLowerCase()}
+              {meta.name.toLowerCase()}
             </span>
           </div>
         </div>
@@ -94,10 +94,7 @@ function FallingWordsView(props: GameViewProps) {
 
         <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-between px-10 pt-10 pb-6">
           <div />
-          <GameHud
-            score={session.score()}
-            typedValue={session.currentInput()}
-          />
+          <Hud score={session.score()} typedValue={session.currentInput()} />
         </div>
 
         <input
