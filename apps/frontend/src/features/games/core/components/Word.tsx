@@ -1,9 +1,7 @@
 import { Index, Show } from "solid-js";
 
 import { analyzeWord } from "../analyze-word";
-import type { WordState } from "../types";
-
-import { Character } from "./character";
+import type { CharacterState, WordState } from "../types";
 
 type WordProps = {
   word: WordState;
@@ -39,4 +37,20 @@ export function Word(props: WordProps) {
       </span>
     </div>
   );
+}
+
+type CharacterProps = {
+  char: string;
+  state: CharacterState;
+};
+
+const classes: Record<CharacterState, string> = {
+  correct: "text-(--text)",
+  incorrect: "text-(--error)",
+  pending: "text-(--sub)",
+  extra: "text-(--error)",
+};
+
+function Character(props: CharacterProps) {
+  return <span class={classes[props.state]}>{props.char}</span>;
 }

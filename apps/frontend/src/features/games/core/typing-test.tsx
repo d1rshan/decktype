@@ -6,7 +6,7 @@ import { randomWord } from "@/features/games/utils";
 
 import { createGameStore } from "./state-machine";
 
-import { Word } from "./components/word";
+import { Word } from "./components/Word";
 
 const WORD_COUNT = 50;
 
