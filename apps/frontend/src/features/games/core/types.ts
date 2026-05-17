@@ -1,8 +1,13 @@
-export type CharacterState = "correct" | "incorrect" | "active" | "pending";
+export type CharacterState = "correct" | "incorrect" | "pending" | "extra";
 
 export type AnalyzedCharacter = {
   value: string;
   state: CharacterState;
+};
+
+export type WordState = {
+  expected: string;
+  typed: string;
 };
 
 export type GameStatus = "idle" | "running" | "finished";
@@ -20,14 +25,12 @@ export type WordResult = {
   input: string;
   correct: boolean;
   errors: number;
-  corrected: number;
 };
 
 export type GameMetrics = {
   rawWpm: number;
   correctedWpm: number;
   accuracy: number;
-  errorRate: number;
   keystrokes: KeystrokeEvent[];
   wordResults: WordResult[];
   startTime: number | null;
@@ -36,7 +39,7 @@ export type GameMetrics = {
 
 export type GameState = {
   status: GameStatus;
-  words: string[];
-  input: string;
+  words: WordState[];
+  currentWordIndex: number;
   metrics: GameMetrics;
 };

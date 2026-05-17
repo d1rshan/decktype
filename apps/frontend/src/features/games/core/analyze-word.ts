@@ -1,34 +1,37 @@
-import type { CharacterState, AnalyzedCharacter } from "./types";
+import type { AnalyzedCharacter, CharacterState } from "./types";
 
 export function analyzeWord(
-  target: string,
-  input: string,
-  isActive: boolean,
+  expected: string,
+  typed: string,
 ): AnalyzedCharacter[] {
   const result: AnalyzedCharacter[] = [];
-  const len = Math.max(target.length, input.length);
 
-  for (let i = 0; i < len; i++) {
-    if (i >= target.length) {
-      // extra characters beyond the target word
-      result.push({ value: input[i]!, state: "incorrect" });
+  const max = Math.max(expected.length, typed.length);
+
+  for (let i = 0; i < max; i++) {
+    const expectedChar = expected[i];
+    const typedChar = typed[i];
+
+    // extra chars
+    if (i >= expected.length) {
+      result.push({
+        value: typedChar!,
+        state: "extra",
+      });
+
       continue;
     }
 
-    const targetChar = target[i]!;
     let state: CharacterState = "pending";
 
-    if (i >= input.length) {
-      if (isActive && i === input.length) {
-        state = "active";
-      }
-    } else if (input[i] === targetChar) {
-      state = "correct";
-    } else {
-      state = "incorrect";
+    if (typedChar != null) {
+      state = typedChar === expectedChar ? "correct" : "incorrect";
     }
 
-    result.push({ value: targetChar, state });
+    result.push({
+      value: expectedChar!,
+      state,
+    });
   }
 
   return result;
