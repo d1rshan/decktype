@@ -6,6 +6,7 @@ import { randomWord } from "@/features/games/utils";
 
 import { createGameStore } from "./state-machine";
 
+import { GameInput } from "./components/GameInput";
 import { Word } from "./components/Word";
 
 const WORD_COUNT = 50;
@@ -21,8 +22,6 @@ export function TypingTest() {
     createGameStore({
       words,
     });
-
-  let inputRef: HTMLInputElement | undefined;
 
   return (
     <div class="flex flex-col items-center justify-center min-h-screen bg-(--bg) text-(--text) p-8">
@@ -57,37 +56,12 @@ export function TypingTest() {
         </div>
       </Show>
 
-      <button
-        onClick={() => inputRef?.focus()}
-        class="mt-4 px-4 py-2 bg-(--sub-alt) text-(--sub) rounded text-sm hover:text-(--text)"
-      >
-        focus
-      </button>
-
-      <input
-        ref={inputRef}
-        type="text"
-        class="absolute -left-[9999px] opacity-0"
+      <GameInput
         value={currentWord()!.typed}
-        autofocus
-        onInput={(e) => onInput(e.currentTarget.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            reset();
-            return;
-          }
-
-          if (e.key === " ") {
-            e.preventDefault();
-            nextWord();
-            return;
-          }
-
-          if (e.key === "Backspace" && currentWord()!.typed.length === 0) {
-            e.preventDefault();
-            previousWord();
-          }
-        }}
+        onInput={onInput}
+        onNext={nextWord}
+        onPrevious={previousWord}
+        onReset={reset}
       />
     </div>
   );
