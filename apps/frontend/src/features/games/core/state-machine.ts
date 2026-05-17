@@ -50,6 +50,7 @@ export function createGameStore(config: GameConfig) {
     if (state.status !== "running") return;
 
     const endTime = Date.now();
+    // TODO: are we even setting endTime state ?
 
     const wordResults = buildWordResults(state.words);
 
