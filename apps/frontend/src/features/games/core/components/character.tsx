@@ -6,10 +6,10 @@ type CharacterProps = {
 };
 
 const classes: Record<CharacterState, string> = {
-  correct: "text-green-500",
-  incorrect: "text-red-500",
-  active: "border-l border-blue-500",
-  pending: "text-zinc-500",
+  correct: "text-(--text)",
+  incorrect: "text-(--error)",
+  active: "text-(--sub) shadow-[inset_0_-2px_0_var(--caret)]",
+  pending: "text-(--sub)",
 };
 
 export function Character(props: CharacterProps) {

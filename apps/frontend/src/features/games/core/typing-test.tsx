@@ -20,12 +20,14 @@ export function TypingTest() {
     },
   });
 
+  let inputRef: HTMLInputElement | undefined;
+
   const typedWords = () => state.input.split(" ");
   const currentIndex = () => typedWords().length - 1;
 
   return (
-    <div class="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-8">
-      <div class="text-sm text-zinc-400 mb-4">
+    <div class="flex flex-col items-center justify-center min-h-screen bg-(--bg) text-(--text) p-8">
+      <div class="text-sm text-(--sub) mb-4">
         Word {currentIndex() + 1} / {state.words.length}
       </div>
 
@@ -44,22 +46,30 @@ export function TypingTest() {
       <Show when={state.status === "finished"}>
         <div class="flex flex-col items-center gap-4 mt-8">
           <div class="text-lg">
-            <span class="text-green-400">{state.metrics.correctedWpm}</span> wpm
-            <span class="mx-3 text-zinc-600">|</span>
-            <span class="text-blue-400">{state.metrics.rawWpm}</span> raw
-            <span class="mx-3 text-zinc-600">|</span>
-            <span class="text-yellow-400">{state.metrics.accuracy}%</span> acc
+            <span class="text-(--text)">{state.metrics.correctedWpm}</span> wpm
+            <span class="mx-3 text-(--sub)">|</span>
+            <span class="text-(--sub)">{state.metrics.rawWpm}</span> raw
+            <span class="mx-3 text-(--sub)">|</span>
+            <span class="text-(--main)">{state.metrics.accuracy}%</span> acc
           </div>
           <button
             onClick={reset}
-            class="px-4 py-2 bg-zinc-700 rounded hover:bg-zinc-600"
+            class="px-4 py-2 bg-(--sub-alt) text-(--text) rounded hover:opacity-80"
           >
             Retry
           </button>
         </div>
       </Show>
 
+      <button
+        onClick={() => inputRef?.focus()}
+        class="mt-4 px-4 py-2 bg-(--sub-alt) text-(--sub) rounded text-sm hover:text-(--text)"
+      >
+        focus
+      </button>
+
       <input
+        ref={inputRef}
         type="text"
         class="absolute -left-[9999px] opacity-0"
         value={state.input}
