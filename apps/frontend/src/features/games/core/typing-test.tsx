@@ -4,10 +4,10 @@ import { getWordBank } from "@/features/content/word-banks/manager";
 
 import { randomWord } from "@/features/games/utils";
 
-import { createGameStore } from "./state-machine";
+import { createGameStore } from "./engine/state-machine";
 
 import { GameInput } from "./components/GameInput";
-import { Word } from "./components/Word";
+import { Word } from "./engine/Word";
 
 const WORD_COUNT = 50;
 

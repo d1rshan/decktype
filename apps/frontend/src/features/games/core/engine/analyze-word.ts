@@ -1,4 +1,4 @@
-import type { AnalyzedCharacter, CharacterState } from "./types";
+import type { AnalyzedCharacter, CharacterState } from "../types";
 
 export function analyzeWord(
   expected: string,

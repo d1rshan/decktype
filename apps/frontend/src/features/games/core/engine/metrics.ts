@@ -1,5 +1,5 @@
 import { createMemo, createSignal, onCleanup } from "solid-js";
-import type { KeystrokeEvent, WordResult, GameMetrics } from "./types";
+import type { KeystrokeEvent, WordResult, GameMetrics } from "../types";
 
 export function buildMetricsSnapshot(
   keystrokes: KeystrokeEvent[],

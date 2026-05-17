@@ -2,7 +2,7 @@ import { createStore } from "solid-js/store";
 
 import { buildMetricsSnapshot } from "./metrics";
 
-import type { GameState, KeystrokeEvent, WordResult } from "./types";
+import type { GameState, KeystrokeEvent, WordResult } from "../types";
 
 type GameConfig = {
   words: string[];

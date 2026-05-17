@@ -1,6 +1,6 @@
 import { Index, Show } from "solid-js";
 
-import { analyzeWord } from "../analyze-word";
+import { analyzeWord } from "./analyze-word";
 import type { CharacterState, WordState } from "../types";
 
 type WordProps = {
