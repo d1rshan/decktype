@@ -6,8 +6,15 @@ export function analyzeWord(
   isActive: boolean,
 ): AnalyzedCharacter[] {
   const result: AnalyzedCharacter[] = [];
+  const len = Math.max(target.length, input.length);
 
-  for (let i = 0; i < target.length; i++) {
+  for (let i = 0; i < len; i++) {
+    if (i >= target.length) {
+      // extra characters beyond the target word
+      result.push({ value: input[i]!, state: "incorrect" });
+      continue;
+    }
+
     const targetChar = target[i]!;
     let state: CharacterState = "pending";
 
