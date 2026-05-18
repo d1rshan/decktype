@@ -5,7 +5,7 @@ export type GameViewProps = {
   wordBankId?: WordBankId | null;
 };
 
-export type GameId = "survival";
+export type GameId = "survival" | "falling-words";
 
 export type DifficultyKey = "easy" | "medium" | "hard";
 

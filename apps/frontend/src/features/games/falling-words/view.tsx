@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
 import { Globe, Keyboard } from "lucide-solid";
 import { useAuthSession } from "@/features/auth/hooks";
-import type { GameViewProps, DifficultyKey } from "@/features/games/types";
+import type { GameViewProps, DifficultyKey } from "@/features/games/core/types";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
 import { DifficultySelector } from "@/features/games/core/components/DifficultySelector";
