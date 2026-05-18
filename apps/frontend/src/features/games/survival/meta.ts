@@ -1,5 +1,5 @@
-import type { GameModule } from "@/features/games/types";
-import View from "./view";
+import type { GameModule } from "@/features/games/core/types";
+import SurvivalView from "./view";
 
 export const meta: GameModule = {
   id: "survival",
@@ -8,5 +8,5 @@ export const meta: GameModule = {
   defaultWordBankId: "english/core-1k",
   difficultyKeys: ["easy", "medium", "hard"] as const,
   minScores: { easy: 15, medium: 10, hard: 5 },
-  View,
+  View: SurvivalView,
 };
