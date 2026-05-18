@@ -2,7 +2,7 @@ import type { GameModule } from "@/features/games/types";
 import FallingWordsView from "./view";
 
 export const meta: GameModule = {
-  id: "falling-words",
+  id: "falling-words" as const,
   name: "Falling Words",
   description: "Catch words before they hit the bottom of the screen.",
   defaultWordBankId: "english/core-1k",

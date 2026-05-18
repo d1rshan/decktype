@@ -1,16 +1,16 @@
 import { For, createSignal } from "solid-js";
 
-import { gameRegistry } from "@/features/games/registry";
+import { gameRegistry } from "@/features/games/core/registry";
 import type { LeaderboardDifficulty } from "@/features/leaderboard/types";
 import { LeaderboardTable } from "@/features/leaderboard/components/leaderboard-table";
-import { getGameName } from "@/features/games/utils";
-import type { GameId } from "@/features/games/types";
+import { getGameName } from "@/features/games/core/utils";
+import type { GameId } from "@/features/games/core/types";
 
 const difficulties: LeaderboardDifficulty[] = ["easy", "medium", "hard"];
 
 function LeaderboardPage() {
   const [gameId, setGameId] = createSignal<GameId>(
-    gameRegistry[0]?.id ?? "falling-words",
+    gameRegistry[0]?.id ?? "survival",
   );
 
   const [difficulty, setDifficulty] =

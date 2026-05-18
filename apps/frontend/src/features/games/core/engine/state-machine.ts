@@ -4,8 +4,10 @@ import { buildMetricsSnapshot } from "./metrics";
 
 import type { GameState, KeystrokeEvent, WordResult } from "../types";
 
-type GameConfig = {
+export type GameConfig = {
   words: string[];
+  onKeystroke?: (event: KeystrokeEvent) => void;
+  onWordComplete?: (word: { expected: string; typed: string }) => void;
 };
 
 function initMetrics() {
@@ -121,15 +123,22 @@ export function createGameStore(config: GameConfig) {
       };
 
       setState("metrics", "keystrokes", (k) => [...k, event]);
+
+      config.onKeystroke?.(event);
     }
   }
 
-  function nextWord() {
-    const isLastWord = state.currentWordIndex >= state.words.length - 1;
+  function isLastWord() {
+    return state.currentWordIndex >= state.words.length - 1;
+  }
 
-    if (isLastWord) {
-      finish();
-      return;
+  function nextWord() {
+    const currentWord = state.words[state.currentWordIndex];
+    if (currentWord) {
+      config.onWordComplete?.({
+        expected: currentWord.expected,
+        typed: currentWord.typed,
+      });
     }
 
     setState("currentWordIndex", (i) => i + 1);
@@ -141,6 +150,13 @@ export function createGameStore(config: GameConfig) {
     setState("currentWordIndex", (i) => i - 1);
   }
 
+  function appendWords(newWords: string[]) {
+    setState("words", (prev) => [
+      ...prev,
+      ...newWords.map((word) => ({ expected: word, typed: "" })),
+    ]);
+  }
+
   return {
     state,
     currentWord,
@@ -148,6 +164,9 @@ export function createGameStore(config: GameConfig) {
     nextWord,
     previousWord,
     reset,
+    finish,
+    isLastWord,
+    appendWords,
   };
 }
 

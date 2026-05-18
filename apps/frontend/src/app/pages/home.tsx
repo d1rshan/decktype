@@ -1,10 +1,10 @@
 import { createMemo } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-import GameSelector from "@/features/games/components/game-selector";
+import { GameCards } from "@/features/games/core/components/GameCards";
 import { FeedbackFeed } from "@/features/feedback/components/feedback-feed";
-import { games } from "@/features/games/registry";
-import type { GameId } from "@/features/games/types";
+import { games } from "@/features/games/core/registry";
+import type { GameId } from "@/features/games/core/types";
 import type { WordBankId } from "@/features/content/word-banks/types";
 
 type HomeProps = {
@@ -23,7 +23,7 @@ function HomePage(props: HomeProps) {
     <div class="flex flex-1 flex-col gap-12">
       {!props.selectedGameId && (
         <>
-          <GameSelector
+          <GameCards
             activeGameId={props.selectedGameId}
             onSelectGame={props.onSelectGame}
           />

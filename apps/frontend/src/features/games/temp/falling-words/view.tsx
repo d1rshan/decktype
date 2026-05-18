@@ -4,7 +4,7 @@ import { useAuthSession } from "@/features/auth/hooks";
 import type { GameViewProps, DifficultyKey } from "@/features/games/types";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
-import { DifficultySelector } from "../components/difficulty-selector";
+import { DifficultySelector } from "@/features/games/core/components/DifficultySelector";
 import FallingWordsField from "./components/falling-words-field";
 import { FallingWordsHud as Hud } from "./components/falling-words-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";

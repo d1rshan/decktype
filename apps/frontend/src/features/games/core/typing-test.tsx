@@ -2,7 +2,7 @@ import { For, Show } from "solid-js";
 
 import { getWordBank } from "@/features/content/word-banks/manager";
 
-import { randomWord } from "@/features/games/utils";
+import { randomWord } from "@/features/games/core/utils";
 
 import { createGameStore } from "./engine/state-machine";
 
@@ -18,10 +18,18 @@ const words = wordBank
   : [];
 
 export function TypingTest() {
-  const { state, currentWord, onInput, nextWord, previousWord, reset } =
-    createGameStore({
-      words,
-    });
+  const {
+    state,
+    currentWord,
+    onInput,
+    nextWord,
+    previousWord,
+    reset,
+    finish,
+    isLastWord,
+  } = createGameStore({
+    words,
+  });
 
   return (
     <div class="flex flex-col items-center justify-center min-h-screen bg-(--bg) text-(--text) p-8">
@@ -59,7 +67,13 @@ export function TypingTest() {
       <GameInput
         value={currentWord()!.typed}
         onInput={onInput}
-        onNext={nextWord}
+        onNext={() => {
+          if (isLastWord()) {
+            finish();
+          } else {
+            nextWord();
+          }
+        }}
         onPrevious={previousWord}
         onReset={reset}
       />
