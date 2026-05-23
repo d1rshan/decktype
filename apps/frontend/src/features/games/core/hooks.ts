@@ -1,7 +1,7 @@
 import { useAuthSession } from "@/features/auth/hooks";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
-import type { DifficultyKey } from "@/features/games/types";
+import type { DifficultyKey } from "@/features/games/core/types";
 
 export function useSubmitGameResult(minScores: Record<DifficultyKey, number>) {
   const auth = useAuthSession();

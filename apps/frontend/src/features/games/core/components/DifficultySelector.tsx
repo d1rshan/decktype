@@ -30,5 +30,3 @@ export function DifficultySelector<T extends string>(
     </div>
   );
 }
-
-//TODO: rename to mode selector instead

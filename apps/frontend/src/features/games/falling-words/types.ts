@@ -1,4 +1,4 @@
-import type { DifficultyKey, GamePhase } from "@/features/games/types";
+import type { DifficultyKey, GamePhase } from "@/features/games/core/types";
 export type { DifficultyKey, GamePhase };
 
 export type DifficultyConfig = {
