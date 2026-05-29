@@ -7,14 +7,20 @@ import {
 } from "solid-js";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
-import { getDifficulty } from "./difficulty";
 import { createFallingWord } from "./engine";
 import type {
+  DifficultyConfig,
   DifficultyKey,
   FallingWord,
   GamePhase,
   UseFallingWordsGameOptions,
 } from "./types";
+
+const difficultyConfigs: Record<DifficultyKey, DifficultyConfig> = {
+  easy: { spawnIntervalMs: 1800, baseSpeed: 68, speedJitter: 20, gravity: 6 },
+  medium: { spawnIntervalMs: 1250, baseSpeed: 94, speedJitter: 28, gravity: 9 },
+  hard: { spawnIntervalMs: 900, baseSpeed: 124, speedJitter: 36, gravity: 12 },
+};
 
 function formatScore(elapsedMs: number) {
   return Math.floor(elapsedMs / 1000);
@@ -49,7 +55,7 @@ export function useFallingWordsGame(
   const [currentInput, setCurrentInput] = createSignal("");
   const [elapsedMs, setElapsedMs] = createSignal(0);
 
-  const selectedDifficulty = createMemo(() => getDifficulty(difficulty()));
+  const selectedDifficulty = createMemo(() => difficultyConfigs[difficulty()]);
   const score = createMemo(() => formatScore(elapsedMs()));
 
   const focusedWordId = createMemo((prevFocusedWordId?: number | null) => {
