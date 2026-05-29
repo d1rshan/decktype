@@ -1,106 +1,80 @@
 import { Show } from "solid-js";
-import { Globe, Keyboard } from "lucide-solid";
 import { useAuthSession } from "@/features/auth/hooks";
-import type { GameViewProps, DifficultyKey } from "@/features/games/types";
+import type { GameViewProps } from "@/features/games/types";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
 import { DifficultySelector } from "../components/difficulty-selector";
+import { GameMeta } from "../components/game-meta";
 import FallingWordsField from "./components/falling-words-field";
 import { FallingWordsHud as Hud } from "./components/falling-words-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";
 import { meta } from "./meta";
 
-const getShortResultMessage = (difficulty: DifficultyKey) =>
-  `Result not saved. Test too short. Minimum score for ${difficulty} is ${meta.minScores[difficulty]}.`;
-
 function FallingWordsView(props: GameViewProps) {
   const auth = useAuthSession();
   const createResultMutation = useCreateResultMutation();
-  const session = useFallingWordsGame(
-    props.wordBankId ?? meta.defaultWordBankId,
-    {
-      onComplete: (result) => {
-        if (!auth.isAuthenticated()) {
-          return;
-        }
+  const game = useFallingWordsGame(props.wordBankId ?? meta.defaultWordBankId, {
+    onComplete: (result) => {
+      if (!auth.isAuthenticated()) {
+        return;
+      }
 
-        const minimumScore = meta.minScores[result.difficulty];
+      const minimumScore = meta.minScores[result.difficulty];
 
-        if (result.score < minimumScore) {
-          toast.info(getShortResultMessage(result.difficulty));
-          return;
-        }
+      if (result.score < minimumScore) {
+        toast.info(
+          `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${meta.minScores[result.difficulty]}.`,
+        );
+        return;
+      }
 
-        createResultMutation.mutate({
-          gameId: result.gameId,
-          score: result.score,
-          difficulty: result.difficulty,
-        });
-      },
+      createResultMutation.mutate({
+        gameId: result.gameId,
+        score: result.score,
+        difficulty: result.difficulty,
+      });
     },
-  );
-
-  if (!session.wordBank) {
-    return (
-      <div class="rounded-[2rem] border border-(--sub-alt) bg-(--sub-alt)/40 p-8 text-(--sub) backdrop-blur-xl">
-        Missing word bank for this game.
-      </div>
-    );
-  }
+  });
 
   return (
     <div class="flex flex-col gap-8">
       <div class="flex flex-col items-center gap-6">
         <DifficultySelector
           options={meta.difficultyKeys}
-          activeDifficulty={session.difficulty()}
-          onChange={session.handleDifficultyChange}
+          activeDifficulty={game.difficulty()}
+          onChange={game.handleDifficultyChange}
         />
 
-        <div class="flex items-center gap-6 text-(--sub)">
-          <div class="flex items-center gap-2">
-            <Globe size={14} strokeWidth={2.5} class="opacity-50" />
-            <span class="text-xs leading-none font-semibold tracking-widest uppercase">
-              {session.wordBank.label}
-            </span>
-          </div>
-          <div class="flex items-center gap-2">
-            <Keyboard size={14} strokeWidth={2.5} class="opacity-50" />
-            <span class="text-xs leading-none font-semibold tracking-widest uppercase">
-              {meta.name.toLowerCase()}
-            </span>
-          </div>
-        </div>
+        <GameMeta wordBankLabel={game.wordBank.label} gameName={meta.name} />
       </div>
 
       <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20">
         <FallingWordsField
-          ref={session.setFieldRef}
-          words={session.activeWords()}
-          currentInput={session.currentInput()}
-          focusedWordId={session.focusedWordId()}
-          phase={session.phase()}
-          score={session.score()}
-          onFieldClick={session.focusInput}
+          ref={game.setFieldRef}
+          words={game.activeWords()}
+          currentInput={game.currentInput()}
+          focusedWordId={game.focusedWordId()}
+          phase={game.phase()}
+          score={game.score()}
+          onFieldClick={game.focusInput}
         />
 
-        <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-between px-10 pt-10 pb-6">
-          <div />
-          <Show when={session.phase() !== "game-over"}>
-            <Hud score={session.score()} typedValue={session.currentInput()} />
+        <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-end px-10 pt-10 pb-6">
+          <Show when={game.phase() !== "game-over"}>
+            <Hud score={game.score()} typedValue={game.currentInput()} />
           </Show>
         </div>
 
         <input
-          ref={session.setInputRef}
-          value={session.currentInput()}
+          ref={game.setInputRef}
+          value={game.currentInput()}
           class="absolute -left-[9999px] top-0 opacity-0"
           autocapitalize="off"
           autocomplete="off"
           autocorrect="off"
           spellcheck={false}
-          onInput={session.handleInput}
-          onKeyDown={session.handleKeyDown}
+          onInput={game.handleInput}
+          onKeyDown={game.handleKeyDown}
         />
       </div>
     </div>
