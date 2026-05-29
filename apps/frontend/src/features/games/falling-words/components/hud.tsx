@@ -1,11 +1,11 @@
 import { GameStat } from "../../core/components/game-stat";
 
-export type FallingWordsHudProps = {
+export type HudProps = {
   score: number;
   typedValue: string;
 };
 
-export function FallingWordsHud(props: FallingWordsHudProps) {
+export function Hud(props: HudProps) {
   return (
     <div class="flex items-center gap-12 font-mono">
       <GameStat label="score" value={props.score.toLocaleString()} highlight />

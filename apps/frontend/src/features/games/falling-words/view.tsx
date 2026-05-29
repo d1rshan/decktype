@@ -5,7 +5,7 @@ import { useSubmitGameResult } from "../core/hooks";
 import { DifficultySelector } from "../core/components/difficulty-selector";
 import { GameMeta } from "../core/components/game-meta";
 import FallingWordsField from "./components/falling-words-field";
-import { FallingWordsHud as Hud } from "./components/falling-words-hud";
+import { Hud } from "./components/hud";
 import { useEngine } from "./engine";
 import { meta } from "./meta";
 
