@@ -23,7 +23,7 @@ function FallingWordsView(props: GameViewProps) {
 
       if (result.score < minimumScore) {
         toast.info(
-          `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${meta.minScores[result.difficulty]}.`,
+          `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${minimumScore}.`,
         );
         return;
       }
