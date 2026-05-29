@@ -10,11 +10,7 @@ import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 
 import type { DifficultyKey, GamePhase } from "../core/types";
-import type {
-  DifficultyConfig,
-  FallingWord,
-  UseFallingWordsGameOptions,
-} from "./types";
+import type { DifficultyConfig, FallingWord } from "./types";
 
 const difficultyConfigs: Record<DifficultyKey, DifficultyConfig> = {
   easy: { spawnIntervalMs: 1800, baseSpeed: 68, speedJitter: 20, gravity: 6 },
@@ -23,6 +19,14 @@ const difficultyConfigs: Record<DifficultyKey, DifficultyConfig> = {
 };
 
 const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+
+export type UseGameOptions = {
+  onComplete?: (result: {
+    gameId: "falling-words";
+    score: number;
+    difficulty: DifficultyKey;
+  }) => void | Promise<void>;
+};
 
 function createFallingWord(
   id: number,
@@ -59,9 +63,9 @@ function findExactMatch(words: FallingWord[], value: string) {
     .sort((left, right) => right.y - left.y)[0];
 }
 
-export function useFallingWordsGame(
+export function useEngine(
   wordBankId: WordBankId,
-  options: UseFallingWordsGameOptions = {},
+  options: UseGameOptions = {},
 ) {
   const wordBank = getWordBank(wordBankId);
 
@@ -82,18 +86,15 @@ export function useFallingWordsGame(
   const [currentInput, setCurrentInput] = createSignal("");
   const [elapsedMs, setElapsedMs] = createSignal(0);
 
-  const selectedDifficulty = createMemo(() => difficultyConfigs[difficulty()]);
+  const config = createMemo(() => difficultyConfigs[difficulty()]);
   const score = createMemo(() => formatScore(elapsedMs()));
 
   const focusedWordId = createMemo((prevFocusedWordId?: number | null) => {
     const input = currentInput();
     const words = activeWords();
 
-    if (input.length === 0) {
-      return null;
-    }
+    if (input.length === 0) return null;
 
-    // Keep focus sticky if the previously focused word is still a valid exact prefix match
     if (prevFocusedWordId != null) {
       const prevWord = words.find((w) => w.id === prevFocusedWordId);
       if (prevWord && prevWord.text.startsWith(input)) {
@@ -101,7 +102,6 @@ export function useFallingWordsGame(
       }
     }
 
-    // Try exact prefix match first
     const exactPrefixCandidates = words
       .filter((word) => word.text.startsWith(input))
       .sort((left, right) => right.y - left.y);
@@ -110,8 +110,6 @@ export function useFallingWordsGame(
       return exactPrefixCandidates[0]?.id ?? null;
     }
 
-    // If no exact prefix match, find the word that HAS the longest prefix match with currentInput
-    // This allows for mistakes at the end of the input while keeping focus
     let bestWordId = null;
     let longestPrefix = 0;
     let lowestY = -1;
@@ -126,12 +124,9 @@ export function useFallingWordsGame(
         prefixLen++;
       }
 
-      if (prefixLen > 0) {
-        if (prefixLen > longestPrefix) {
+      if (prefixLen > 0 && prefixLen >= longestPrefix) {
+        if (prefixLen > longestPrefix || word.y > lowestY) {
           longestPrefix = prefixLen;
-          bestWordId = word.id;
-          lowestY = word.y;
-        } else if (prefixLen === longestPrefix && word.y > lowestY) {
           bestWordId = word.id;
           lowestY = word.y;
         }
@@ -145,7 +140,6 @@ export function useFallingWordsGame(
     if (phase() === "running" && runStartTime > 0) {
       return elapsedBeforeRun + (performance.now() - runStartTime);
     }
-
     return elapsedBeforeRun;
   };
 
@@ -164,20 +158,16 @@ export function useFallingWordsGame(
     }
   };
 
-  const focusInput = () => {
-    inputRef?.focus();
-  };
+  const focusInput = () => inputRef?.focus();
 
   const spawnWord = () => {
-    if (!wordBank || wordBank.words.length === 0) {
-      return;
-    }
+    if (!wordBank || wordBank.words.length === 0) return;
 
     const nextWord = createFallingWord(
       nextWordId,
       fieldWidth(),
       wordBank.words,
-      selectedDifficulty(),
+      config(),
     );
     nextWordId += 1;
     setActiveWords((current) => [...current, nextWord]);
@@ -189,9 +179,7 @@ export function useFallingWordsGame(
     setPhase("idle");
     setActiveWords([]);
     setCurrentInput("");
-    if (inputRef) {
-      inputRef.value = "";
-    }
+    if (inputRef) inputRef.value = "";
     focusInput();
     setElapsedMs(0);
     lastFrameTime = 0;
@@ -226,21 +214,14 @@ export function useFallingWordsGame(
 
   const submitExactMatch = (value: string, requireFocusMatch = false) => {
     const targetWord = findExactMatch(activeWords(), value);
-    if (!targetWord) {
-      return false;
-    }
-
-    if (requireFocusMatch && targetWord.id !== focusedWordId()) {
-      return false;
-    }
+    if (!targetWord) return false;
+    if (requireFocusMatch && targetWord.id !== focusedWordId()) return false;
 
     setActiveWords((current) =>
       current.filter((word) => word.id !== targetWord.id),
     );
     setCurrentInput("");
-    if (inputRef) {
-      inputRef.value = "";
-    }
+    if (inputRef) inputRef.value = "";
     return true;
   };
 
@@ -249,7 +230,6 @@ export function useFallingWordsGame(
       resetGame(nextDifficulty);
       return;
     }
-
     setDifficulty(nextDifficulty);
   };
 
@@ -285,23 +265,16 @@ export function useFallingWordsGame(
 
     if (event.key === "Enter") {
       event.preventDefault();
-
-      if (phase() === "idle" || phase() === "game-over") {
-        startGame();
-      }
+      if (phase() === "idle" || phase() === "game-over") startGame();
     }
   };
 
   const handleVisibilityChange = () => {
-    if (document.hidden && phase() === "running") {
-      endGame();
-    }
+    if (document.hidden && phase() === "running") endGame();
   };
 
   const handleWindowBlur = () => {
-    if (phase() === "running") {
-      endGame();
-    }
+    if (phase() === "running") endGame();
   };
 
   createEffect(() => {
@@ -315,7 +288,7 @@ export function useFallingWordsGame(
       lastFrameTime = timestamp;
       setElapsedMs(elapsedBeforeRun + (timestamp - runStartTime));
 
-      const difficultyConfig = selectedDifficulty();
+      const difficultyConfig = config();
 
       if (timestamp - lastSpawnTime >= difficultyConfig.spawnIntervalMs) {
         spawnWord();
@@ -337,9 +310,8 @@ export function useFallingWordsGame(
           const nextRotation =
             word.rotation + word.angularVelocity * deltaSeconds;
 
-          if (fieldHeight() > 0 && nextY >= fieldHeight() - 40) {
+          if (fieldHeight() > 0 && nextY >= fieldHeight() - 40)
             hitBottom = true;
-          }
 
           return {
             ...word,
@@ -373,13 +345,8 @@ export function useFallingWordsGame(
     setTimeout(updateFieldSize, 100);
     focusInput();
 
-    const observer = new ResizeObserver(() => {
-      updateFieldSize();
-    });
-
-    if (fieldRef) {
-      observer.observe(fieldRef);
-    }
+    const observer = new ResizeObserver(() => updateFieldSize());
+    if (fieldRef) observer.observe(fieldRef);
 
     window.addEventListener("blur", handleWindowBlur);
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -391,27 +358,29 @@ export function useFallingWordsGame(
     });
   });
 
-  onCleanup(() => {
-    stopLoop();
-  });
+  onCleanup(stopLoop);
 
   return {
-    activeWords,
-    currentInput,
-    difficulty,
-    focusedWordId,
-    handleDifficultyChange,
-    handleInput,
-    handleKeyDown,
-    phase,
-    score,
-    setInputRef: (element: HTMLInputElement) => {
-      inputRef = element;
+    game: {
+      phase,
+      difficulty,
+      activeWords,
+      currentInput,
+      focusedWordId,
+      score,
     },
-    setFieldRef: (element: HTMLDivElement) => {
-      fieldRef = element;
+    actions: {
+      handleDifficultyChange,
+      handleInput,
+      handleKeyDown,
+      setInputRef: (element: HTMLInputElement) => {
+        inputRef = element;
+      },
+      setFieldRef: (element: HTMLDivElement) => {
+        fieldRef = element;
+      },
+      focusInput,
     },
-    focusInput,
     wordBank,
   };
 }

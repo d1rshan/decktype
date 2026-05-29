@@ -1,41 +1,23 @@
 import { Show } from "solid-js";
 
-import { useAuthSession } from "@/features/auth/hooks";
-import { useCreateResultMutation } from "@/features/users/results/api";
-import { toast } from "@/lib/toast";
-
 import type { GameViewProps } from "../core/types";
+import { useSubmitGameResult } from "../core/hooks";
 import { DifficultySelector } from "../core/components/difficulty-selector";
 import { GameMeta } from "../core/components/game-meta";
 import FallingWordsField from "./components/falling-words-field";
 import { FallingWordsHud as Hud } from "./components/falling-words-hud";
-import { useFallingWordsGame } from "./use-falling-words-game";
+import { useEngine } from "./engine";
 import { meta } from "./meta";
 
 function FallingWordsView(props: GameViewProps) {
-  const auth = useAuthSession();
-  const createResultMutation = useCreateResultMutation();
-  const game = useFallingWordsGame(props.wordBankId ?? meta.defaultWordBankId, {
-    onComplete: (result) => {
-      if (!auth.isAuthenticated()) {
-        return;
-      }
+  const saveResult = useSubmitGameResult(meta.minScores);
 
-      const minimumScore = meta.minScores[result.difficulty];
-
-      if (result.score < minimumScore) {
-        toast.info(
-          `Result not saved. Test too short. Minimum score for ${result.difficulty} is ${minimumScore}.`,
-        );
-        return;
-      }
-
-      createResultMutation.mutate({
-        gameId: result.gameId,
-        score: result.score,
-        difficulty: result.difficulty,
-      });
-    },
+  const {
+    game: gameState,
+    actions,
+    wordBank,
+  } = useEngine(props.wordBankId ?? meta.defaultWordBankId, {
+    onComplete: saveResult,
   });
 
   return (
@@ -43,40 +25,43 @@ function FallingWordsView(props: GameViewProps) {
       <div class="flex flex-col items-center gap-6">
         <DifficultySelector
           options={meta.difficultyKeys}
-          activeDifficulty={game.difficulty()}
-          onChange={game.handleDifficultyChange}
+          activeDifficulty={gameState.difficulty()}
+          onChange={actions.handleDifficultyChange}
         />
 
-        <GameMeta wordBankLabel={game.wordBank.label} gameName={meta.name} />
+        <GameMeta wordBankLabel={wordBank.label} gameName={meta.name} />
       </div>
 
       <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20">
         <FallingWordsField
-          ref={game.setFieldRef}
-          words={game.activeWords()}
-          currentInput={game.currentInput()}
-          focusedWordId={game.focusedWordId()}
-          phase={game.phase()}
-          score={game.score()}
-          onFieldClick={game.focusInput}
+          ref={actions.setFieldRef}
+          words={gameState.activeWords()}
+          currentInput={gameState.currentInput()}
+          focusedWordId={gameState.focusedWordId()}
+          phase={gameState.phase()}
+          score={gameState.score()}
+          onFieldClick={actions.focusInput}
         />
 
         <div class="pointer-events-none relative z-10 flex h-full min-h-[60vh] flex-col items-center justify-end px-10 pt-10 pb-6">
-          <Show when={game.phase() !== "game-over"}>
-            <Hud score={game.score()} typedValue={game.currentInput()} />
+          <Show when={gameState.phase() !== "game-over"}>
+            <Hud
+              score={gameState.score()}
+              typedValue={gameState.currentInput()}
+            />
           </Show>
         </div>
 
         <input
-          ref={game.setInputRef}
-          value={game.currentInput()}
+          ref={actions.setInputRef}
+          value={gameState.currentInput()}
           class="absolute -left-[9999px] top-0 opacity-0"
           autocapitalize="off"
           autocomplete="off"
           autocorrect="off"
           spellcheck={false}
-          onInput={game.handleInput}
-          onKeyDown={game.handleKeyDown}
+          onInput={actions.handleInput}
+          onKeyDown={actions.handleKeyDown}
         />
       </div>
     </div>

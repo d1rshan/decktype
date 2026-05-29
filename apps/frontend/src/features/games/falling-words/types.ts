@@ -1,5 +1,3 @@
-import type { DifficultyKey } from "../core/types";
-
 export type DifficultyConfig = {
   spawnIntervalMs: number;
   baseSpeed: number;
@@ -16,14 +14,4 @@ export type FallingWord = {
   velocityY: number;
   rotation: number;
   angularVelocity: number;
-};
-
-type CompletedGameResult = {
-  gameId: "falling-words";
-  score: number;
-  difficulty: DifficultyKey;
-};
-
-export type UseFallingWordsGameOptions = {
-  onComplete?: (result: CompletedGameResult) => void | Promise<void>;
 };
