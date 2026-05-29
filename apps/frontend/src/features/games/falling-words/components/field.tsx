@@ -5,7 +5,7 @@ import { Kbd } from "@/components/ui/kbd";
 import type { GamePhase } from "../../core/types";
 import type { FallingWord } from "../types";
 
-type FallingWordsFieldProps = {
+type FieldProps = {
   ref?: (el: HTMLDivElement) => void;
   words: FallingWord[];
   currentInput: string;
@@ -15,7 +15,7 @@ type FallingWordsFieldProps = {
   onFieldClick: () => void;
 };
 
-function FallingWordsField(props: FallingWordsFieldProps) {
+function Field(props: FieldProps) {
   return (
     <div
       ref={props.ref}
@@ -119,4 +119,4 @@ function FallingWordsField(props: FallingWordsFieldProps) {
   );
 }
 
-export default FallingWordsField;
+export default Field;

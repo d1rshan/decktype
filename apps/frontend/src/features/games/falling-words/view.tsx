@@ -4,7 +4,7 @@ import type { GameViewProps } from "../core/types";
 import { useSubmitGameResult } from "../core/hooks";
 import { DifficultySelector } from "../core/components/difficulty-selector";
 import { GameMeta } from "../core/components/game-meta";
-import FallingWordsField from "./components/falling-words-field";
+import Field from "./components/field";
 import { Hud } from "./components/hud";
 import { useEngine } from "./engine";
 import { meta } from "./meta";
@@ -33,7 +33,7 @@ function FallingWordsView(props: GameViewProps) {
       </div>
 
       <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20">
-        <FallingWordsField
+        <Field
           ref={actions.setFieldRef}
           words={gameState.activeWords()}
           currentInput={gameState.currentInput()}
