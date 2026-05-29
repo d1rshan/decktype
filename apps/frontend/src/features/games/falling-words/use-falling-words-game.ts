@@ -5,9 +5,11 @@ import {
   onCleanup,
   onMount,
 } from "solid-js";
+
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
-import type { DifficultyKey, GamePhase } from "@/features/games/core/types";
+
+import type { DifficultyKey, GamePhase } from "../core/types";
 import type {
   DifficultyConfig,
   FallingWord,

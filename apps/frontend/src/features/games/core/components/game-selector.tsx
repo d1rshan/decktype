@@ -1,4 +1,5 @@
 import { For } from "solid-js";
+
 import { gameRegistry } from "../registry";
 import type { GameId } from "../types";
 import { GameCard } from "./game-card";

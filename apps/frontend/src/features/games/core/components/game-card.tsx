@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-solid";
+
 import type { GameId } from "../types";
 
 type GameCardProps = {
