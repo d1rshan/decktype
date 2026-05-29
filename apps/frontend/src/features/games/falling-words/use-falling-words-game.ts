@@ -8,11 +8,10 @@ import {
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 import { createFallingWord } from "./engine";
+import type { DifficultyKey, GamePhase } from "@/features/games/types";
 import type {
   DifficultyConfig,
-  DifficultyKey,
   FallingWord,
-  GamePhase,
   UseFallingWordsGameOptions,
 } from "./types";
 

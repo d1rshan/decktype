@@ -1,6 +1,7 @@
 import { For } from "solid-js";
 import { Kbd } from "@/components/ui/kbd";
-import type { FallingWord, GamePhase } from "../types";
+import type { GamePhase } from "@/features/games/types";
+import type { FallingWord } from "../types";
 
 type FallingWordsFieldProps = {
   ref?: (el: HTMLDivElement) => void;
