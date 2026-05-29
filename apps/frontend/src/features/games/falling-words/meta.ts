@@ -1,4 +1,4 @@
-import type { GameModule } from "@/features/games/types";
+import type { GameModule } from "@/features/games/core/types";
 import FallingWordsView from "./view";
 
 export const meta: GameModule = {

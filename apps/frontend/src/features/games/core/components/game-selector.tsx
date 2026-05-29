@@ -1,6 +1,6 @@
 import { For } from "solid-js";
-import { gameRegistry } from "@/features/games/registry";
-import type { GameId } from "@/features/games/types";
+import { gameRegistry } from "../registry";
+import type { GameId } from "../types";
 import { GameCard } from "./game-card";
 
 type GameSelectorProps = {

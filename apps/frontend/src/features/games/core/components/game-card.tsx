@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-solid";
-import type { GameId } from "@/features/games/types";
+import type { GameId } from "../types";
 
 type GameCardProps = {
   name: string;

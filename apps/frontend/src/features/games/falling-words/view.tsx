@@ -1,10 +1,10 @@
 import { Show } from "solid-js";
 import { useAuthSession } from "@/features/auth/hooks";
-import type { GameViewProps } from "@/features/games/types";
+import type { GameViewProps } from "@/features/games/core/types";
 import { useCreateResultMutation } from "@/features/users/results/api";
 import { toast } from "@/lib/toast";
-import { DifficultySelector } from "../components/difficulty-selector";
-import { GameMeta } from "../components/game-meta";
+import { DifficultySelector } from "../core/components/difficulty-selector";
+import { GameMeta } from "../core/components/game-meta";
 import FallingWordsField from "./components/falling-words-field";
 import { FallingWordsHud as Hud } from "./components/falling-words-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";

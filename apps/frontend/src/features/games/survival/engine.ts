@@ -2,9 +2,9 @@ import { createMemo, onCleanup, createEffect } from "solid-js";
 import { createStore } from "solid-js/store";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
-import type { DifficultyKey, GamePhase } from "@/features/games/types";
-import { getMetrics } from "@/features/games/metrics";
-import { randomWord } from "@/features/games/utils";
+import type { DifficultyKey, GamePhase } from "@/features/games/core/types";
+import { getMetrics } from "@/features/games/core/metrics";
+import { randomWord } from "@/features/games/core/utils";
 
 const WORD_BATCH = 50;
 const WORD_REFILL_THRESHOLD = 20;
