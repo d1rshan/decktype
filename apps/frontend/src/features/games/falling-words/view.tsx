@@ -9,18 +9,9 @@ import FallingWordsField from "./components/falling-words-field";
 import { FallingWordsHud as Hud } from "./components/falling-words-hud";
 import { useFallingWordsGame } from "./use-falling-words-game";
 import { meta } from "./meta";
-import { difficultyKeys } from "./difficulty";
 
-const MINIMUM_SCORES_BY_DIFFICULTY: Record<DifficultyKey, number> = {
-  easy: 20,
-  medium: 15,
-  hard: 10,
-};
-
-const getShortResultMessage = (
-  difficulty: keyof typeof MINIMUM_SCORES_BY_DIFFICULTY,
-) =>
-  `Result not saved. Test too short. Minimum score for ${difficulty} is ${MINIMUM_SCORES_BY_DIFFICULTY[difficulty]}.`;
+const getShortResultMessage = (difficulty: DifficultyKey) =>
+  `Result not saved. Test too short. Minimum score for ${difficulty} is ${meta.minScores[difficulty]}.`;
 
 function FallingWordsView(props: GameViewProps) {
   const auth = useAuthSession();
@@ -33,7 +24,7 @@ function FallingWordsView(props: GameViewProps) {
           return;
         }
 
-        const minimumScore = MINIMUM_SCORES_BY_DIFFICULTY[result.difficulty];
+        const minimumScore = meta.minScores[result.difficulty];
 
         if (result.score < minimumScore) {
           toast.info(getShortResultMessage(result.difficulty));
@@ -61,7 +52,7 @@ function FallingWordsView(props: GameViewProps) {
     <div class="flex flex-col gap-8">
       <div class="flex flex-col items-center gap-6">
         <DifficultySelector
-          options={difficultyKeys}
+          options={meta.difficultyKeys}
           activeDifficulty={session.difficulty()}
           onChange={session.handleDifficultyChange}
         />

@@ -24,14 +24,9 @@ export const difficultyOptions: DifficultyConfig[] = [
   },
 ];
 
-export const difficultyKeys: DifficultyKey[] = difficultyOptions.map(
-  (option) => option.key,
-);
-
 export function getDifficulty(key: DifficultyKey): DifficultyConfig {
   return (
     difficultyOptions.find((option) => option.key === key) ??
     difficultyOptions[0]!
   );
 }
-// TODO: clean up all this stuff bruhhhhh, ie use difficulty keys from our meta file
