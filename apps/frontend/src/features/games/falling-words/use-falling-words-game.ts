@@ -14,14 +14,20 @@ import type {
   UseFallingWordsGameOptions,
 } from "./types";
 
+const difficultyConfigs: Record<DifficultyKey, DifficultyConfig> = {
+  easy: { spawnIntervalMs: 1800, baseSpeed: 68, speedJitter: 20, gravity: 6 },
+  medium: { spawnIntervalMs: 1250, baseSpeed: 94, speedJitter: 28, gravity: 9 },
+  hard: { spawnIntervalMs: 900, baseSpeed: 124, speedJitter: 36, gravity: 12 },
+};
+
+const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+
 function createFallingWord(
   id: number,
   width: number,
   words: string[],
   difficulty: DifficultyConfig,
 ) {
-  const rand = (min: number, max: number) => Math.random() * (max - min) + min;
-
   const text = words[Math.floor(Math.random() * words.length)]!;
   const wordWidth = Math.max(96, text.length * 18);
   const safeWidth = Math.max(width - wordWidth - 24, 24);
@@ -40,12 +46,6 @@ function createFallingWord(
 
   return word;
 }
-
-const difficultyConfigs: Record<DifficultyKey, DifficultyConfig> = {
-  easy: { spawnIntervalMs: 1800, baseSpeed: 68, speedJitter: 20, gravity: 6 },
-  medium: { spawnIntervalMs: 1250, baseSpeed: 94, speedJitter: 28, gravity: 9 },
-  hard: { spawnIntervalMs: 900, baseSpeed: 124, speedJitter: 36, gravity: 12 },
-};
 
 function formatScore(elapsedMs: number) {
   return Math.floor(elapsedMs / 1000);
