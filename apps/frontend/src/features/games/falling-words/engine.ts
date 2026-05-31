@@ -25,7 +25,7 @@ export type UseGameOptions = {
     gameId: GameId;
     score: number;
     difficulty: DifficultyKey;
-  }) => void | Promise<void>;
+  }) => void;
 };
 
 function createFallingWord(
@@ -205,7 +205,7 @@ export function useEngine(
     setPhase("game-over");
     stopLoop();
     setElapsedMs(finalElapsedMs);
-    void options.onComplete?.({
+    options.onComplete?.({
       gameId: "falling-words",
       score: finalScore,
       difficulty: difficulty(),
