@@ -11,7 +11,6 @@ type FieldProps = {
   currentInput: string;
   focusedWordId: number | null;
   phase: GamePhase;
-  score: number;
   onFieldClick: () => void;
 };
 
@@ -27,20 +26,6 @@ export function Field(props: FieldProps) {
           <div class="flex items-center gap-2">
             <Kbd>enter</Kbd>
             <p class="text-base leading-normal">to start</p>
-          </div>
-        </div>
-      )}
-
-      {props.phase === "game-over" && (
-        <div class="absolute inset-0 z-20 flex items-center justify-center bg-(--bg)/90 backdrop-blur-sm">
-          <div class="text-center">
-            <p class="text-6xl leading-none font-bold tracking-tighter text-(--main) sm:text-8xl">
-              {props.score}
-            </p>
-            <div class="mt-12 flex items-center gap-2">
-              <Kbd>enter</Kbd>
-              <p class="text-base leading-normal">to restart</p>
-            </div>
           </div>
         </div>
       )}

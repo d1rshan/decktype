@@ -4,6 +4,7 @@ import type { GameViewProps } from "../core/types";
 import { useSubmitGameResult } from "../core/hooks";
 import { DifficultySelector } from "../core/components/difficulty-selector";
 import { GameMeta } from "../core/components/game-meta";
+import { GameOver } from "../core/components/game-over";
 import { Field } from "./components/field";
 import { Hud } from "./components/hud";
 import { useEngine } from "./engine";
@@ -33,13 +34,16 @@ function View(props: GameViewProps) {
       </div>
 
       <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20">
+        <Show when={gameState.phase() === "game-over"}>
+          <GameOver score={gameState.score()} />
+        </Show>
+
         <Field
           ref={actions.setFieldRef}
           words={gameState.activeWords()}
           currentInput={gameState.currentInput()}
           focusedWordId={gameState.focusedWordId()}
           phase={gameState.phase()}
-          score={gameState.score()}
           onFieldClick={actions.focusInput}
         />
 
