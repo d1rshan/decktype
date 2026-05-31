@@ -4,7 +4,7 @@ import { createStore } from "solid-js/store";
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 
-import type { DifficultyKey, GamePhase } from "../core/types";
+import type { DifficultyKey, GameId, GamePhase } from "../core/types";
 import { getMetrics } from "../core/metrics";
 import { randomWord } from "../core/utils";
 
@@ -21,7 +21,7 @@ const DAMAGE: Record<DifficultyKey, number> = {
 
 export type UseGameOptions = {
   onComplete?: (result: {
-    gameId: string;
+    gameId: GameId;
     score: number;
     difficulty: DifficultyKey;
   }) => void;

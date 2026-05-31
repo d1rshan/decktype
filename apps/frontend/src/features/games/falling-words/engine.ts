@@ -9,7 +9,7 @@ import {
 import { getWordBank } from "@/features/content/word-banks/manager";
 import type { WordBankId } from "@/features/content/word-banks/types";
 
-import type { DifficultyKey, GamePhase } from "../core/types";
+import type { DifficultyKey, GameId, GamePhase } from "../core/types";
 import type { DifficultyConfig, FallingWord } from "./types";
 
 const difficultyConfigs: Record<DifficultyKey, DifficultyConfig> = {
@@ -22,7 +22,7 @@ const rand = (min: number, max: number) => Math.random() * (max - min) + min;
 
 export type UseGameOptions = {
   onComplete?: (result: {
-    gameId: "falling-words";
+    gameId: GameId;
     score: number;
     difficulty: DifficultyKey;
   }) => void | Promise<void>;
