@@ -1,5 +1,5 @@
 import type { GameModule } from "../core/types";
-import FallingWordsView from "./view";
+import View from "./view";
 
 export const meta: GameModule = {
   id: "falling-words",
@@ -8,5 +8,5 @@ export const meta: GameModule = {
   defaultWordBankId: "english/core-1k",
   difficultyKeys: ["easy", "medium", "hard"] as const,
   minScores: { easy: 20, medium: 15, hard: 10 },
-  View: FallingWordsView,
+  View,
 };

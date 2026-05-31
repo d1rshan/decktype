@@ -9,7 +9,7 @@ import { Hud } from "./components/hud";
 import { useEngine } from "./engine";
 import { meta } from "./meta";
 
-function FallingWordsView(props: GameViewProps) {
+function View(props: GameViewProps) {
   const saveResult = useSubmitGameResult(meta.minScores);
 
   const {
@@ -68,4 +68,4 @@ function FallingWordsView(props: GameViewProps) {
   );
 }
 
-export default FallingWordsView;
+export default View;
