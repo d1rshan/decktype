@@ -2,7 +2,7 @@ import { Index } from "solid-js";
 import { Heart } from "./heart";
 import { GameStat } from "../../core/components/game-stat";
 
-export type SurvivalHudProps = {
+type HudProps = {
   health: number;
   score: number;
   wpm: number;
@@ -10,7 +10,7 @@ export type SurvivalHudProps = {
   isTakingDamage?: boolean;
 };
 
-export function SurvivalHud(props: SurvivalHudProps) {
+export function Hud(props: HudProps) {
   return (
     <div class="flex items-center gap-12 font-mono">
       <GameStat label="score" value={props.score.toLocaleString()} highlight />

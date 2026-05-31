@@ -4,7 +4,7 @@ import type { GameViewProps } from "../core/types";
 import { useSubmitGameResult } from "../core/hooks";
 import { DifficultySelector } from "../core/components/difficulty-selector";
 import { GameMeta } from "../core/components/game-meta";
-import Field from "./components/field";
+import { Field } from "./components/field";
 import { Hud } from "./components/hud";
 import { useEngine } from "./engine";
 import { meta } from "./meta";

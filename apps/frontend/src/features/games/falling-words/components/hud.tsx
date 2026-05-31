@@ -1,6 +1,6 @@
 import { GameStat } from "../../core/components/game-stat";
 
-export type HudProps = {
+type HudProps = {
   score: number;
   typedValue: string;
 };

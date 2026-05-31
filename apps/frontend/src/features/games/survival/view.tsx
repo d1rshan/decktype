@@ -8,7 +8,7 @@ import { GameInput } from "../core/components/game-input";
 import { GameMeta } from "../core/components/game-meta";
 import { meta } from "./meta";
 import { useEngine } from "./engine";
-import { SurvivalHud as Hud } from "./components/survival-hud";
+import { Hud } from "./components/hud";
 import { Words } from "./components/words";
 
 import "./animations.css";

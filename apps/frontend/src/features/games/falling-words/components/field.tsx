@@ -15,7 +15,7 @@ type FieldProps = {
   onFieldClick: () => void;
 };
 
-function Field(props: FieldProps) {
+export function Field(props: FieldProps) {
   return (
     <div
       ref={props.ref}
@@ -118,5 +118,3 @@ function Field(props: FieldProps) {
     </div>
   );
 }
-
-export default Field;
