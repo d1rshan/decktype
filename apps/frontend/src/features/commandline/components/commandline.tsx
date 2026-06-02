@@ -5,7 +5,7 @@ import {
   onCleanup,
   Show,
 } from "solid-js";
-import { Search } from "lucide-solid";
+import { Command, Search } from "lucide-solid";
 
 import CommandlineList from "@/features/commandline/components/commandline-list";
 import { createCommandlineRegistry } from "@/features/commandline/registry";
@@ -36,35 +36,48 @@ export function Commandline() {
   });
 
   return (
-    <Show when={cmd.isOpen()}>
-      <div
-        class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-(--bg)/90 px-5"
-        onClick={cmd.close}
-      >
-        <div class="w-full max-w-[450px]">
-          <div
-            class="overflow-hidden rounded-lg bg-(--sub-alt)"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <CommandlineInput
-              ref={cmd.setInputRef}
-              value={cmd.query()}
-              placeholder={cmd.placeholder()}
-              onInput={cmd.updateQuery}
-            />
+    <>
+      <Show when={!cmd.isOpen()}>
+        <button
+          type="button"
+          class="fixed right-5 bottom-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-(--main) text-(--bg) shadow-lg transition hover:opacity-90 sm:hidden"
+          onClick={cmd.open}
+          aria-label="Open command line"
+        >
+          <Command size={20} strokeWidth={2.4} />
+        </button>
+      </Show>
 
-            <CommandlineList
-              items={cmd.visibleItems()}
-              selectedIndex={cmd.selectedIndex()}
-              scope={cmd.scope()}
-              interactionType={cmd.interactionType()}
-              onHoverItem={cmd.hoverItem}
-              onSelectItem={cmd.selectCurrent}
-            />
+      <Show when={cmd.isOpen()}>
+        <div
+          class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-(--bg)/90 px-5"
+          onClick={cmd.close}
+        >
+          <div class="w-full max-w-[450px]">
+            <div
+              class="overflow-hidden rounded-lg bg-(--sub-alt)"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <CommandlineInput
+                ref={cmd.setInputRef}
+                value={cmd.query()}
+                placeholder={cmd.placeholder()}
+                onInput={cmd.updateQuery}
+              />
+
+              <CommandlineList
+                items={cmd.visibleItems()}
+                selectedIndex={cmd.selectedIndex()}
+                scope={cmd.scope()}
+                interactionType={cmd.interactionType()}
+                onHoverItem={cmd.hoverItem}
+                onSelectItem={cmd.selectCurrent}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </Show>
+      </Show>
+    </>
   );
 }
 
