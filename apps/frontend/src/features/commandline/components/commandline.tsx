@@ -3,12 +3,10 @@ import {
   createMemo,
   createSignal,
   onCleanup,
-  onMount,
   Show,
 } from "solid-js";
-import { Command } from "lucide-solid";
+import { Search } from "lucide-solid";
 
-import CommandlineInput from "@/features/commandline/components/commandline-input";
 import CommandlineList from "@/features/commandline/components/commandline-list";
 import { createCommandlineRegistry } from "@/features/commandline/registry";
 import type {
@@ -18,71 +16,12 @@ import type {
 import { filterCommands, getScopeLabel } from "@/features/commandline/utils";
 import { themeManager } from "@/features/content/themes/manager";
 
-function Commandline() {
-  let searchInputRef: HTMLInputElement | undefined;
-  const [isOpen, setIsOpen] = createSignal(false);
-  const [query, setQuery] = createSignal("");
-  const [selectedIndex, setSelectedIndex] = createSignal(0);
-  const [scope, setScope] = createSignal<CommandlineScope>("root");
-  const [interactionType, setInteractionType] = createSignal<
-    "keyboard" | "mouse"
-  >("keyboard");
-
-  const registry = createMemo(() => createCommandlineRegistry(setScope));
-
-  const itemsForScope = createMemo(() => registry()[scope()]);
-
-  const visibleItems = createMemo(() =>
-    filterCommands(itemsForScope(), query()),
-  );
-
-  const isNestedScope = createMemo(() => scope() !== "root");
-  const inputPlaceholder = createMemo(() =>
-    isNestedScope()
-      ? `${getScopeLabel(scope() as Exclude<CommandlineScope, "root">).toLowerCase()}...`
-      : "Search...",
-  );
-
-  const focusInput = () => {
-    queueMicrotask(() => searchInputRef?.focus());
-  };
-
-  const resetInteractionState = () => {
-    setQuery("");
-    setSelectedIndex(0);
-  };
-
-  const stepBack = () => {
-    if (query()) {
-      resetInteractionState();
-      return;
-    }
-
-    if (isNestedScope()) {
-      setScope("root");
-      setSelectedIndex(0);
-      return;
-    }
-
-    setIsOpen(false);
-  };
-
-  const handleSelectItem = (item: CommandlineItem) => {
-    const previousScope = scope();
-    item.onSelect();
-
-    if (previousScope === scope()) {
-      setIsOpen(false);
-      return;
-    }
-
-    resetInteractionState();
-    focusInput();
-  };
+export function Commandline() {
+  const cmd = createCommandlineController();
 
   createEffect(() => {
-    if (scope() === "themes" && isOpen()) {
-      const item = visibleItems()[selectedIndex()];
+    if (cmd.scope() === "themes" && cmd.isOpen()) {
+      const item = cmd.visibleItems()[cmd.selectedIndex()];
 
       if (item && item.id.startsWith("theme-")) {
         themeManager.preview(item.id.replace("theme-", "") as any);
@@ -91,23 +30,70 @@ function Commandline() {
       return;
     }
 
-    if (isOpen()) {
+    if (cmd.isOpen()) {
       themeManager.reset();
     }
   });
 
-  createEffect(() => {
-    if (!isOpen()) {
-      resetInteractionState();
-      setScope("root");
-      themeManager.reset();
-      return;
-    }
+  return (
+    <Show when={cmd.isOpen()}>
+      <div
+        class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-(--bg)/90 px-5"
+        onClick={cmd.close}
+      >
+        <div class="w-full max-w-[450px]">
+          <div
+            class="overflow-hidden rounded-lg bg-(--sub-alt)"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <CommandlineInput
+              ref={cmd.setInputRef}
+              value={cmd.query()}
+              placeholder={cmd.placeholder()}
+              onInput={cmd.updateQuery}
+            />
 
-    resetInteractionState();
-    setScope("root");
-    focusInput();
-  });
+            <CommandlineList
+              items={cmd.visibleItems()}
+              selectedIndex={cmd.selectedIndex()}
+              scope={cmd.scope()}
+              interactionType={cmd.interactionType()}
+              onHoverItem={cmd.hoverItem}
+              onSelectItem={cmd.selectCurrent}
+            />
+          </div>
+        </div>
+      </div>
+    </Show>
+  );
+}
+
+function createCommandlineController() {
+  const [isOpen, setIsOpen] = createSignal(false);
+  const [query, setQuery] = createSignal("");
+  const [scope, setScope] = createSignal<CommandlineScope>("root");
+  const [selectedIndex, setSelectedIndex] = createSignal(0);
+  const [interactionType, setInteractionType] = createSignal<
+    "keyboard" | "mouse"
+  >("keyboard");
+
+  let inputRef: HTMLInputElement | undefined;
+
+  const registry = createMemo(() => createCommandlineRegistry(setScope));
+
+  const visibleItems = createMemo(() =>
+    filterCommands(registry()[scope()], query()),
+  );
+
+  const isNestedScope = createMemo(() => scope() !== "root");
+
+  const placeholder = createMemo(() =>
+    isNestedScope()
+      ? `${getScopeLabel(
+          scope() as Exclude<CommandlineScope, "root">,
+        ).toLowerCase()}...`
+      : "Search...",
+  );
 
   createEffect(() => {
     const maxIndex = visibleItems().length - 1;
@@ -117,79 +103,48 @@ function Commandline() {
     }
   });
 
-  onMount(() => {
-    const handleCommandlineShortcut = (event: KeyboardEvent) => {
-      if (
-        !(event.ctrlKey || event.metaKey) ||
-        event.key.toLowerCase() !== "k"
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-      setIsOpen((current) => !current);
-    };
-
-    window.addEventListener("keydown", handleCommandlineShortcut);
-
-    onCleanup(() => {
-      window.removeEventListener("keydown", handleCommandlineShortcut);
-    });
+  createEffect(() => {
+    if (isOpen()) {
+      scope();
+      inputRef?.focus();
+    }
   });
 
   createEffect(() => {
-    if (!isOpen()) {
-      return;
-    }
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        stepBack();
+        if (isOpen()) {
+          goBack();
+        } else {
+          open();
+        }
         return;
       }
 
+      if (!isOpen()) return;
+
       if (event.key === "Backspace" && query() === "" && isNestedScope()) {
         event.preventDefault();
-        stepBack();
+        goBack();
         return;
       }
 
       if (event.key === "ArrowDown") {
         event.preventDefault();
-        setInteractionType("keyboard");
-        setSelectedIndex((current) => {
-          if (visibleItems().length === 0) {
-            return 0;
-          }
-
-          return (current + 1) % visibleItems().length;
-        });
+        moveDown();
         return;
       }
 
       if (event.key === "ArrowUp") {
         event.preventDefault();
-        setInteractionType("keyboard");
-        setSelectedIndex((current) => {
-          if (visibleItems().length === 0) {
-            return 0;
-          }
-
-          return (current - 1 + visibleItems().length) % visibleItems().length;
-        });
+        moveUp();
         return;
       }
 
       if (event.key === "Enter") {
         event.preventDefault();
-        const item = visibleItems()[selectedIndex()];
-
-        if (!item) {
-          return;
-        }
-
-        handleSelectItem(item);
+        selectCurrent();
       }
     };
 
@@ -200,58 +155,153 @@ function Commandline() {
     });
   });
 
-  return (
-    <>
-      <Show when={!isOpen()}>
-        <button
-          type="button"
-          class="fixed right-5 bottom-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-(--main) text-(--bg) shadow-lg transition hover:opacity-90 sm:hidden"
-          onClick={() => setIsOpen(true)}
-          aria-label="Open command line"
-        >
-          <Command size={20} strokeWidth={2.4} />
-        </button>
-      </Show>
+  //
+  // private helpers
+  //
 
-      <Show when={isOpen()}>
-        <div
-          class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-(--bg)/90 px-5"
-          onClick={() => setIsOpen(false)}
-        >
-          <div class="w-full max-w-[450px]">
-            <div
-              class="overflow-hidden rounded-lg bg-(--sub-alt)"
-              onClick={(event) => event.stopPropagation()}
-            >
-              <CommandlineInput
-                inputRef={(element) => {
-                  searchInputRef = element;
-                }}
-                value={query()}
-                placeholder={inputPlaceholder()}
-                onInput={(value) => {
-                  setQuery(value);
-                  setSelectedIndex(0);
-                }}
-              />
+  const resetSearch = () => {
+    setQuery("");
+    setSelectedIndex(0);
+  };
 
-              <CommandlineList
-                items={visibleItems()}
-                selectedIndex={selectedIndex()}
-                scope={scope()}
-                interactionType={interactionType()}
-                onHoverItem={(index) => {
-                  setSelectedIndex(index);
-                  setInteractionType("mouse");
-                }}
-                onSelectItem={handleSelectItem}
-              />
-            </div>
-          </div>
-        </div>
-      </Show>
-    </>
-  );
+  const selectItem = (item: CommandlineItem) => {
+    const previousScope = scope();
+
+    item.onSelect();
+
+    if (previousScope === scope()) {
+      close();
+      return;
+    }
+
+    resetSearch();
+  };
+
+  const moveSelection = (direction: 1 | -1) => {
+    const items = visibleItems();
+
+    if (items.length === 0) {
+      setSelectedIndex(0);
+      return;
+    }
+
+    setSelectedIndex((current) => {
+      return (current + direction + items.length) % items.length;
+    });
+  };
+
+  //
+  // public api
+  //
+
+  const open = () => {
+    setIsOpen(true);
+  };
+
+  const close = () => {
+    resetSearch();
+    setScope("root");
+    setIsOpen(false);
+  };
+
+  const toggle = () => {
+    setIsOpen((current) => !current);
+  };
+
+  const updateQuery = (value: string) => {
+    setQuery(value);
+    setSelectedIndex(0);
+  };
+
+  const moveUp = () => {
+    setInteractionType("keyboard");
+    moveSelection(-1);
+  };
+
+  const moveDown = () => {
+    setInteractionType("keyboard");
+    moveSelection(1);
+  };
+
+  const hoverItem = (index: number) => {
+    setInteractionType("mouse");
+    setSelectedIndex(index);
+  };
+
+  const selectCurrent = () => {
+    const item = visibleItems()[selectedIndex()];
+
+    if (!item) return;
+
+    selectItem(item);
+  };
+
+  const goBack = () => {
+    if (query()) {
+      resetSearch();
+      return;
+    }
+
+    if (isNestedScope()) {
+      setScope("root");
+      setSelectedIndex(0);
+      return;
+    }
+
+    close();
+  };
+
+  const setInputRef = (el: HTMLInputElement) => {
+    inputRef = el;
+  };
+
+  return {
+    // state
+    isOpen,
+    query,
+    scope,
+    selectedIndex,
+    interactionType,
+
+    // derived
+    visibleItems,
+    placeholder,
+    isNestedScope,
+
+    // actions
+    open,
+    close,
+    toggle,
+    updateQuery,
+    moveUp,
+    moveDown,
+    hoverItem,
+    selectCurrent,
+    goBack,
+
+    // refs
+    setInputRef,
+  };
 }
 
-export default Commandline;
+type CommandlineInputProps = {
+  value: string;
+  placeholder: string;
+  onInput: (value: string) => void;
+  ref?: (el: HTMLInputElement) => void;
+};
+
+function CommandlineInput(props: CommandlineInputProps) {
+  return (
+    <div class="flex items-center gap-3 px-4 py-2">
+      <Search class="size-4 text-(--sub)" />
+      <input
+        ref={props.ref}
+        value={props.value}
+        class="w-full text-base outline-none placeholder:text-(--sub)"
+        placeholder={props.placeholder}
+        onInput={(event) => props.onInput(event.currentTarget.value)}
+      />
+    </div>
+  );
+}

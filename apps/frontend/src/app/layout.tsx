@@ -3,7 +3,7 @@ import { Show, onCleanup, onMount } from "solid-js";
 
 import ToastRegion from "@/components/toast-region";
 import { Banner } from "@/components/ui/banner";
-import Commandline from "@/features/commandline/components/commandline";
+import { Commandline } from "@/features/commandline/components/commandline";
 import { themeManager } from "@/features/content/themes/manager";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
