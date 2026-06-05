@@ -27,6 +27,7 @@ export function Commandline() {
         themeManager.preview(item.id.replace("theme-", "") as any);
       }
 
+      onCleanup(() => themeManager.reset());
       return;
     }
 
@@ -71,7 +72,7 @@ export function Commandline() {
                 scope={cmd.scope()}
                 interactionType={cmd.interactionType()}
                 onHoverItem={cmd.hoverItem}
-                onSelectItem={cmd.selectCurrent}
+                onSelectItem={(item) => cmd.selectCurrent(item)}
               />
             </div>
           </div>
@@ -241,12 +242,12 @@ function createCommandlineController() {
     setSelectedIndex(index);
   };
 
-  const selectCurrent = () => {
-    const item = visibleItems()[selectedIndex()];
+  const selectCurrent = (item?: CommandlineItem) => {
+    const target = item ?? visibleItems()[selectedIndex()];
 
-    if (!item) return;
+    if (!target) return;
 
-    selectItem(item);
+    selectItem(target);
   };
 
   const goBack = () => {
