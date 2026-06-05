@@ -126,13 +126,15 @@ function createCommandlineController() {
 
   createEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        toggle();
+        return;
+      }
+
       if (event.key === "Escape") {
         event.preventDefault();
-        if (isOpen()) {
-          goBack();
-        } else {
-          open();
-        }
+        goBack();
         return;
       }
 
