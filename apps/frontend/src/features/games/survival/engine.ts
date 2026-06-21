@@ -236,6 +236,18 @@ export function useEngine(
 
   const focusInput = () => inputRef?.focus();
 
+  const handleVisibilityChange = () => {
+    if (document.hidden && state.phase === "running") {
+      endGame();
+      return;
+    }
+    if (!document.hidden) setTimeout(focusInput, 0);
+  };
+
+  const handleWindowBlur = () => {
+    if (state.phase === "running") endGame();
+  };
+
   onCleanup(() => stopTimer());
 
   createEffect(() => {
@@ -244,7 +256,15 @@ export function useEngine(
     }
   });
 
-  onMount(() => focusInput());
+  onMount(() => {
+    focusInput();
+    window.addEventListener("blur", handleWindowBlur);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    onCleanup(() => {
+      window.removeEventListener("blur", handleWindowBlur);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    });
+  });
 
   return {
     game: {
