@@ -33,7 +33,10 @@ function View(props: GameViewProps) {
         <GameMeta wordBankLabel={wordBank.label} gameName={meta.name} />
       </div>
 
-      <div class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20">
+      <div
+        onClick={actions.focusInput}
+        class="relative min-h-[60vh] overflow-hidden rounded-2xl bg-(--sub-alt)/10 transition-all hover:bg-(--sub-alt)/20"
+      >
         <Show when={gameState.phase() === "game-over"}>
           <GameOver score={gameState.score()} />
         </Show>

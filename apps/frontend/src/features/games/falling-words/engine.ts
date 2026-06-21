@@ -270,7 +270,11 @@ export function useEngine(
   };
 
   const handleVisibilityChange = () => {
-    if (document.hidden && phase() === "running") endGame();
+    if (document.hidden && phase() === "running") {
+      endGame();
+      return;
+    }
+    if (!document.hidden) setTimeout(focusInput, 0);
   };
 
   const handleWindowBlur = () => {
